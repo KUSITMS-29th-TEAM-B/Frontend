@@ -2,7 +2,7 @@
 
 ## Convention
 ### Branch
-```feat/#{issue_number}-{feature_name}```   
+```feature/#{issue_number}-{feature_name}```   
 ```fix/#{issue_number}-{bug_name}```
 ### Commit
 ```feat: 기능추가```    
