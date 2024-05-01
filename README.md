@@ -1,9 +1,13 @@
 # Frontend
 
 ## Convention
-### Branch
-```feature/#{issue_number}-{feature_name}```   
-```fix/#{issue_number}-{bug_name}```
+### PR Title
+```Feature/#{issue_number} {기능명}```   
+### Issue Title
+```[FEAT] {기능설명}```    
+### Branch Name
+```feature/#{issue_number}```   
+```fix/#{issue_number}```
 ### Commit
 ```feat: 기능추가```    
 ```fix: 버그수정```   
