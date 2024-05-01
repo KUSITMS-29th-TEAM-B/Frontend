@@ -2,6 +2,14 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { countState } from "../store/countStore";
 
+
+const StyledDivContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+`;
+
 const MainPage: React.FC = () => {
   const [count, setCount] = useRecoilState(countState);
   return (
@@ -13,11 +21,5 @@ const MainPage: React.FC = () => {
   );
 };
 
-const StyledDivContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 0 auto;
-`;
 
 export default MainPage;
