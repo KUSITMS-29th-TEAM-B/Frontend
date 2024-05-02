@@ -8,6 +8,7 @@ const StyledDivContainer = styled.div`
   justify-content: center;
   position: relative;
   background-color: #FBFBFD;
+  //margin-top: 6.5rem;
 `;
 
 const CenteredContainer = styled(motion.div)`
@@ -68,7 +69,9 @@ const JDPage: React.FC = () => {
             animate={{ x: "0%" }}
             exit={{ x: "190%", transition: { delay: 0.2 } }}
             transition={{ type: "spring", stiffness: 50 }}
-          />
+          >
+            경험 분석이 보여지는 창입니다.
+          </RightContainer>
         )}
       </AnimatePresence>
       <JDButton onClick={toggleVisibility}>경험탐색</JDButton>
