@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import BundledEditor from "../components/editor/BundleEditor";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -12,7 +13,7 @@ const StyledDivContainer = styled.div`
 `;
 
 const CenteredContainer = styled(motion.div)`
-  width: 35%;
+  width: 45%;
   border-radius: 1.25rem;
   background: #FFF;
   border-radius: 10px;
@@ -21,8 +22,13 @@ const CenteredContainer = styled(motion.div)`
   height: 40rem;
 `;
 
+const StyledHeader = styled.h2`
+  font-size: 20;
+  font-weight: bold;
+`;
+
 const RightContainer = styled(motion.div)`
-  width: 35%;
+  width: 45%;
   border-radius: 10px;
   padding: 2rem;
   margin: 1rem;
@@ -46,12 +52,19 @@ const JDPage: React.FC = () => {
     setIsVisible(!isVisible);
   };
 
+  const [content, setContent] = useState("<p>이곳에 내용을 입력하세요</p>");
+
+  const handleEditorChange = (newContent: string) => {
+    console.log("Content was updated:", newContent);
+    setContent(newContent);
+  };
+
   return (
-    <StyledDivContainer>
+    <StyledDivContainer className="page">
       <CenteredContainer
         animate={{
           x: isVisible ? "-10%" : "0%",
-          width: isVisible ? "35%" : "70%",
+          width: isVisible ? "45%" : "80%",
         }}
         transition={{
           type: "spring",
@@ -60,14 +73,20 @@ const JDPage: React.FC = () => {
           when: "beforeChildren",
         }}
       >
-        자기소개 문항을 사용자가 직접 입력하는 창입니다.
+        <StyledHeader>1. 지원동기</StyledHeader>
+        <div>
+          <BundledEditor
+            content={content}
+            onContentChange={handleEditorChange}
+          />
+        </div>
       </CenteredContainer>
       <AnimatePresence>
         {isVisible && (
           <RightContainer
             initial={{ x: "100%" }}
             animate={{ x: "0%" }}
-            exit={{ x: "190%", transition: { delay: 0.2 } }}
+            exit={{ x: "190%", transition: { delay: 0.1 } }}
             transition={{ type: "spring", stiffness: 50 }}
           >
             경험 분석이 보여지는 창입니다.
