@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
+interface ButtonProps {
+  isActive: boolean;
+}
+
 const ToggleContainer = styled.div`
-  width: 330px;
-  height: 40px;
+  width: 13rem;
+  height: 1.8925rem;
   display: flex;
   justify-content: space-between;
   background-color: #EEEFF7; 
@@ -14,14 +18,15 @@ const ToggleContainer = styled.div`
   overflow: hidden;
 `;
 
-const Button = styled.button`
+const Button = styled.button<ButtonProps>`
     width: 100%;
-    height: 40px;
+    height: 1.8925rem;
     padding: 10px 20px;
     border: none;
     border-radius: 15px;
     background-color: transparent;
-    color: white;
+    font-size: 0.70419rem;
+    color: ${(props) => (props.isActive ? "white" : "black")};
     cursor: pointer;
     &:focus {
     outline: none;
@@ -41,7 +46,11 @@ const Highlight = styled(motion.div)`
 
 const ToggleButton: React.FC = () => {
   const menu = ["연도별", "활동별", "역량별"];
-  const [active, setActive] = useState(menu[0]);
+  const [active, setActive] = useState<(typeof menu)[number]>(menu[0]);
+
+  useEffect(() => {
+    console.log("Current active menu:", active);
+  }, [active]);
 
   const spring = {
     type: "spring",
@@ -59,6 +68,7 @@ const ToggleButton: React.FC = () => {
       {menu.map((menu, index) => (
         <Button
           key={menu}
+          isActive={menu === active}
           onClick={() => setActive(menu)}
           style={{ zIndex: 1 }}
         >
