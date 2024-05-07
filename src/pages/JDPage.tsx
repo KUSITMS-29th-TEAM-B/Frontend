@@ -86,7 +86,7 @@ const JDPage: React.FC = () => {
           <RightContainer
             initial={{ x: "100%" }}
             animate={{ x: "0%" }}
-            exit={{ x: "190%", transition: { delay: 0.1 } }}
+            exit={{ x: "190%", transition: { delay: 0.3 } }}
             transition={{ type: "spring", stiffness: 50 }}
           >
             경험 분석이 보여지는 창입니다.

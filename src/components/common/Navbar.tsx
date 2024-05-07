@@ -35,6 +35,7 @@ const NavContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 2.375rem 4rem;
+  z-index: 1000;
 `;
 
 const ItemContainer = styled.div`

@@ -12,7 +12,7 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
   onContentChange,
 }) => {
   let API_KEY = process.env.REACT_APP_TINYMCE_API;
-  console.log(API_KEY);
+
   return (
     <Editor
       apiKey={API_KEY}
@@ -22,15 +22,25 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
         height: 300,
         menubar: false,
         plugins: [
-          "advlist autolink lists link image charmap print preview anchor",
-          "searchreplace visualblocks code fullscreen",
-          "insertdatetime media table paste code help wordcount",
+          "lists",
+          "link",
+          "image",
+          "charmap",
+          "preview",
+          "searchreplace",
+          "fullscreen",
+          "media",
+          "table",
+          "code",
+          "help",
+          "emoticons",
+          "codesample",
+          "quickbars",
         ],
         toolbar:
-          "undo redo | formatselect | " +
-          "bold italic backcolor | alignleft aligncenter " +
-          "alignright alignjustify | bullist numlist outdent indent | " +
-          "removeformat | help",
+          "undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | " +
+          "bullist numlist outdent indent | link image | print preview media fullscreen | " +
+          "forecolor backcolor emoticons | help",
       }}
     />
   );
