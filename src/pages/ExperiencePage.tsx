@@ -1,38 +1,7 @@
 import React from "react";
-import MyResponsiveCirclePacking from "../components/MyResponsiveCirclePacking";
 import BubbleChartWithGradient from "../components/BubbleChartWithGradient";
 
 const ExperiencePage = () => {
-  const data = {
-    children: [
-      {
-        name: "address",
-        color: "hsl(179, 70%, 50%)",
-        loc: 800000,
-      },
-      {
-        name: "city",
-        color: "hsl(171, 70%, 30%)",
-        loc: 39954,
-      },
-      {
-        name: "animal",
-        color: "red",
-        loc: 60790,
-      },
-      {
-        name: "movie",
-        color: "hsl(34, 70%, 50%)",
-        loc: 147184,
-      },
-      {
-        name: "user",
-        color: "hsl(232, 70%, 50%)",
-        loc: 199460,
-      },
-    ],
-  };
-
   const data2 = [
     {
       label: "Example",
