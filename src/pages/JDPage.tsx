@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import BundledEditor from "../components/editor/BundleEditor";
@@ -13,7 +13,7 @@ const StyledDivContainer = styled.div`
 `;
 
 const CenteredContainer = styled(motion.div)`
-  width: 45%;
+  width: 45%; 
   border-radius: 1.25rem;
   background: #FFF;
   border-radius: 10px;
@@ -62,9 +62,10 @@ const JDPage: React.FC = () => {
   return (
     <StyledDivContainer className="page">
       <CenteredContainer
+        initial={{ width: "45%" }}
         animate={{
           x: isVisible ? "-10%" : "0%",
-          width: isVisible ? "45%" : "80%",
+          width: isVisible ? "45%" : "70%",
         }}
         transition={{
           type: "spring",
@@ -86,7 +87,7 @@ const JDPage: React.FC = () => {
           <RightContainer
             initial={{ x: "100%" }}
             animate={{ x: "0%" }}
-            exit={{ x: "190%", transition: { delay: 0.3 } }}
+            exit={{ x: "200%", transition: { delay: 0.3 } }}
             transition={{ type: "spring", stiffness: 50 }}
           >
             경험 분석이 보여지는 창입니다.
