@@ -52,7 +52,9 @@ const MenuList = styled.div`
   gap: 2.5rem;
 `;
 
-const MenuItem = styled.div``;
+const MenuItem = styled.div`
+  ${(props) => props.theme.fonts.subtitle1}
+`;
 
 const UserInfo = styled.div``;
 
