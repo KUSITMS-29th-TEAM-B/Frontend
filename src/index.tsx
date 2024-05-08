@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
 import { BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ThemeProvider } from "styled-components";
+import { theme } from "./styles/theme";
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const root = ReactDOM.createRoot(
@@ -13,13 +15,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <BrowserRouter>
-    <React.StrictMode>
+    <ThemeProvider theme={theme}>
       <RecoilRoot>
         <GoogleOAuthProvider clientId={`${GOOGLE_CLIENT_ID}`}>
           <App />
         </GoogleOAuthProvider>
       </RecoilRoot>
-    </React.StrictMode>
+    </ThemeProvider>
   </BrowserRouter>
 );
 

@@ -12,7 +12,7 @@
     "@types/react": "^18.2.77",
     "@types/react-dom": "^18.2.25",
     "axios": "^1.6.8",
-    "framer-motion": "^11.1.8",
+    "d3": "^7.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
@@ -47,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "eslint": "^8.57.0"
   }
 }
