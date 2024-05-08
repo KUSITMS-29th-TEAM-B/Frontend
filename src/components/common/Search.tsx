@@ -29,10 +29,10 @@ const SearchInput = styled.input`
   padding: 12px 24px;
 `;
 const SearchButton = styled.button`
-  max-width: 40px;
+  width: 40px;
   height: 40px;
   border: none;
-  border-radius: 24px;
+  border-radius: 50%;
   background: var(--neutral-300, #eaebf3);
 `;
 
