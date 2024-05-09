@@ -21,26 +21,21 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
       init={{
         height: 300,
         menubar: false,
+        statusbar: false,
+        highlight_on_focus: false,
         plugins: [
           "lists",
           "link",
           "image",
-          "charmap",
           "preview",
-          "searchreplace",
-          "fullscreen",
-          "media",
           "table",
-          "code",
-          "help",
           "emoticons",
           "codesample",
-          "quickbars",
         ],
         toolbar:
           "undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | " +
-          "bullist numlist outdent indent | link image | print preview media fullscreen | " +
-          "forecolor backcolor emoticons | help",
+          "bullist numlist outdent indent | " +
+          "forecolor backcolor emoticons ",
       }}
     />
   );

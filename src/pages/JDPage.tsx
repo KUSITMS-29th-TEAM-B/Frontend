@@ -9,17 +9,14 @@ const StyledDivContainer = styled.div`
   justify-content: center;
   position: relative;
   background-color: #FBFBFD;
-  //margin-top: 6.5rem;
 `;
 
 const CenteredContainer = styled(motion.div)`
   width: 45%; 
-  border-radius: 1.25rem;
-  background: #FFF;
   border-radius: 10px;
+  background: #FFF;
   padding: 2rem;
   margin: 1rem;
-  height: 40rem;
 `;
 
 const StyledHeader = styled.h2`
@@ -27,12 +24,21 @@ const StyledHeader = styled.h2`
   font-weight: bold;
 `;
 
-const RightContainer = styled(motion.div)`
+const ExperienceContainer = styled(motion.div)`
   width: 45%;
   border-radius: 10px;
   padding: 2rem;
   margin: 1rem;
-  border-radius: 1.25rem;
+  background: #F7F7FB;
+  box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
+  height: 35rem;
+`;
+
+const JDContainer = styled(motion.div)`
+  width: 45%;
+  border-radius: 10px;
+  padding: 2rem;
+  margin: 1rem;
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 35rem;
@@ -40,16 +46,29 @@ const RightContainer = styled(motion.div)`
 
 const JDButton = styled.button`
   position: absolute;          
-  right: 1rem;                  
+  right: 0;      
   top: 5rem;                      
   transform: translateY(-50%);    
 `;
 
-const JDPage: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const ExperienceButton = styled.button`
+  position: absolute;          
+  right: 0;                  
+  top: 7rem;                      
+  transform: translateY(-50%);    
+`;
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible);
+const JDPage: React.FC = () => {
+  const [activeContainer, setActiveContainer] = useState<null | "JD" | "Exp">(
+    null
+  );
+
+  const toggleContainer = (container: "JD" | "Exp") => {
+    if (activeContainer === container) {
+      setActiveContainer(null);
+    } else {
+      setActiveContainer(container);
+    }
   };
 
   const [content, setContent] = useState("<p>이곳에 내용을 입력하세요</p>");
@@ -64,8 +83,8 @@ const JDPage: React.FC = () => {
       <CenteredContainer
         initial={{ width: "45%" }}
         animate={{
-          x: isVisible ? "-10%" : "0%",
-          width: isVisible ? "45%" : "70%",
+          x: activeContainer ? "-10%" : "0%",
+          width: activeContainer ? "45%" : "70%",
         }}
         transition={{
           type: "spring",
@@ -81,20 +100,37 @@ const JDPage: React.FC = () => {
             onContentChange={handleEditorChange}
           />
         </div>
+        <StyledHeader>2. </StyledHeader>
+        <div>
+          <BundledEditor content="" onContentChange={handleEditorChange} />
+        </div>
       </CenteredContainer>
       <AnimatePresence>
-        {isVisible && (
-          <RightContainer
+        {activeContainer === "JD" && (
+          <JDContainer
+            initial={{ x: "100%" }}
+            animate={{ x: "0%" }}
+            exit={{ x: "200%", transition: { delay: 0.3 } }}
+            transition={{ type: "spring", stiffness: 50 }}
+          >
+            JD공고가 보여지는 창입니다.
+          </JDContainer>
+        )}
+        {activeContainer === "Exp" && (
+          <ExperienceContainer
             initial={{ x: "100%" }}
             animate={{ x: "0%" }}
             exit={{ x: "200%", transition: { delay: 0.3 } }}
             transition={{ type: "spring", stiffness: 50 }}
           >
             경험 분석이 보여지는 창입니다.
-          </RightContainer>
+          </ExperienceContainer>
         )}
       </AnimatePresence>
-      <JDButton onClick={toggleVisibility}>경험탐색</JDButton>
+      <JDButton onClick={() => toggleContainer("JD")}>JD분석</JDButton>
+      <ExperienceButton onClick={() => toggleContainer("Exp")}>
+        경험분석
+      </ExperienceButton>
     </StyledDivContainer>
   );
 };
