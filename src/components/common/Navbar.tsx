@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
+import Search from "./Search";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -11,13 +12,13 @@ const Navbar = () => {
       <ItemContainer>
         <img src={logo} alt="flight-logo" width={"117px"} height={"40px"} />
         <MenuList>
-          <MenuItem onClick={() => navigate(`/experience`)}>경험 정리</MenuItem>
-          <MenuItem onClick={() => navigate(`/jd`)}>JD 분석</MenuItem>
+          <MenuItem onClick={() => navigate(`/experience`)}>나의 경험</MenuItem>
+          <MenuItem onClick={() => navigate(`/jd`)}>채용공고 관리</MenuItem>
         </MenuList>
       </ItemContainer>
       <ItemContainer>
-        검색컴포넌트
-        <UserInfo onClick={() => navigate(`/mypage`)}>사용자 정보</UserInfo>
+        <Search />
+        <UserInfo onClick={() => navigate(`/mypage`)}>사용자님</UserInfo>
       </ItemContainer>
     </NavContainer>
   );
@@ -54,8 +55,21 @@ const MenuList = styled.div`
 
 const MenuItem = styled.div`
   ${(props) => props.theme.fonts.subtitle1}
+  cursor: pointer;
+  &:hover {
+    color: ${(props) => props.theme.colors.main500};
+    text-decoration: underline;
+    text-underline-position: under;
+    text-underline-offset: 1px;
+    text-decoration-thickness: 3px;
+  }
+  flex-shrink: 0;
 `;
 
-const UserInfo = styled.div``;
+const UserInfo = styled.div`
+  ${(props) => props.theme.fonts.body5}
+  color: ${(props) => props.theme.colors.neutral800};
+  flex-shrink: 0;
+`;
 
 export default Navbar;
