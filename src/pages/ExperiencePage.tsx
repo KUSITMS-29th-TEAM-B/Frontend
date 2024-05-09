@@ -8,10 +8,10 @@ import yearActiveImg from "../assets/images/yearActiveCircle.png";
 
 const ExperiencePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tab, setTab] = useState(searchParams.get("tab") && "역량별");
+  const [tab, setTab] = useState(searchParams.get("tab") || "역량별");
   const [year, setYear] = useState<number | null>(null);
 
-  useEffect(() => setTab(searchParams.get("tab")), [searchParams]);
+  useEffect(() => setTab(searchParams.get("tab") || "역량별"), [searchParams]);
 
   return (
     <div className="page">
