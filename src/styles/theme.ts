@@ -77,6 +77,11 @@ const fonts = {
     size: 16,
     lineHeight: 20,
   }),
+  subtitle4: FONT({
+    weight: 500,
+    size: 16,
+    lineHeight: 20,
+  }),
   body1: FONT({
     weight: 500,
     size: 24,
