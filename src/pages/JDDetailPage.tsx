@@ -117,7 +117,7 @@ const ButtonText = styled.div<ButtonProps>`
     color: ${({ active }) => (active ? "#FFFFFF" : "#63698D")};
 `;
 
-const JDMainPage: React.FC = () => {
+const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState(""); //JD 혹은 Exp
   const [currentStep, setCurrentStep] = useState(1);
@@ -204,4 +204,4 @@ const JDMainPage: React.FC = () => {
   );
 };
 
-export default JDMainPage;
+export default JDDetailPage;
