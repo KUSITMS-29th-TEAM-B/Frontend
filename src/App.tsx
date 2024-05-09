@@ -6,7 +6,7 @@ import ExperiencePage from "./pages/ExperiencePage";
 import MyPage from "./pages/MyPage";
 import Navbar from "./components/common/Navbar";
 import JDEditPage from "./pages/JDEditPage";
-import JDMainPage from "./pages/JDPage";
+import JDMainPage from "./pages/JDMainPage";
 import JDDetailPage from "./pages/JDDetailPage";
 
 const App: React.FC = () => {

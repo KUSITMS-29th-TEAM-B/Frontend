@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
+import ExperienceList from "../components/JD/ExperienceList";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -16,6 +17,14 @@ const ToggleContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: left;
+`;
+
+const ExpContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
 `;
 
 const TopTitleBar = styled.div`
@@ -65,7 +74,6 @@ const CenteredContainer = styled(motion.div)`
 const ActiveContainer = styled(motion.div)`
   width: 45%;
   border-radius: 10px;
-  padding: 2rem;
   margin: 0 3.5rem; 
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
@@ -196,7 +204,9 @@ const JDMainPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            {activebutton}
+            <ExpContainer>
+              <ExperienceList />
+            </ExpContainer>
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
