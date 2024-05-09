@@ -13,7 +13,7 @@ const ExperiencePage = () => {
 
   const numCircles = 8; // 주변에 배치할 원의 개수
 
-  const radius = 190; // 중앙 원으로부터의 거리
+  const radius = 200; // 중앙 원으로부터의 거리
   // 중앙 원의 크기
   const centralWidth = 392;
   // 주변 원 크기
@@ -38,12 +38,12 @@ const ExperiencePage = () => {
           <YearList>
             {yearData.map((item) =>
               year === item.year ? (
-                <YearContainer>
+                <YearContainer onMouseLeave={() => setYear(null)}>
                   <img
                     src={yearActiveImg}
                     alt="year-active"
                     style={{ marginTop: "-150px", zIndex: 2000 }}
-                    onMouseLeave={() => setYear(null)}
+                    // onMouseLeave={() => setYear(null)}
                   />
                   <YearText style={{ marginTop: "-150px", zIndex: 3000 }}>
                     {item.year}
@@ -56,7 +56,9 @@ const ExperiencePage = () => {
                         style={{
                           left: `${position.x}px`,
                           top: `${position.y}px`,
+                          zIndex: 4000,
                         }}
+                        onMouseOver={() => console.log("마우스 호버")}
                       >
                         {activity}
                       </ActivityCircle>
@@ -140,6 +142,10 @@ const ActivityCircle = styled.div`
   cursor: pointer;
   ${(props) => props.theme.fonts.subtitle4};
   ${(props) => props.theme.colors.neutral700};
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Line = styled.div`
