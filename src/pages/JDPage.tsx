@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
 const StyledDivContainer = styled.div`
@@ -15,7 +15,6 @@ const TopTitleBar = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 1rem;
 `;
 
 const Title = styled.h1`
@@ -63,43 +62,49 @@ const ActiveContainer = styled(motion.div)`
   height: 35rem;
 `;
 
-const JDButton = styled.button`
-  position: absolute;          
-  left: -2rem;      
-  top: 1rem;                    
+const buttonActiveStyle = css`
+  background: #7D82FF; 
+`;
+
+interface ButtonProps {
+  active: boolean;
+}
+
+const JDButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 1rem;
   width: 2rem;
   height: 7rem;
   flex-shrink: 0;
   border: none;
   border-radius: 0.66019rem 0rem 0rem 0.66019rem;
-  background: var(--neutral-300, #EAEBF3);     
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
 `;
 
-const ExperienceButton = styled.button`
-  position: absolute;          
-  left: -2rem;      
-  top: 8.5rem;                    
+const ExperienceButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 8.5rem;
   width: 2rem;
   height: 7rem;
   flex-shrink: 0;
   border: none;
   border-radius: 0.66019rem 0rem 0rem 0.66019rem;
-  background: var(--neutral-300, #EAEBF3);                     
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
 `;
 
-const ButtonText = styled.div`
+const ButtonText = styled.div<ButtonProps>`
     display: flex;
     width: 1rem;
+    ${(props) => props.theme.fonts.body5};
     height: 5rem;
     flex-direction: column;
     justify-content: center;
     flex-shrink: 0;
-    color: #63698D;
-    text-align: center;
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+    color: ${({ active }) => (active ? "#FFFFFF" : "#63698D")};
 `;
 
 const JDPage: React.FC = () => {
@@ -161,11 +166,17 @@ const JDPage: React.FC = () => {
             }}
             transition={{ type: "spring", stiffness: 40 }}
           >
-            <JDButton onClick={JDtoggleContainer}>
-              <ButtonText>JD분석</ButtonText>
+            <JDButton
+              onClick={JDtoggleContainer}
+              active={activebutton === "JD"}
+            >
+              <ButtonText active={activebutton === "JD"}>JD분석</ButtonText>
             </JDButton>
-            <ExperienceButton onClick={ExptoggleContainer}>
-              <ButtonText>경험분석</ButtonText>
+            <ExperienceButton
+              onClick={ExptoggleContainer}
+              active={activebutton === "Exp"}
+            >
+              <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
             {activebutton}
           </ActiveContainer>
