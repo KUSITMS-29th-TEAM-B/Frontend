@@ -1,21 +1,32 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Search from "./Search";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <NavContainer>
       <ItemContainer>
         <img src={logo} alt="flight-logo" width={"117px"} height={"40px"} />
         <MenuList>
-          <MenuItem onClick={() => navigate(`/experience?tab=역량별`)}>
+          <MenuItem
+            className={
+              location.pathname.includes("/experience") ? "active" : ""
+            }
+            onClick={() => navigate(`/experience?tab=역량별`)}
+          >
             나의 경험
           </MenuItem>
-          <MenuItem onClick={() => navigate(`/jd`)}>채용공고 관리</MenuItem>
+          <MenuItem
+            className={location.pathname.includes("/jd") ? "active" : ""}
+            onClick={() => navigate(`/jd`)}
+          >
+            채용공고 관리
+          </MenuItem>
         </MenuList>
       </ItemContainer>
       <ItemContainer>
@@ -57,7 +68,8 @@ const MenuList = styled.div`
 const MenuItem = styled.div`
   ${(props) => props.theme.fonts.subtitle1}
   cursor: pointer;
-  &:hover {
+  &:hover,
+  &.active {
     color: ${(props) => props.theme.colors.main500};
     text-decoration: underline;
     text-underline-position: under;
