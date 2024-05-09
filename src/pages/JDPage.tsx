@@ -1,44 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import BundledEditor from "../components/editor/BundleEditor";
 
 const StyledDivContainer = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   background-color: #FBFBFD;
 `;
 
+const TopTitleBar = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+`;
+
+const Title = styled.h1`
+  color:#343A5D;
+`;
+
+const TopButton = styled.button`
+  display: inline-flex;
+  padding: 0.625rem 4rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.5rem;
+  border: none;
+  color:var(--white);
+  background: var(--main-500, #7D82FF);
+`;
+
+const MainContainer = styled.div`
+  width: 100vw;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  overflow: hidden;
+  padding-left: 8rem;
+  background-color: #FBFBFD;
+`;
+
 const CenteredContainer = styled(motion.div)`
-  width: 45%; 
+  width: 100%; 
   border-radius: 10px;
   background: #FFF;
   padding: 2rem;
-  margin: 1rem;
+  min-height: 30rem;
+  margin: 0.5rem 0.25rem 0.5rem 0.5rem;  
 `;
 
-const StyledHeader = styled.h2`
-  font-size: 20;
-  font-weight: bold;
-`;
-
-const ExperienceContainer = styled(motion.div)`
+const ActiveContainer = styled(motion.div)`
   width: 45%;
   border-radius: 10px;
   padding: 2rem;
-  margin: 1rem;
-  background: #F7F7FB;
-  box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 35rem;
-`;
-
-const JDContainer = styled(motion.div)`
-  width: 45%;
-  border-radius: 10px;
-  padding: 2rem;
-  margin: 1rem;
+  margin: 0 3.5rem; 
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 35rem;
@@ -46,91 +65,112 @@ const JDContainer = styled(motion.div)`
 
 const JDButton = styled.button`
   position: absolute;          
-  right: 0;      
-  top: 5rem;                      
-  transform: translateY(-50%);    
+  left: -2rem;      
+  top: 1rem;                    
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);     
 `;
 
 const ExperienceButton = styled.button`
   position: absolute;          
-  right: 0;                  
-  top: 7rem;                      
-  transform: translateY(-50%);    
+  left: -2rem;      
+  top: 8.5rem;                    
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);                     
+`;
+
+const ButtonText = styled.div`
+    display: flex;
+    width: 1rem;
+    height: 5rem;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #63698D;
+    text-align: center;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
 `;
 
 const JDPage: React.FC = () => {
-  const [activeContainer, setActiveContainer] = useState<null | "JD" | "Exp">(
-    null
-  );
+  const [active, setActive] = useState(false);
+  const [activebutton, setActivebutton] = useState(""); //JD 혹은 Exp
 
-  const toggleContainer = (container: "JD" | "Exp") => {
-    if (activeContainer === container) {
-      setActiveContainer(null);
-    } else {
-      setActiveContainer(container);
+  const JDtoggleContainer = () => {
+    if (!active) {
+      setActive(!active);
+      setActivebutton("JD");
+    } else if (active && activebutton === "JD") {
+      setActive(!active);
+      setActivebutton("");
+    } else if (active && activebutton === "Exp") {
+      setActivebutton("JD");
     }
   };
 
-  const [content, setContent] = useState("<p>이곳에 내용을 입력하세요</p>");
-
-  const handleEditorChange = (newContent: string) => {
-    console.log("Content was updated:", newContent);
-    setContent(newContent);
+  const ExptoggleContainer = () => {
+    if (!active) {
+      setActive(!active);
+      setActivebutton("Exp");
+    } else if (active && activebutton === "Exp") {
+      setActive(!active);
+      setActivebutton("");
+    } else if (active && activebutton === "JD") {
+      setActivebutton("Exp");
+    }
   };
 
   return (
     <StyledDivContainer className="page">
-      <CenteredContainer
-        initial={{ width: "45%" }}
-        animate={{
-          x: activeContainer ? "-10%" : "0%",
-          width: activeContainer ? "45%" : "70%",
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 60,
-          damping: 20,
-          when: "beforeChildren",
-        }}
-      >
-        <StyledHeader>1. 지원동기</StyledHeader>
-        <div>
-          <BundledEditor
-            content={content}
-            onContentChange={handleEditorChange}
-          />
-        </div>
-        <StyledHeader>2. </StyledHeader>
-        <div>
-          <BundledEditor content="" onContentChange={handleEditorChange} />
-        </div>
-      </CenteredContainer>
-      <AnimatePresence>
-        {activeContainer === "JD" && (
-          <JDContainer
-            initial={{ x: "100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "200%", transition: { delay: 0.3 } }}
-            transition={{ type: "spring", stiffness: 50 }}
+      <TopTitleBar>
+        <Title>JD분석</Title>
+        <TopButton>저장</TopButton>
+      </TopTitleBar>
+      <MainContainer>
+        <CenteredContainer
+          initial={{ width: "100%" }}
+          animate={{
+            x: active ? "-5%" : "10%",
+            width: active ? "45%" : "200%",
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 40,
+            when: "beforeChildren",
+          }}
+        >
+          JD공고가 보여집니다.
+        </CenteredContainer>
+        <AnimatePresence>
+          <ActiveContainer
+            initial={{ x: "45%", width: "45%" }}
+            animate={{ x: !active ? "120%" : "0%" }}
+            exit={{
+              x: "0%",
+              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+            }}
+            transition={{ type: "spring", stiffness: 40 }}
           >
-            JD공고가 보여지는 창입니다.
-          </JDContainer>
-        )}
-        {activeContainer === "Exp" && (
-          <ExperienceContainer
-            initial={{ x: "100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "200%", transition: { delay: 0.3 } }}
-            transition={{ type: "spring", stiffness: 50 }}
-          >
-            경험 분석이 보여지는 창입니다.
-          </ExperienceContainer>
-        )}
-      </AnimatePresence>
-      <JDButton onClick={() => toggleContainer("JD")}>JD분석</JDButton>
-      <ExperienceButton onClick={() => toggleContainer("Exp")}>
-        경험분석
-      </ExperienceButton>
+            <JDButton onClick={JDtoggleContainer}>
+              <ButtonText>JD분석</ButtonText>
+            </JDButton>
+            <ExperienceButton onClick={ExptoggleContainer}>
+              <ButtonText>경험분석</ButtonText>
+            </ExperienceButton>
+            {activebutton}
+          </ActiveContainer>
+        </AnimatePresence>
+      </MainContainer>
     </StyledDivContainer>
   );
 };

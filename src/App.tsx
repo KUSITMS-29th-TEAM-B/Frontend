@@ -6,6 +6,7 @@ import ExperiencePage from "./pages/ExperiencePage";
 import MyPage from "./pages/MyPage";
 import Navbar from "./components/common/Navbar";
 import JDPage from "./pages/JDPage";
+import JDEditPage from "./pages/JDEditPage";
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
         <Route path="/" element={<MainPage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/jd" element={<JDPage />} />
+        <Route path="/jd/edit" element={<JDEditPage />} />
         <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </>
