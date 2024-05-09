@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface ButtonProps {
   isActive: boolean;
@@ -46,10 +46,16 @@ const Highlight = styled(motion.div)`
 `;
 
 const ToggleButton: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const menu = ["연도별", "활동별", "역량별"];
-  const [active, setActive] = useState<(typeof menu)[number]>(menu[0]);
+  const [active, setActive] = useState(searchParams.get("tab") || "역량별");
+
   const navigate = useNavigate();
 
+  useEffect(
+    () => setActive(searchParams.get("tab") || "역량별"),
+    [searchParams]
+  );
   useEffect(() => {
     console.log("Current active menu:", active);
   }, [active]);
@@ -69,7 +75,7 @@ const ToggleButton: React.FC = () => {
     <ToggleContainer>
       <Highlight
         initial={false}
-        animate={{ x: `${menu.indexOf(active) * 100}%` }}
+        animate={{ x: `${menu.indexOf(active || "역량별") * 100}%` }}
         transition={spring}
       />
       {menu.map((menu, index) => (

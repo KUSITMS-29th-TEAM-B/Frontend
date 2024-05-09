@@ -12,7 +12,9 @@ const Navbar = () => {
       <ItemContainer>
         <img src={logo} alt="flight-logo" width={"117px"} height={"40px"} />
         <MenuList>
-          <MenuItem onClick={() => navigate(`/experience`)}>나의 경험</MenuItem>
+          <MenuItem onClick={() => navigate(`/experience?tab=역량별`)}>
+            나의 경험
+          </MenuItem>
           <MenuItem onClick={() => navigate(`/jd`)}>채용공고 관리</MenuItem>
         </MenuList>
       </ItemContainer>
