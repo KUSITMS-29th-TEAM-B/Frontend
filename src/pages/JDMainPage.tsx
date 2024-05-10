@@ -128,11 +128,6 @@ const ButtonText = styled.div<ButtonProps>`
 const JDMainPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState(""); //JD 혹은 Exp
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const handleStepChange = (newStep: number) => {
-    setCurrentStep(newStep);
-  };
 
   const JDtoggleContainer = () => {
     if (!active) {
@@ -161,7 +156,7 @@ const JDMainPage: React.FC = () => {
   return (
     <StyledDivContainer className="page">
       <ToggleContainer>
-        <AirplaneToggle step={currentStep} onChange={handleStepChange} />
+        <AirplaneToggle step={1} />
       </ToggleContainer>
       <TopTitleBar>
         <Title>JD분석</Title>
@@ -185,7 +180,7 @@ const JDMainPage: React.FC = () => {
         <AnimatePresence>
           <ActiveContainer
             initial={{ x: "45%", width: "45%" }}
-            animate={{ x: !active ? "120%" : "0%" }}
+            animate={{ x: !active ? "110%" : "0%" }}
             exit={{
               x: "0%",
               transition: { delay: 0.5, stiffness: 50, damping: 20 },
