@@ -7,8 +7,8 @@ interface SmallCircleComponentProps {
 }
 
 const SmallCircle = styled(motion.div)`
-  width: 10px;
-  height: 10px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: orange;
   position: absolute;

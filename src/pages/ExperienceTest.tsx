@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import YearCircleComponent from "../components/Experience/YearCircle";
 
 const Line = styled.div`
-  width: 120%;
+  width: 120rem;
   height: 1px;
   background-color: grey;
   position: relative;
@@ -22,6 +22,7 @@ const YearContainer = styled(motion.div)`
 const ExperienceTestPage = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const years = [2000, 2005, 2010, 2015, 2020];
+  const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅"];
 
   useEffect(() => {
     console.log("Experience Test Page loaded.");
@@ -53,7 +54,7 @@ const ExperienceTestPage = () => {
             whileHover={{ scale: 2 }}
             onClick={() => setSelectedYear(year)}
           >
-            <YearCircleComponent year={year} />
+            <YearCircleComponent year={year} keywordList={keywords} />
           </YearContainer>
         ))}
       </Line>
