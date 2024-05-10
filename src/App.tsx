@@ -8,6 +8,7 @@ import Navbar from "./components/common/Navbar";
 import JDEditPage from "./pages/JDEditPage";
 import JDMainPage from "./pages/JDMainPage";
 import JDDetailPage from "./pages/JDDetailPage";
+import ExperienceNewPage from "./pages/Experience_new";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
+        <Route path="/experience" element={<ExperienceNewPage />} />
         <Route path="/jd" element={<JDMainPage />} />
         <Route path="/jd/detail" element={<JDDetailPage />} />
         <Route path="/jd/edit" element={<JDEditPage />} />
