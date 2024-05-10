@@ -14,13 +14,15 @@ const Line = styled.div`
 
 const YearContainer = styled(motion.div)`
   width: 100px;
-  height: 0px;
+  display: flex;
   position: relative;
   margin-right: 100px;  
 `;
 
 const ExperienceTestPage = () => {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [clicked, setClicked] = useState(false);
+
   const years = [2000, 2005, 2010, 2015, 2020];
   const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅"];
 
@@ -28,16 +30,23 @@ const ExperienceTestPage = () => {
     console.log("Experience Test Page loaded.");
   }, []);
 
-  const calculatePosition = (index: number) => {
+  const calculateXPosition = (index: number) => {
     if (selectedYear === null) {
-      return index * 300;
+      return index * 250;
     }
     const selectedIndex = years.indexOf(selectedYear);
-    const distance = 300;
+    const distance = 250;
     if (index > selectedIndex) {
-      return index * 300 + distance;
+      return index * 250 + distance;
     }
-    return index * 300;
+    return index * 250;
+  };
+
+  const handleClicked = (clickedYear: number | null) => {
+    if (!clicked) {
+      setSelectedYear(clickedYear);
+    }
+    setClicked(!clicked);
   };
 
   return (
@@ -48,13 +57,22 @@ const ExperienceTestPage = () => {
             key={year}
             initial={{ x: index * 100 }}
             animate={{
-              x: calculatePosition(index),
+              x: calculateXPosition(index),
               scale: selectedYear === year ? 2 : 1,
             }}
-            whileHover={{ scale: 2 }}
-            onClick={() => setSelectedYear(year)}
+            whileHover={{ scale: selectedYear === year ? 2 : 1 }}
+            onMouseOver={() =>
+              selectedYear !== null ? null : setSelectedYear(year)
+            }
+            onClick={() => handleClicked(year)}
+            onMouseLeave={() => (clicked ? null : setSelectedYear(null))}
           >
-            <YearCircleComponent year={year} keywordList={keywords} />
+            <YearCircleComponent
+              year={year}
+              keywordList={keywords}
+              selectedYear={selectedYear}
+              clicked={clicked}
+            />
           </YearContainer>
         ))}
       </Line>

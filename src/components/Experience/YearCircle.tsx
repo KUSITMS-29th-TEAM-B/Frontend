@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import KeyWordCircle from "./KeyWordCircle";
@@ -6,6 +6,8 @@ import KeyWordCircle from "./KeyWordCircle";
 interface YearCircleComponentProps {
   year: number;
   keywordList: string[];
+  selectedYear: number | null;
+  clicked: boolean;
 }
 
 const YearCircle = styled(motion.div)`
@@ -42,8 +44,11 @@ const KeyWordContainer = styled(motion.div)<{ x: number; y: number }>`
 const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   year,
   keywordList,
+  selectedYear,
+  clicked,
 }) => {
   const [hover, setHover] = useState(false);
+
   const radius = 50;
   const centralWidth = 60;
   const surroundWidth = 40;
@@ -78,11 +83,11 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   };
   return (
     <YearCircle
-      onHoverStart={() => setHover(true)}
-      onHoverEnd={() => setHover(false)}
+      onHoverStart={() => !clicked && setHover(true)}
+      onHoverEnd={() => !clicked && setHover(false)}
     >
       <YearText>{year}</YearText>
-      {hover &&
+      {(hover || (clicked && selectedYear === year)) &&
         keywordList.map((keyword, index) => {
           if (index < angles.length) {
             const position = calculatePosition(angles[index]);
@@ -97,7 +102,7 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
                 animate="animate"
                 exit="exit"
               >
-                <KeyWordCircle idx={index} />
+                <KeyWordCircle idx={index} keyword={keywordList[index]} />
               </KeyWordContainer>
             );
           }
