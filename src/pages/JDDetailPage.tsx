@@ -11,6 +11,7 @@ const StyledDivContainer = styled.div`
   align-items: center;
   position: relative;
   background-color: #FBFBFD;
+  overflow-x: hidden;
 `;
 
 const ToggleContainer = styled.div`
@@ -25,6 +26,7 @@ const ExpContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const TopTitleBar = styled.div`
