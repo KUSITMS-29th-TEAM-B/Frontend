@@ -27,8 +27,8 @@ const ExperienceTestPage = () => {
   const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅"];
 
   useEffect(() => {
-    console.log("Experience Test Page loaded.");
-  }, []);
+    console.log("clicked:  " + clicked + "   selectedYear:  " + selectedYear);
+  }, [clicked, selectedYear]);
 
   const calculateXPosition = (index: number) => {
     if (selectedYear === null) {
@@ -43,10 +43,14 @@ const ExperienceTestPage = () => {
   };
 
   const handleClicked = (clickedYear: number | null) => {
-    if (!clicked) {
+    if (!clicked && clickedYear === selectedYear) {
+      setSelectedYear(clickedYear);
+      setClicked(true);
+    } else if (clicked && clickedYear === selectedYear) {
+      setClicked(false);
+    } else if (clicked && clickedYear !== selectedYear) {
       setSelectedYear(clickedYear);
     }
-    setClicked(!clicked);
   };
 
   return (

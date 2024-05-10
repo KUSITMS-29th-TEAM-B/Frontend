@@ -28,11 +28,6 @@ const YearText = styled.div`
   color: #4F4F4F;
 `;
 
-// const KeyWordContainer = styled(motion.div)<{ angle: number }>`
-//    position: absolute;
-//    margin: -3rem;
-// `;
-
 const KeyWordContainer = styled(motion.div)<{ x: number; y: number }>`
   position: absolute;
   width: 20px; 
@@ -48,6 +43,15 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   clicked,
 }) => {
   const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    console.log(
+      "keyword: " +
+        year +
+        "  hover여부  " +
+        (hover || (clicked && year === selectedYear))
+    );
+  }, [selectedYear, clicked]);
 
   const radius = 50;
   const centralWidth = 60;
@@ -87,7 +91,8 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
       onHoverEnd={() => !clicked && setHover(false)}
     >
       <YearText>{year}</YearText>
-      {(hover || (clicked && selectedYear === year)) &&
+      {(hover || clicked) &&
+        year === selectedYear &&
         keywordList.map((keyword, index) => {
           if (index < angles.length) {
             const position = calculatePosition(angles[index]);
