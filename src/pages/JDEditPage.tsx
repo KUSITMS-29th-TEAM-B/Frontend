@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import BundledEditor from "../components/editor/BundleEditor";
 import HeaderInput from "../components/JD/HeaderInput";
+import AirplaneToggle from "../components/JD/AirplaneToggle";
+import ExperienceList from "../components/JD/ExperienceList";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -13,15 +15,31 @@ const StyledDivContainer = styled.div`
   background-color: #FBFBFD;
 `;
 
-const TopTitleBar = styled.div`
+const ToggleContainer = styled.div`
   width: 100%;
   display: flex;
+  justify-content: left;
+`;
+
+const ExpContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+`;
+
+const TopTitleBar = styled.div`
+  width: 100vw;
+  padding: 0 4rem;
+  display: flex;
   align-items: center;
-  padding: 1rem;
+  justify-content: space-between;
 `;
 
 const Title = styled.h1`
   color:#343A5D;
+  margin-left: 3rem;
 `;
 
 const TopButton = styled.button`
@@ -37,69 +55,108 @@ const TopButton = styled.button`
 `;
 
 const MainContainer = styled.div`
-  width: 100%;
+  width: 100vw;
   display: flex;
   position: relative;
   justify-content: center;
+  overflow: hidden;
+  padding-left: 8rem;
   background-color: #FBFBFD;
 `;
 
 const CenteredContainer = styled(motion.div)`
-  width: 45%; 
+  width: 100%; 
   border-radius: 10px;
   background: #FFF;
   padding: 2rem;
-  margin: 0.5rem;
+  min-height: 30rem;
+  margin: 0.5rem 0.25rem 0.5rem 0.5rem;  
 `;
 
-const ExperienceContainer = styled(motion.div)`
+const ActiveContainer = styled(motion.div)`
   width: 45%;
   border-radius: 10px;
-  padding: 2rem;
-  margin: 0.5rem;
+  margin: 0 3.5rem; 
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 35rem;
 `;
 
-const JDContainer = styled(motion.div)`
-  width: 45%;
-  border-radius: 10px;
-  padding: 2rem;
-  margin: 0.5rem;
-  background: #F7F7FB;
-  box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 35rem;
+const buttonActiveStyle = css`
+  background: #7D82FF; 
 `;
 
-const JDButton = styled.button`
-  position: absolute;          
-  right: 0;      
-  top: 6rem;                      
-  transform: translateY(-50%);    
+interface ButtonProps {
+  active: boolean;
+}
+
+const JDButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 1rem;
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
 `;
 
-const ExperienceButton = styled.button`
-  position: absolute;          
-  right: 0;                  
-  top: 7rem;                      
-  transform: translateY(-50%);    
+const ExperienceButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 8.5rem;
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
+`;
+
+const ButtonText = styled.div<ButtonProps>`
+    display: flex;
+    width: 1rem;
+    ${(props) => props.theme.fonts.body5};
+    height: 5rem;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: ${({ active }) => (active ? "#FFFFFF" : "#63698D")};
 `;
 
 const JDEditPage: React.FC = () => {
-  const [activeContainer, setActiveContainer] = useState<null | "JD" | "Exp">(
-    null
+  const [active, setActive] = useState(false);
+  const [activebutton, setActivebutton] = useState("");
+  const [content, setContent] = useState(
+    "<p>안녕하세요, 자기소개서 작성법에 대해 알려드리겠습니다. </p>"
   );
 
-  const toggleContainer = (container: "JD" | "Exp") => {
-    if (activeContainer === container) {
-      setActiveContainer(null);
-    } else {
-      setActiveContainer(container);
+  const JDtoggleContainer = () => {
+    if (!active) {
+      setActive(!active);
+      setActivebutton("JD");
+    } else if (active && activebutton === "JD") {
+      setActive(!active);
+      setActivebutton("");
+    } else if (active && activebutton === "Exp") {
+      setActivebutton("JD");
     }
   };
 
-  const [content, setContent] = useState("<p></p>");
+  const ExptoggleContainer = () => {
+    if (!active) {
+      setActive(!active);
+      setActivebutton("Exp");
+    } else if (active && activebutton === "Exp") {
+      setActive(!active);
+      setActivebutton("");
+    } else if (active && activebutton === "JD") {
+      setActivebutton("Exp");
+    }
+  };
 
   const handleEditorChange = (newContent: string) => {
     console.log("Content was updated:", newContent);
@@ -108,21 +165,23 @@ const JDEditPage: React.FC = () => {
 
   return (
     <StyledDivContainer className="page">
+      <ToggleContainer>
+        <AirplaneToggle step={3} />
+      </ToggleContainer>
       <TopTitleBar>
         <Title>자기소개서 작성</Title>
         <TopButton>저장</TopButton>
       </TopTitleBar>
       <MainContainer>
         <CenteredContainer
-          initial={{ width: "45%" }}
+          initial={{ width: "100%" }}
           animate={{
-            x: activeContainer ? "-10%" : "0%",
-            width: activeContainer ? "45%" : "100%",
+            x: active ? "-5%" : "10%",
+            width: active ? "45%" : "200%",
           }}
           transition={{
             type: "spring",
-            stiffness: 60,
-            damping: 20,
+            stiffness: 40,
             when: "beforeChildren",
           }}
         >
@@ -139,32 +198,33 @@ const JDEditPage: React.FC = () => {
           </div>
         </CenteredContainer>
         <AnimatePresence>
-          {activeContainer === "JD" && (
-            <JDContainer
-              initial={{ x: "100%" }}
-              animate={{ x: "0%" }}
-              exit={{ x: "200%", transition: { delay: 0.3 } }}
-              transition={{ type: "spring", stiffness: 50 }}
+          <ActiveContainer
+            initial={{ x: "45%", width: "45%" }}
+            animate={{ x: !active ? "110%" : "0%" }}
+            exit={{
+              x: "0%",
+              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+            }}
+            transition={{ type: "spring", stiffness: 40 }}
+          >
+            <JDButton
+              onClick={JDtoggleContainer}
+              active={activebutton === "JD"}
             >
-              JD공고가 보여지는 창입니다.
-            </JDContainer>
-          )}
-          {activeContainer === "Exp" && (
-            <ExperienceContainer
-              initial={{ x: "100%" }}
-              animate={{ x: "0%" }}
-              exit={{ x: "200%", transition: { delay: 0.3 } }}
-              transition={{ type: "spring", stiffness: 50 }}
+              <ButtonText active={activebutton === "JD"}>JD분석</ButtonText>
+            </JDButton>
+            <ExperienceButton
+              onClick={ExptoggleContainer}
+              active={activebutton === "Exp"}
             >
-              경험 분석이 보여지는 창입니다.
-            </ExperienceContainer>
-          )}
+              <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
+            </ExperienceButton>
+            <ExpContainer>
+              <ExperienceList />
+            </ExpContainer>
+          </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
-      <JDButton onClick={() => toggleContainer("JD")}>JD분석</JDButton>
-      <ExperienceButton onClick={() => toggleContainer("Exp")}>
-        경험분석
-      </ExperienceButton>
     </StyledDivContainer>
   );
 };

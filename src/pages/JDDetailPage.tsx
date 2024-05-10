@@ -180,7 +180,7 @@ const JDDetailPage: React.FC = () => {
         <AnimatePresence>
           <ActiveContainer
             initial={{ x: "45%", width: "45%" }}
-            animate={{ x: !active ? "120%" : "0%" }}
+            animate={{ x: !active ? "110%" : "0%" }}
             exit={{
               x: "0%",
               transition: { delay: 0.5, stiffness: 50, damping: 20 },

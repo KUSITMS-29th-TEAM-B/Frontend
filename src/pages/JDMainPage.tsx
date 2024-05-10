@@ -159,7 +159,7 @@ const JDMainPage: React.FC = () => {
         <AirplaneToggle step={1} />
       </ToggleContainer>
       <TopTitleBar>
-        <Title>JD분석</Title>
+        <Title>공고조회</Title>
         <TopButton>저장</TopButton>
       </TopTitleBar>
       <MainContainer>
