@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import YearCircleComponent from "../components/Experience/YearCircle";
 
 const Line = styled.div`
-  width: 100%;
+  width: 120%;
   height: 1px;
   background-color: grey;
   position: relative;
@@ -14,8 +14,9 @@ const Line = styled.div`
 
 const YearContainer = styled(motion.div)`
   width: 100px;
+  height: 0px;
   position: relative;
-  margin-right: 50px;  
+  margin-right: 100px;  
 `;
 
 const ExperienceTestPage = () => {
