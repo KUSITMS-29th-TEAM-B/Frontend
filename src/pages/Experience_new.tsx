@@ -29,7 +29,7 @@ const ExperienceNewPage = () => {
 
 const StyledContainer = styled.div`
     width: 100vw;
-    margin-top: 20rem;
+    margin-top: 20%;
 `;
 
 export default ExperienceNewPage;

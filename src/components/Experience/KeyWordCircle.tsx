@@ -15,19 +15,7 @@ const SmallCircle = styled(motion.div)`
 `;
 
 const SmallCircleComponent: React.FC<SmallCircleComponentProps> = ({ idx }) => {
-  return (
-    <SmallCircle
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        x: 60 * Math.cos((idx * Math.PI) / 2),
-        y: 60 * Math.sin((idx * Math.PI) / 2),
-      }}
-      whileHover={{ scale: 1.5 }}
-      layout
-    />
-  );
+  return <SmallCircle />;
 };
 
 export default SmallCircleComponent;
