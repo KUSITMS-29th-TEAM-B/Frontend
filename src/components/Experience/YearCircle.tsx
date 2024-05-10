@@ -10,22 +10,30 @@ interface YearCircleComponentProps {
   clicked: boolean;
 }
 
-const YearCircle = styled(motion.div)`
+const YearCircle = styled(motion.div)<{ isSelected: boolean }>`
   display: flex;
   justify-content: center;
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: var(--neutral-200, #EEEFF7);
   position: absolute;
+  background:${({ isSelected }) =>
+    isSelected
+      ? "linear-gradient(180deg, #7D82FF 0%, rgba(125, 130, 255, 0.20) 100%)"
+      : "var(--neutral-200, #EEEFF7)"}; 
+       background-color: ${({ isSelected }) =>
+         isSelected ? "#D6E4FF" : "var(--neutral-200, #EEEFF7)"}; 
+  background-color: ${({ isSelected }) =>
+    isSelected ? "#FFF" : "var(--neutral-200, #EEEFF7)"}; 
   top: -40px;
 `;
 
-const YearText = styled.div`
+const YearText = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: center;
   padding: 35%;
-  color: #4F4F4F;
+  color: ${({ isSelected }) => (isSelected ? "#FFF" : "#63698D")}; 
+  font-weight: ${({ isSelected }) => (isSelected ? 600 : 500)}; 
 `;
 
 const KeyWordContainer = styled(motion.div)<{ x: number; y: number }>`
@@ -44,14 +52,14 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
 }) => {
   const [hover, setHover] = useState(false);
 
-  useEffect(() => {
-    console.log(
-      "keyword: " +
-        year +
-        "  hover여부  " +
-        (hover || (clicked && year === selectedYear))
-    );
-  }, [selectedYear, clicked]);
+  //   useEffect(() => {
+  //     console.log(
+  //       "keyword: " +
+  //         year +
+  //         "  hover여부  " +
+  //         (hover || (clicked && year === selectedYear))
+  //     );
+  //   }, [selectedYear, clicked]);
 
   const radius = 50;
   const centralWidth = 60;
@@ -87,10 +95,11 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   };
   return (
     <YearCircle
+      isSelected={year === selectedYear}
       onHoverStart={() => !clicked && setHover(true)}
       onHoverEnd={() => !clicked && setHover(false)}
     >
-      <YearText>{year}</YearText>
+      <YearText isSelected={year === selectedYear}>{year}</YearText>
       {(hover || clicked) &&
         year === selectedYear &&
         keywordList.map((keyword, index) => {
