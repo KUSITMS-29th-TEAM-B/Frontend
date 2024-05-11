@@ -84,6 +84,7 @@ const LeftTitleContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-right: 1px solid black;
+    padding-right: 2rem;
 `;
 
 const RightTitleContainer = styled.div`
@@ -91,6 +92,7 @@ const RightTitleContainer = styled.div`
     display: flex;
     flex-direction: column;
     z-index: 100;
+    padding-right: 2rem;
 `;
 
 const InputContainer = styled.div`
@@ -119,8 +121,13 @@ const InputBox = styled.input`
     border: none;
 `;
 
+const PeriodBox = styled.div`
+    display: flex;
+    justify-content: center;
+    flex: 8;
+`;
+
 const ContentContainer = styled.div`
-    //background-color: green;
     align-items: center;
     margin: 1.5rem;
     justify-content: center;
@@ -130,20 +137,36 @@ const ContentContainer = styled.div`
 const JDPlusPage: React.FC = () => {
   const [content, setContent] = useState("");
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
   };
 
   const handleSDateChange = (date: Date) => {
-    setStartDate(date);
+    if (!startDate && !endDate) {
+      setStartDate(date);
+    } else if (endDate && date < endDate) {
+      setStartDate(date);
+    } else {
+      alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
+      setStartDate(endDate);
+    }
   };
 
   const handleEDateChange = (date: Date) => {
-    setEndDate(date);
+    if (!endDate && !startDate) {
+      setEndDate(date);
+    } else if (startDate && date > startDate) {
+      setEndDate(date);
+    } else {
+      alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
+      setEndDate(startDate);
+    }
   };
+
+  //저장시에도 따로 기간 확인 진행하기.
 
   const handleEditorChange = (newContent: string) => {
     console.log("Content was updated:", newContent);
@@ -151,7 +174,8 @@ const JDPlusPage: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("Time was updated:", selectedTime, startDate, endDate);
+    console.log("Dates updated:", startDate, endDate);
+    console.log("Time was updated:", selectedTime);
   }, [selectedTime, startDate, endDate]);
 
   return (
@@ -181,9 +205,19 @@ const JDPlusPage: React.FC = () => {
           <RightTitleContainer>
             <InputContainer>
               <InputTitle>지원기간</InputTitle>
-              <OneDatePick date={startDate} setDate={handleSDateChange} />
-              <OneDatePick date={endDate} setDate={handleEDateChange} />
-              <TimeSelector time={selectedTime} setTime={handleTimeChange} />
+              <PeriodBox>
+                {startDate ? (
+                  <OneDatePick date={startDate} setDate={handleSDateChange} />
+                ) : (
+                  <OneDatePick date={new Date()} setDate={handleSDateChange} />
+                )}
+                {endDate ? (
+                  <OneDatePick date={endDate} setDate={handleEDateChange} />
+                ) : (
+                  <OneDatePick date={new Date()} setDate={handleEDateChange} />
+                )}
+                <TimeSelector time={selectedTime} setTime={handleTimeChange} />
+              </PeriodBox>
             </InputContainer>
             <InputContainer>
               <InputTitle>링크</InputTitle>
