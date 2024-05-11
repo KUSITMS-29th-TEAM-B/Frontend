@@ -11,6 +11,7 @@ const StyledDivContainer = styled.div`
   align-items: center;
   position: relative;
   background-color: #FBFBFD;
+  overflow-x: hidden;
 `;
 
 const ToggleContainer = styled.div`
@@ -25,6 +26,7 @@ const ExpContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 const TopTitleBar = styled.div`
@@ -128,11 +130,6 @@ const ButtonText = styled.div<ButtonProps>`
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState(""); //JD 혹은 Exp
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const handleStepChange = (newStep: number) => {
-    setCurrentStep(newStep);
-  };
 
   const JDtoggleContainer = () => {
     if (!active) {
@@ -161,7 +158,7 @@ const JDDetailPage: React.FC = () => {
   return (
     <StyledDivContainer className="page">
       <ToggleContainer>
-        <AirplaneToggle step={currentStep} onChange={handleStepChange} />
+        <AirplaneToggle step={2} />
       </ToggleContainer>
       <TopTitleBar>
         <Title>JD분석</Title>
@@ -185,7 +182,7 @@ const JDDetailPage: React.FC = () => {
         <AnimatePresence>
           <ActiveContainer
             initial={{ x: "45%", width: "45%" }}
-            animate={{ x: !active ? "120%" : "0%" }}
+            animate={{ x: !active ? "110%" : "0%" }}
             exit={{
               x: "0%",
               transition: { delay: 0.5, stiffness: 50, damping: 20 },

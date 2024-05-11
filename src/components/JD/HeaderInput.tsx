@@ -3,7 +3,7 @@ import styled from "styled-components";
 const HeaderInput = () => {
   return (
     <HeaderContainer>
-      <Header placeholder="문항을 입력하세요" />
+      <Header placeholder="문항의 제목을 작성해주세요." />
     </HeaderContainer>
   );
 };
