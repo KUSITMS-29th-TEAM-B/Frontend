@@ -9,6 +9,7 @@ import JDEditPage from "./pages/JDEditPage";
 import JDMainPage from "./pages/JDMainPage";
 import JDDetailPage from "./pages/JDDetailPage";
 import ExperienceNewPage from "./pages/Experience_new";
+import JDPlusPage from "./pages/JDPlusPage";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route path="/jd" element={<JDMainPage />} />
         <Route path="/jd/detail" element={<JDDetailPage />} />
         <Route path="/jd/edit" element={<JDEditPage />} />
+        <Route path="/jd/post" element={<JDPlusPage />} />
         <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </>
