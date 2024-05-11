@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { motion } from "framer-motion";
+import PlaneLoading from "../common/Loading";
 
 interface TinyMCEEditorProps {
   content: string;
@@ -50,13 +51,12 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
       {
         <div
           style={{
-            display: !loading ? "none" : "block",
-            justifyContent: "center",
-            alignItems: "center",
+            display: loading ? "none" : "block",
             height: "300px",
+            justifyContent: "center",
           }}
         >
-          Loading Component Animation
+          <PlaneLoading />
         </div>
       }
       <div style={{ display: loading ? "none" : "block" }}>
