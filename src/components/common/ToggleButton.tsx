@@ -26,7 +26,8 @@ const Button = styled.button<ButtonProps>`
   border: none;
   border-radius: 15px;
   background-color: transparent;
-  font-size: 0.70419rem;
+  // font-size: 0.70419rem;
+  ${(props) => props.theme.fonts.body5}
   color: ${(props) => (props.isActive ? "white" : "black")};
   cursor: pointer;
   &:focus {
