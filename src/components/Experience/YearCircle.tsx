@@ -6,13 +6,13 @@ import { useRecoilState } from "recoil";
 import { yearState } from "../../store/selectedStore";
 import { keywordState } from "../../store/selectedStore";
 
-interface YearCircleComponentProps {
+interface YearCircleProps {
   year: number;
   keywordList: string[];
   hoveredYear: number | null;
 }
 
-const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
+const YearCircle: React.FC<YearCircleProps> = ({
   year,
   keywordList,
   hoveredYear,
@@ -23,8 +23,6 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
     keywordState
   );
-
-  console.log("selectedYear", selectedYear);
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
@@ -75,7 +73,7 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   //
   //
   return (
-    <YearCircle isActive={isSelectedYear || isHoveredYear}>
+    <YearCircleContainer isActive={isSelectedYear || isHoveredYear}>
       <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
 
       {(isSelectedYear || isHoveredYear) &&
@@ -83,7 +81,7 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
           if (index < angles.length) {
             const position = calculatePosition(angles[index]);
             return (
-              <KeyWordContainer
+              <KeywordMotionDiv
                 key={index}
                 x={position.x}
                 y={position.y}
@@ -100,16 +98,16 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
                 >
                   {keyword}
                 </KeywordCircle>
-              </KeyWordContainer>
+              </KeywordMotionDiv>
             );
           }
           return null;
         })}
-    </YearCircle>
+    </YearCircleContainer>
   );
 };
 
-const YearCircle = styled(motion.div)<{ isActive: boolean }>`
+const YearCircleContainer = styled(motion.div)<{ isActive: boolean }>`
   display: flex;
   justify-content: center;
   width: 150px;
@@ -135,7 +133,7 @@ const YearText = styled.div<{ isActive: boolean }>`
   font-weight: ${({ isActive: isSelected }) => (isSelected ? 600 : 500)};
 `;
 
-const KeyWordContainer = styled(motion.div)<{ x: number; y: number }>`
+const KeywordMotionDiv = styled(motion.div)<{ x: number; y: number }>`
   position: absolute;
   width: 20px;
   height: 20px;
@@ -165,4 +163,4 @@ const KeywordCircle = styled(motion.div)`
   backdrop-filter: blur(14.167028427124023px);
 `;
 
-export default YearCircleComponent;
+export default YearCircle;

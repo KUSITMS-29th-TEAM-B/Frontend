@@ -2,13 +2,13 @@ import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import ExperiencePage from "./pages/ExperiencePage";
+import ExperiencePage from "./pages/LegacyExperiencePage";
 import MyPage from "./pages/MyPage";
 import Navbar from "./components/common/Navbar";
 import JDEditPage from "./pages/JDEditPage";
 import JDMainPage from "./pages/JDMainPage";
 import JDDetailPage from "./pages/JDDetailPage";
-import ExperienceNewPage from "./pages/Experience_new";
+import ExperienceNewPage from "./pages/ExperiencePage";
 
 const App: React.FC = () => {
   return (

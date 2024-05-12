@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import YearCircleComponent from "../components/Experience/YearCircle";
+import YearCircle from "./YearCircle";
 import { useRecoilState } from "recoil";
-import { keywordState, yearState } from "../store/selectedStore";
+import { keywordState, yearState } from "../../store/selectedStore";
 
-interface ExperiencePageProps {
+interface YearListProps {
   width: number;
 }
 
-const ExperienceTestPage = ({ width }: ExperiencePageProps) => {
+const YearList = ({ width }: YearListProps) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
@@ -49,7 +49,7 @@ const ExperienceTestPage = ({ width }: ExperiencePageProps) => {
     }
   };
 
-  // 연도별 원 x 위치 계산
+  // 연도별 원 위치 계산
   const calculateXPosition = (index: number) => {
     const distance = 100;
     if (hoveredYear) {
@@ -71,7 +71,6 @@ const ExperienceTestPage = ({ width }: ExperiencePageProps) => {
   //
   //
   useEffect(() => {
-    console.log(width);
     if (selectedYear) {
       yearRefs.current[selectedYear]?.scrollIntoView({
         inline: "center",
@@ -85,7 +84,7 @@ const ExperienceTestPage = ({ width }: ExperiencePageProps) => {
   return (
     <Line length={lineLength}>
       {years.map((year, index) => (
-        <YearContainer
+        <YearMotionDiv
           ref={(el) => (yearRefs.current[year] = el)}
           key={year}
           initial={{ x: index * 100 }}
@@ -100,12 +99,12 @@ const ExperienceTestPage = ({ width }: ExperiencePageProps) => {
           onMouseLeave={() => handleMouseLeave()}
           onClick={() => handleYearContainerClick(year)}
         >
-          <YearCircleComponent
+          <YearCircle
             year={year}
             keywordList={keywords}
             hoveredYear={hoveredYear}
           />
-        </YearContainer>
+        </YearMotionDiv>
       ))}
     </Line>
   );
@@ -123,11 +122,11 @@ const Line = styled.div<{ length: number }>`
   padding: 0px 200px;
 `;
 
-const YearContainer = styled(motion.div)`
+const YearMotionDiv = styled(motion.div)`
   width: 100px;
   display: flex;
   // position: relative;
   gap: 800px;
 `;
 
-export default ExperienceTestPage;
+export default YearList;
