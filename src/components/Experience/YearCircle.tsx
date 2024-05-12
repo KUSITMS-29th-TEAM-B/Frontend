@@ -1,33 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
-// import KeyWordCircle from "./KeyWordCircle";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
 import { yearState } from "../../store/selectedStore";
+import { keywordState } from "../../store/selectedStore";
 
-interface YearCircleComponentProps {
+interface YearCircleProps {
   year: number;
   keywordList: string[];
   hoveredYear: number | null;
-  clickedYear?: number | null;
-  handleClickedYear: (year: number) => void;
 }
 
-const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
+const YearCircle: React.FC<YearCircleProps> = ({
   year,
   keywordList,
   hoveredYear,
-  clickedYear,
-  handleClickedYear,
 }) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
-  console.log("selectedYear", selectedYear);
+  const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
+    keywordState
+  );
 
-  const [clickedTag, setClickedTag] = useState("");
-  const isClickedYear = clickedYear === year;
+  const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
 
   const radius = 40;
@@ -65,29 +62,26 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },
   };
 
-  // 주변 원(상위태그 원) 클릭 함수
+  // 주변 원(키워드 원) 클릭 함수
   const handleTagClick = (e: any, year: number, keyword: string) => {
     e.stopPropagation();
-    handleClickedYear(year);
-    setClickedTag(keyword);
-    console.log(keyword);
+    setSelectedYear(year);
+    setSelectedKeyword(keyword);
   };
 
   //
   //
   //
   return (
-    <YearCircle isActive={isClickedYear || (!clickedYear && isHoveredYear)}>
-      <YearText isActive={isClickedYear || (!clickedYear && isHoveredYear)}>
-        {year}
-      </YearText>
+    <YearCircleContainer isActive={isSelectedYear || isHoveredYear}>
+      <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
 
-      {(isClickedYear || (!clickedYear && isHoveredYear)) &&
+      {(isSelectedYear || isHoveredYear) &&
         keywordList.map((keyword, index) => {
           if (index < angles.length) {
             const position = calculatePosition(angles[index]);
             return (
-              <KeyWordContainer
+              <KeywordMotionDiv
                 key={index}
                 x={position.x}
                 y={position.y}
@@ -99,21 +93,21 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
                 onClick={(e) => handleTagClick(e, year, keyword)}
               >
                 <KeywordCircle
-                  animate={{ scale: clickedTag === keyword ? 1.3 : 1 }}
+                  animate={{ scale: selectedKeyword === keyword ? 1.3 : 1 }}
                   whileHover={{ scale: 1.3 }}
                 >
                   {keyword}
                 </KeywordCircle>
-              </KeyWordContainer>
+              </KeywordMotionDiv>
             );
           }
           return null;
         })}
-    </YearCircle>
+    </YearCircleContainer>
   );
 };
 
-const YearCircle = styled(motion.div)<{ isActive: boolean }>`
+const YearCircleContainer = styled(motion.div)<{ isActive: boolean }>`
   display: flex;
   justify-content: center;
   width: 150px;
@@ -139,7 +133,7 @@ const YearText = styled.div<{ isActive: boolean }>`
   font-weight: ${({ isActive: isSelected }) => (isSelected ? 600 : 500)};
 `;
 
-const KeyWordContainer = styled(motion.div)<{ x: number; y: number }>`
+const KeywordMotionDiv = styled(motion.div)<{ x: number; y: number }>`
   position: absolute;
   width: 20px;
   height: 20px;
@@ -169,4 +163,4 @@ const KeywordCircle = styled(motion.div)`
   backdrop-filter: blur(14.167028427124023px);
 `;
 
-export default YearCircleComponent;
+export default YearCircle;

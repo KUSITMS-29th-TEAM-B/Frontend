@@ -6,7 +6,7 @@ export const yearState = atom<number | null>({
   default: null,
 });
 
-export const keywordState = atom<number | null>({
+export const keywordState = atom<string | null>({
   key: "keywordState",
   default: null,
 });

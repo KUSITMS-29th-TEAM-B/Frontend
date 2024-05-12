@@ -1,20 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import YearCircleComponent from "../components/Experience/YearCircle";
+import YearCircle from "./YearCircle";
 import { useRecoilState } from "recoil";
-import { yearState } from "../store/selectedStore";
+import { keywordState, yearState } from "../../store/selectedStore";
 
-interface ExperiencePageProps {
+interface YearListProps {
   width: number;
-  handleActive: (isActive: boolean) => void;
 }
 
-const ExperienceTestPage = ({ width, handleActive }: ExperiencePageProps) => {
+const YearList = ({ width }: YearListProps) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
-  const [clickedYear, setClickedYear] = useState<number | null>(null);
+  const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
+    keywordState
+  );
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
   // 임시 데이터
@@ -30,39 +31,38 @@ const ExperienceTestPage = ({ width, handleActive }: ExperiencePageProps) => {
   const gap = 600; // 연도별 원 사이 gap
   const lineLength = gap * (years.length - 1); // 원 개수에 따라 선 길이 계산
 
-  // 연도 원에 마우스 호버할 경우
+  // 연도 원에 마우스 올릴 경우
   const handleMouseOver = (year: number) => {
     setHoveredYear(year);
   };
-  // 연도 원에 마우스 나올 경우
+  // 연도 원에 마우스 빠져나올 경우
   const handleMouseLeave = () => {
     setHoveredYear(null);
   };
-  // 연도별 원 내의 상위 태그 클릭할 경우 => 연도 설정
-  // 연도별 원 클릭할 경우 => 연도 null로 설정
-  const handleClickedYear = (year: number | null) => {
-    if (year) {
-      setClickedYear(year);
-      handleActive(true);
-      yearRefs.current[year]?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-      });
+  // 연도 컨테이너 클릭할 경우
+  const handleYearContainerClick = (year: number) => {
+    if (selectedYear === year) {
+      setSelectedYear(null);
+      setSelectedKeyword(null);
     } else {
-      setClickedYear(null);
-      handleActive(false);
+      setSelectedYear(year);
     }
   };
 
-  // 연도별 원 x 위치 계산
+  // 연도별 원 위치 계산
   const calculateXPosition = (index: number) => {
-    if (hoveredYear === null || clickedYear) {
-      return index * 250;
+    const distance = 100;
+    if (hoveredYear) {
+      const hoveredIndex = years.indexOf(hoveredYear);
+      if (index > hoveredIndex) {
+        return index * 250 + distance;
+      }
     }
-    const selectedIndex = years.indexOf(hoveredYear);
-    const distance = 250;
-    if (index > selectedIndex) {
-      return index * 250 + distance;
+    if (selectedYear) {
+      const selectedIndex = years.indexOf(selectedYear);
+      if (index > selectedIndex) {
+        return index * 250 + distance;
+      }
     }
     return index * 250;
   };
@@ -71,15 +71,12 @@ const ExperienceTestPage = ({ width, handleActive }: ExperiencePageProps) => {
   //
   //
   useEffect(() => {
-    console.log(width);
-    console.log("hoveredYear:", hoveredYear);
-    console.log("clickedYear:", clickedYear);
-    if (clickedYear) {
-      yearRefs.current[clickedYear]?.scrollIntoView({
+    if (selectedYear) {
+      yearRefs.current[selectedYear]?.scrollIntoView({
         inline: "center",
       });
     }
-  }, [hoveredYear, clickedYear, width]);
+  }, [selectedYear, width]);
 
   //
   //
@@ -87,37 +84,27 @@ const ExperienceTestPage = ({ width, handleActive }: ExperiencePageProps) => {
   return (
     <Line length={lineLength}>
       {years.map((year, index) => (
-        <YearContainer
+        <YearMotionDiv
           ref={(el) => (yearRefs.current[year] = el)}
           key={year}
           initial={{ x: index * 100 }}
           animate={{
             x: calculateXPosition(index),
-            scale:
-              (hoveredYear === year && !clickedYear) || clickedYear === year
-                ? 2
-                : 1,
+            scale: hoveredYear === year || selectedYear === year ? 2 : 1,
           }}
           whileHover={{
-            scale:
-              (hoveredYear === year && !clickedYear) || clickedYear === year
-                ? 2
-                : 1,
+            scale: hoveredYear === year || selectedYear === year ? 2 : 1,
           }}
           onMouseOver={() => handleMouseOver(year)}
           onMouseLeave={() => handleMouseLeave()}
-          onClick={() => {
-            handleClickedYear(null);
-          }}
+          onClick={() => handleYearContainerClick(year)}
         >
-          <YearCircleComponent
+          <YearCircle
             year={year}
             keywordList={keywords}
             hoveredYear={hoveredYear}
-            clickedYear={clickedYear}
-            handleClickedYear={handleClickedYear}
           />
-        </YearContainer>
+        </YearMotionDiv>
       ))}
     </Line>
   );
@@ -135,11 +122,11 @@ const Line = styled.div<{ length: number }>`
   padding: 0px 200px;
 `;
 
-const YearContainer = styled(motion.div)`
+const YearMotionDiv = styled(motion.div)`
   width: 100px;
   display: flex;
   // position: relative;
   gap: 800px;
 `;
 
-export default ExperienceTestPage;
+export default YearList;
