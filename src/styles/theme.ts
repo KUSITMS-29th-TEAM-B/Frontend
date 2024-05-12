@@ -11,10 +11,10 @@ interface Font {
 const FONT = ({ family, weight, size, lineHeight }: Font): string => {
   return `
     font-family : ${family};
-    font-weight : 600;
+    font-weight :${weight};
     font-size : ${size}px;
     line-height : ${lineHeight}px;
-    letter-spacing: -4%;
+    letter-spacing: normal;
     `;
 };
 
