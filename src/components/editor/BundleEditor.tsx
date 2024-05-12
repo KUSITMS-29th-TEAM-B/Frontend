@@ -51,7 +51,7 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
       {
         <div
           style={{
-            display: loading ? "none" : "block",
+            display: !loading ? "none" : "block",
             height: "300px",
             justifyContent: "center",
           }}

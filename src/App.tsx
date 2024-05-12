@@ -19,8 +19,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/experience" element={<ExperienceNewPage />} />
-        <Route path="/jd" element={<JDMainPage />} />
-        <Route path="/jd/list" element={<JDListPage />} />
+        <Route path="/jd" element={<JDListPage />} />
         <Route path="/jd/detail" element={<JDDetailPage />} />
         <Route path="/jd/edit" element={<JDEditPage />} />
         <Route path="/jd/post" element={<JDPlusPage />} />
