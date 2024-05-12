@@ -67,7 +67,6 @@ const MainContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  padding-top: 10rem;
   align-items: center;
   justify-content: center;
   // background: url(${backgroundImg});
@@ -83,9 +82,9 @@ const ActiveContainer = styled(motion.div)`
 
 const CenteredContainer = styled(motion.div)`
   width: 100%;
+  height: 800px;
   border-box: box-sizing;
   border: 1px solid black;
-  height: 500px;
   overflow: scroll;
 `;
 

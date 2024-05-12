@@ -20,7 +20,16 @@ const YearList = ({ width }: YearListProps) => {
 
   // 임시 데이터
   const years = [2000, 2005, 2010, 2015, 2020];
-  const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅", "승효"];
+  const keywords = [
+    "큐시즘",
+    "밋업",
+    "밤양갱",
+    "화이팅",
+    "승효",
+    "아자",
+    "도키",
+    "zz",
+  ];
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
   const yearRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -52,16 +61,35 @@ const YearList = ({ width }: YearListProps) => {
   // 연도별 원 위치 계산
   const calculateXPosition = (index: number) => {
     const distance = 100;
+    if (hoveredYear && selectedYear) {
+      const hoveredIndex = years.indexOf(hoveredYear);
+      const selectedIndex = years.indexOf(selectedYear);
+
+      if (hoveredIndex < selectedIndex && index < selectedIndex) {
+        return index * 250 - 50;
+      } else if (hoveredIndex > selectedIndex && index === hoveredIndex) {
+        return index * 250 + 250;
+      }
+      if (index > hoveredIndex) {
+        return index * 250 + distance + 100;
+      }
+    }
     if (hoveredYear) {
       const hoveredIndex = years.indexOf(hoveredYear);
       if (index > hoveredIndex) {
         return index * 250 + distance;
+      }
+      if (index === hoveredIndex) {
+        return index * 250 + 70;
       }
     }
     if (selectedYear) {
       const selectedIndex = years.indexOf(selectedYear);
       if (index > selectedIndex) {
         return index * 250 + distance;
+      }
+      if (index === selectedIndex) {
+        return index * 250 + 70;
       }
     }
     return index * 250;
@@ -90,10 +118,10 @@ const YearList = ({ width }: YearListProps) => {
           initial={{ x: index * 100 }}
           animate={{
             x: calculateXPosition(index),
-            scale: hoveredYear === year || selectedYear === year ? 2 : 1,
+            scale: hoveredYear === year || selectedYear === year ? 5 : 1,
           }}
           whileHover={{
-            scale: hoveredYear === year || selectedYear === year ? 2 : 1,
+            scale: hoveredYear === year || selectedYear === year ? 5 : 1,
           }}
           onMouseOver={() => handleMouseOver(year)}
           onMouseLeave={() => handleMouseLeave()}
@@ -115,7 +143,6 @@ const Line = styled.div<{ length: number }>`
   height: 1px;
   background-color: grey;
   position: relative;
-  margin-left: 1rem;
   top: 50%;
   display: flex;
   flex-direction: row;
@@ -125,7 +152,6 @@ const Line = styled.div<{ length: number }>`
 const YearMotionDiv = styled(motion.div)`
   width: 100px;
   display: flex;
-  // position: relative;
   gap: 800px;
 `;
 
