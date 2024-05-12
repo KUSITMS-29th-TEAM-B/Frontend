@@ -1,17 +1,20 @@
 import { DefaultTheme } from "styled-components";
+import "../assets/fonts/Font.css";
 
 interface Font {
+  family: string;
   weight: number;
   size: number;
   lineHeight: number;
 }
 
-const FONT = ({ weight, size, lineHeight }: Font): string => {
+const FONT = ({ family, weight, size, lineHeight }: Font): string => {
   return `
-    font-family : "Pretendard";
-    font-weight : ${weight};
+    font-family : ${family};
+    font-weight : 600;
     font-size : ${size}px;
     line-height : ${lineHeight}px;
+    letter-spacing: -4%;
     `;
 };
 
@@ -48,74 +51,130 @@ const colors = {
 
 const fonts = {
   headline1: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
-    size: 44,
-    lineHeight: 68,
+    size: 36,
+    lineHeight: 48,
   }),
   headline2: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
     size: 32,
-    lineHeight: 68,
+    lineHeight: 36,
   }),
   title1: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
     size: 28,
-    lineHeight: 68,
+    lineHeight: 32,
   }),
   title2: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
     size: 24,
-    lineHeight: 38.4,
-  }),
-  title4: FONT({
-    weight: 600,
-    size: 20,
     lineHeight: 28,
   }),
-  subtitle1: FONT({
+  title3: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
-    size: 18,
-    lineHeight: 68,
+    size: 22,
+    lineHeight: 26,
+  }),
+  title4: FONT({
+    family: "Pretendard-Semibold",
+    weight: 600,
+    size: 20,
+    lineHeight: 24,
+  }),
+  subtitle1: FONT({
+    family: "Pretendard-Medium",
+    weight: 600,
+    size: 20,
+    lineHeight: 20,
   }),
   subtitle2: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
-    size: 16,
+    size: 18,
     lineHeight: 20,
   }),
   subtitle3: FONT({
+    family: "Pretendard-Semibold",
     weight: 600,
     size: 16,
     lineHeight: 20,
   }),
   subtitle4: FONT({
+    family: "Pretendard-Medium",
     weight: 500,
     size: 16,
     lineHeight: 20,
   }),
-  body1: FONT({
+  subtitle5: FONT({
+    family: "Pretendard-Semibold",
     weight: 500,
-    size: 24,
-    lineHeight: 68,
+    size: 14,
+    lineHeight: 24,
+  }),
+  body1: FONT({
+    family: "Pretendard-Regular",
+    weight: 500,
+    size: 22,
+    lineHeight: 26,
   }),
   body2: FONT({
+    family: "Pretendard-Medium",
     weight: 500,
     size: 18,
-    lineHeight: 68,
+    lineHeight: 20,
   }),
   body3: FONT({
+    family: "Pretendard-Regular",
     weight: 500,
     size: 16,
     lineHeight: 18,
   }),
   body4: FONT({
-    weight: 400,
-    size: 16,
-    lineHeight: 18,
-  }),
-  body5: FONT({
+    family: "Pretendard-Medium",
     weight: 400,
     size: 14,
-    lineHeight: 18,
+    lineHeight: 16,
+  }),
+  body5: FONT({
+    family: "Pretendard-Regular",
+    weight: 400,
+    size: 13,
+    lineHeight: 15,
+  }),
+  cap1: FONT({
+    family: "Pretendard-Regular",
+    weight: 400,
+    size: 14,
+    lineHeight: 16,
+  }),
+  cap2: FONT({
+    family: "Pretendard-Medium",
+    weight: 400,
+    size: 12,
+    lineHeight: 14,
+  }),
+  cap3: FONT({
+    family: "Pretendard-Regular",
+    weight: 400,
+    size: 12,
+    lineHeight: 14,
+  }),
+  button1: FONT({
+    family: "Pretendard-Semibold",
+    weight: 400,
+    size: 18,
+    lineHeight: 20,
+  }),
+  button2: FONT({
+    family: "Pretendard-Semibold",
+    weight: 400,
+    size: 16,
+    lineHeight: 20,
   }),
 };
 
