@@ -43,7 +43,6 @@ const ExperiencePage = () => {
                     src={yearActiveImg}
                     alt="year-active"
                     style={{ marginTop: "-150px", zIndex: 2000 }}
-                    // onMouseLeave={() => setYear(null)}
                   />
                   <YearText style={{ marginTop: "-150px", zIndex: 3000 }}>
                     {item.year}
