@@ -62,6 +62,16 @@ const fonts = {
     size: 28,
     lineHeight: 68,
   }),
+  title2: FONT({
+    weight: 600,
+    size: 24,
+    lineHeight: 38.4,
+  }),
+  title4: FONT({
+    weight: 600,
+    size: 20,
+    lineHeight: 28,
+  }),
   subtitle1: FONT({
     weight: 600,
     size: 18,
