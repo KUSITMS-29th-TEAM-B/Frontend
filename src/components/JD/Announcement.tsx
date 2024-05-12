@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { JobAnnouncement } from "../../services/JD/jdData";
+import { JobAnnouncement } from "../../types/type";
 
 interface JobAnnouncementProps {
   announcement: JobAnnouncement;

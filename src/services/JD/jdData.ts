@@ -1,20 +1,6 @@
-// 공고에 대한 상태를 열거 타입으로 정의
-export enum RecruitmentStatus {
-  NotStarted = "작성전",
-  InProgress = "작성중",
-  Completed = "작성완료",
-  ApplicationsClosed = "지원완료",
-  End = "마감",
-}
+import { JobAnnouncement, RecruitmentStatus } from "../../types/type";
 
-export interface JobAnnouncement {
-  title: string;
-  description: string;
-  dday: number;
-  recruitmentPeriod: string;
-  status: RecruitmentStatus;
-}
-
+//더미데이터
 export const jobAnnouncements: JobAnnouncement[] = [
   {
     title: "프론트엔드 개발자 채용",

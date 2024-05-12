@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import JobAnnouncementCard from "../components/JD/Announcement";
-import { jobAnnouncements } from "../services/JD/jdData";
+import { jobAnnouncements } from "../services/JD/jdData"; //더미 데이터
 
 const JDListPage: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
