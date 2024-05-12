@@ -4,12 +4,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
 import { yearState } from "../store/selectedStore";
+import backgroundImg from "../assets/images/background.jpg";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
 
   /**
+   * 연도별 리스트 컨테이너
    */
   const renderCentralContainer = () => {
     return (
@@ -53,6 +55,7 @@ const ExperiencePage = () => {
   //
   return (
     <MainContainer>
+      {/* <NoExperience /> */}
       {renderCentralContainer()}
       <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
     </MainContainer>
@@ -61,9 +64,14 @@ const ExperiencePage = () => {
 
 const MainContainer = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
-  margin-top: 10rem;
+  padding-top: 10rem;
+  align-items: center;
+  justify-content: center;
+  // background: url(${backgroundImg});
+  background-color: #fbfbfd;
 `;
 
 const ActiveContainer = styled(motion.div)`
