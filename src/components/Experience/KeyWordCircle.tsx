@@ -11,18 +11,7 @@ const SmallCircleComponent: React.FC<SmallCircleComponentProps> = ({
   idx,
   keyword,
 }) => {
-  const [hover, setHover] = React.useState(false);
-  return (
-    <SmallCircle
-    // onMouseOver={() => setHover(true)}
-    // onMouseLeave={() => setHover(false)}
-    // whileHover={{
-    //   scale: 1.5,
-    // }}
-    >
-      {keyword}
-    </SmallCircle>
-  );
+  return <SmallCircle>{keyword}</SmallCircle>;
 };
 
 const SmallCircle = styled(motion.div)`

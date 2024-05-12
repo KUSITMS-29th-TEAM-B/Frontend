@@ -10,7 +10,6 @@ function useComponentSize(): [React.RefObject<HTMLDivElement>, ComponentSize] {
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 현재 참조가 null이 아닌지 확인
     const element = componentRef.current;
     if (element) {
       const handleResize = (entries: ResizeObserverEntry[]) => {
@@ -31,7 +30,7 @@ function useComponentSize(): [React.RefObject<HTMLDivElement>, ComponentSize] {
         resizeObserver.unobserve(element);
       };
     }
-  }, [componentRef.current]); // 의존성 배열에서 componentRef.current를 명시적으로 사용
+  }, [componentRef.current]);
 
   return [componentRef, size];
 }

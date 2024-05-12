@@ -7,17 +7,20 @@ import { bubbleChartData, yearData } from "../dummy";
 import ExperienceTestPage from "./ExperienceTest";
 import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
+import { useRecoilState } from "recoil";
+import { yearState } from "../store/selectedStore";
 
 const ExperienceNewPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [componentRef, size] = useComponentSize();
-  const [active, setActive] = useState(false);
+  // const [active, setActive] = useState(false);
   const [tab, setTab] = useState(searchParams.get("tab") || "역량별");
+  const [selectedYear, setSelectedYear] = useRecoilState(yearState);
 
   // 사이드탭 설정 함수
-  const handleTab = (isActive: boolean) => {
-    setActive(isActive);
-  };
+  // const handleTab = (isActive: boolean) => {
+  //   setActive(isActive);
+  // };
 
   useEffect(() => setTab(searchParams.get("tab") || "역량별"), [searchParams]);
 
@@ -36,7 +39,7 @@ const ExperienceNewPage = () => {
             ref={componentRef}
             initial={{ width: "100%" }}
             animate={{
-              width: active ? "50%" : "100%",
+              width: selectedYear ? "50%" : "100%",
             }}
             transition={{
               type: "spring",
@@ -44,18 +47,18 @@ const ExperienceNewPage = () => {
               when: "beforeChildren",
             }}
           >
-            <ExperienceTestPage handleActive={handleTab} width={size.width} />
+            <ExperienceTestPage width={size.width} />
           </CenteredContainer>
           <AnimatePresence>
             <ActiveContainer
               initial={{ width: "0%" }}
-              animate={{ width: active ? "50%" : "0%" }}
+              animate={{ width: selectedYear ? "50%" : "0%" }}
               exit={{
                 transition: { delay: 0.5, stiffness: 50, damping: 20 },
               }}
               transition={{ type: "spring", stiffness: 40 }}
             >
-              {active ? "활동 상세 사이드 탭" : null}
+              {selectedYear ? "활동 상세 사이드 탭" : null}
             </ActiveContainer>
           </AnimatePresence>
         </MainContainer>

@@ -1,33 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
-// import KeyWordCircle from "./KeyWordCircle";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
 import { yearState } from "../../store/selectedStore";
+import { keywordState } from "../../store/selectedStore";
 
 interface YearCircleComponentProps {
   year: number;
   keywordList: string[];
   hoveredYear: number | null;
-  clickedYear?: number | null;
-  handleClickedYear: (year: number) => void;
 }
 
 const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
   year,
   keywordList,
   hoveredYear,
-  clickedYear,
-  handleClickedYear,
 }) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
+  const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
+    keywordState
+  );
+
   console.log("selectedYear", selectedYear);
 
-  const [clickedTag, setClickedTag] = useState("");
-  const isClickedYear = clickedYear === year;
+  const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
 
   const radius = 40;
@@ -65,24 +64,21 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },
   };
 
-  // 주변 원(상위태그 원) 클릭 함수
+  // 주변 원(키워드 원) 클릭 함수
   const handleTagClick = (e: any, year: number, keyword: string) => {
     e.stopPropagation();
-    handleClickedYear(year);
-    setClickedTag(keyword);
-    console.log(keyword);
+    setSelectedYear(year);
+    setSelectedKeyword(keyword);
   };
 
   //
   //
   //
   return (
-    <YearCircle isActive={isClickedYear || (!clickedYear && isHoveredYear)}>
-      <YearText isActive={isClickedYear || (!clickedYear && isHoveredYear)}>
-        {year}
-      </YearText>
+    <YearCircle isActive={isSelectedYear || isHoveredYear}>
+      <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
 
-      {(isClickedYear || (!clickedYear && isHoveredYear)) &&
+      {(isSelectedYear || isHoveredYear) &&
         keywordList.map((keyword, index) => {
           if (index < angles.length) {
             const position = calculatePosition(angles[index]);
@@ -99,7 +95,7 @@ const YearCircleComponent: React.FC<YearCircleComponentProps> = ({
                 onClick={(e) => handleTagClick(e, year, keyword)}
               >
                 <KeywordCircle
-                  animate={{ scale: clickedTag === keyword ? 1.3 : 1 }}
+                  animate={{ scale: selectedKeyword === keyword ? 1.3 : 1 }}
                   whileHover={{ scale: 1.3 }}
                 >
                   {keyword}
