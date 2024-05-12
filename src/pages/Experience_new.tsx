@@ -6,18 +6,24 @@ import styled from "styled-components";
 import { bubbleChartData, yearData } from "../dummy";
 import ExperienceTestPage from "./ExperienceTest";
 import { AnimatePresence, motion } from "framer-motion";
+import useComponentSize from "../components/hooks/useComponentSize";
 
 const ExperienceNewPage = () => {
-  const [active, setActive] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [componentRef, size] = useComponentSize();
+  const [active, setActive] = useState(false);
   const [tab, setTab] = useState(searchParams.get("tab") || "역량별");
+
+  // 사이드탭 설정 함수
+  const handleTab = (isActive: boolean) => {
+    setActive(isActive);
+  };
 
   useEffect(() => setTab(searchParams.get("tab") || "역량별"), [searchParams]);
 
-  const handleTab = (x: boolean) => {
-    setActive(x);
-  };
-
+  //
+  //
+  //
   return (
     <>
       <div className="page">
@@ -27,6 +33,7 @@ const ExperienceNewPage = () => {
       {tab === "연도별" ? (
         <MainContainer>
           <CenteredContainer
+            ref={componentRef}
             initial={{ width: "100%" }}
             animate={{
               width: active ? "50%" : "100%",
@@ -37,9 +44,7 @@ const ExperienceNewPage = () => {
               when: "beforeChildren",
             }}
           >
-            <StyledContainer>
-              <ExperienceTestPage active={active} handleActive={handleTab} />
-            </StyledContainer>
+            <ExperienceTestPage handleActive={handleTab} width={size.width} />
           </CenteredContainer>
           <AnimatePresence>
             <ActiveContainer
@@ -63,14 +68,6 @@ const ExperienceNewPage = () => {
   );
 };
 
-const StyledContainer = styled.div`
-  width: 100%;
-  border-box: box-sizing;
-  border: 1px solid black;
-  height: 500px;
-  overflow: scroll;
-`;
-
 const MainContainer = styled.div`
   width: 100%;
   display: flex;
@@ -86,6 +83,10 @@ const ActiveContainer = styled(motion.div)`
 
 const CenteredContainer = styled(motion.div)`
   width: 100%;
+  border-box: box-sizing;
+  border: 1px solid black;
+  height: 500px;
+  overflow: scroll;
 `;
 
 export default ExperienceNewPage;

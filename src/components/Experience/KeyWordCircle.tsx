@@ -7,6 +7,24 @@ interface SmallCircleComponentProps {
   keyword: string;
 }
 
+const SmallCircleComponent: React.FC<SmallCircleComponentProps> = ({
+  idx,
+  keyword,
+}) => {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <SmallCircle
+    // onMouseOver={() => setHover(true)}
+    // onMouseLeave={() => setHover(false)}
+    // whileHover={{
+    //   scale: 1.5,
+    // }}
+    >
+      {keyword}
+    </SmallCircle>
+  );
+};
+
 const SmallCircle = styled(motion.div)`
   width: 40px;
   height: 40px;
@@ -28,12 +46,5 @@ const SmallCircle = styled(motion.div)`
     0px 3.148px 28.334px 0px rgba(125, 130, 255, 0.76) inset;
   backdrop-filter: blur(14.167028427124023px);
 `;
-
-const SmallCircleComponent: React.FC<SmallCircleComponentProps> = ({
-  idx,
-  keyword,
-}) => {
-  return <SmallCircle>{keyword}</SmallCircle>;
-};
 
 export default SmallCircleComponent;
