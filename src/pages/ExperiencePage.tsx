@@ -5,6 +5,8 @@ import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
 import { yearState } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
+import RoundButton from "../components/common/RoundButton";
+import { Plus } from "../assets";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
@@ -54,11 +56,18 @@ const ExperiencePage = () => {
   //
   //
   return (
-    <MainContainer>
-      {/* <NoExperience /> */}
-      {renderCentralContainer()}
-      <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-    </MainContainer>
+    <>
+      <MainContainer>
+        {/* <NoExperience /> */}
+        {renderCentralContainer()}
+        <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
+      </MainContainer>
+      {selectedYear ? null : (
+        <RoundButton style={{ position: "fixed", bottom: 30, right: 30 }}>
+          <Plus /> 경험 추가하기
+        </RoundButton>
+      )}
+    </>
   );
 };
 
@@ -77,15 +86,17 @@ const ActiveContainer = styled(motion.div)`
   border-radius: 10px;
   background: #f7f7fb;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 35rem;
+  height: 700px;
 `;
 
 const CenteredContainer = styled(motion.div)`
   width: 100%;
-  height: 800px;
+  height: 700px;
+  padding-top: 100px;
   border-box: box-sizing;
   border: 1px solid black;
   overflow: scroll;
+  overflow-y: hidden;
 `;
 
 export default ExperiencePage;

@@ -10,7 +10,7 @@ const NoExperience = () => {
       <Section>
         아직 작성된 경험이 없어요. <br />새 경험을 작성해주세요.
       </Section>
-      <RoundButton width={252} height={48}>
+      <RoundButton>
         경험추가하기 <Plus />
       </RoundButton>
       <img

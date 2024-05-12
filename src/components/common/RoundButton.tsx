@@ -1,17 +1,11 @@
-import React from "react";
+import React, { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
-interface RoundButtonProps {
+interface RoundButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  width?: number;
-  height?: number;
 }
-const RoundButton = ({ children, width = 212, height = 64 }: RoundButtonProps) => {
-  return (
-    <Button style={{ width: `${width}px`, height: `${height}px` }}>
-      {children}
-    </Button>
-  );
+const RoundButton = ({ children, ...props }: RoundButtonProps) => {
+  return <Button {...props}>{children}</Button>;
 };
 
 const Button = styled.button`
