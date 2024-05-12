@@ -96,6 +96,7 @@ const CenteredContainer = styled(motion.div)`
   border-box: box-sizing;
   border: 1px solid black;
   overflow: scroll;
+  overflow-y: hidden;
 `;
 
 export default ExperiencePage;
