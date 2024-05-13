@@ -19,6 +19,21 @@ export const yearData = [
 
 export const bubbleChartData = [
   {
+    label: "선업튀",
+    value: 20,
+    option: "l",
+  },
+  {
+    label: "동아리2",
+    value: 1,
+    option: "s",
+  },
+  {
+    label: "밤양갱",
+    value: 100,
+    option: "l",
+  },
+  {
     label: "Example",
     value: 12,
     option: "m",

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import circleS from "../assets/images/circleS.png";
 import circleM from "../assets/images/circleM.png";
@@ -12,6 +12,7 @@ interface DataItem {
 
 const BubbleChartWithGradient = ({ data }: { data: DataItem[] }) => {
   const ref = useRef<SVGSVGElement | null>(null);
+  const [viewBox, setViewBox] = useState("0 0 600 600"); // 초기 viewBox 설정
 
   useEffect(() => {
     if (!ref.current) return;
@@ -20,12 +21,44 @@ const BubbleChartWithGradient = ({ data }: { data: DataItem[] }) => {
       .select(ref.current)
       .attr("width", "100%")
       .attr("height", "100%")
-      .attr("viewBox", "0 0 600 400")
+      .attr("viewBox", "0 0 600 600")
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    const pack = d3.pack().size([600, 400]).padding(10);
+    const padding = 10;
+
+    const minRadius = 20; // 최소 원 크기
+    const maxRadius = 80; // 최대 원 크기
+
+    const minValue = d3.min(data, (d) => d.value) || 0;
+    const maxValue = d3.max(data, (d) => d.value) || 100;
+
+    // 최소값과 최대값을 이용해 스케일 설정
+    const scaleRadius = d3
+      .scaleSqrt()
+      .domain([minValue, maxValue])
+      .range([minRadius, maxRadius]);
+
+    const pack = d3
+      .pack()
+      .size([600, 400])
+      .padding(padding)
+      .radius((d: any) => scaleRadius(d.value));
     const root = d3.hierarchy({ children: data }).sum((d: any) => d.value);
     const nodes = pack(root).leaves();
+
+    // 최대 크기 계산을 위한 변수
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = 0,
+      maxY = 0;
+    nodes.forEach((node) => {
+      minX = Math.min(minX, node.x - node.r - padding);
+      minY = Math.min(minY, node.y - node.r - padding);
+      maxX = Math.max(maxX, node.x + node.r + padding);
+      maxY = Math.max(maxY, node.y + node.r + padding);
+    });
+
+    // setViewBox(`${minX} ${minY} ${maxX - minX} ${maxY - minY}`);
 
     const node = svg
       .selectAll(".node")
@@ -57,7 +90,7 @@ const BubbleChartWithGradient = ({ data }: { data: DataItem[] }) => {
       .append("text")
       .attr("text-anchor", "middle") // 텍스트 중앙 정렬
       .each(function (d: any) {
-        const fontSize = Math.max(10, d.r / 5);
+        const fontSize = d.r / 5;
         d3.select(this)
           .append("tspan")
           .attr("x", 0)
@@ -96,7 +129,7 @@ const BubbleChartWithGradient = ({ data }: { data: DataItem[] }) => {
 
   return (
     <div className="container">
-      <svg ref={ref}></svg>
+      <svg ref={ref} viewBox={viewBox}></svg>
     </div>
   );
 };

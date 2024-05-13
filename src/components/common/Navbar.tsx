@@ -67,7 +67,7 @@ const MenuList = styled.div`
 `;
 
 const MenuItem = styled.div`
-  ${(props) => props.theme.fonts.subtitle1}
+  ${(props) => props.theme.fonts.subtitle2}
   cursor: pointer;
   &:hover,
   &.active {
@@ -81,7 +81,7 @@ const MenuItem = styled.div`
 `;
 
 const UserInfo = styled.div`
-  ${(props) => props.theme.fonts.body5}
+  ${(props) => props.theme.fonts.cap2}
   color: ${(props) => props.theme.colors.neutral800};
   flex-shrink: 0;
 `;
