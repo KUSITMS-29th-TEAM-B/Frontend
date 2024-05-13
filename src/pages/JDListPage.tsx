@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import JobAnnouncementCard from "../components/JD/Announcement";
 import { jobAnnouncements } from "../services/JD/jdData"; //더미 데이터
+import PlaneLoading from "../components/common/Loading";
 
 const JDListPage: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
@@ -64,6 +65,7 @@ const JDListPage: React.FC = () => {
           </SortContainer>
         </RightFilterBox>
       </MiddleContainer>
+      {/* <PlaneLoading /> api 추가 되었을때 loading 처리해주기 */}
       <MainContainer>
         {jobAnnouncements.map((announcement, index) => (
           <JobAnnouncementCard key={index} announcement={announcement} />

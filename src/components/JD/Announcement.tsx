@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { JobAnnouncement } from "../../types/type";
+import { useNavigate } from "react-router-dom";
 
 interface JobAnnouncementProps {
   announcement: JobAnnouncement;
@@ -9,10 +10,12 @@ interface JobAnnouncementProps {
 const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
   announcement,
 }) => {
-  const { title, description, recruitmentPeriod, status, dday } = announcement;
+  const { id, title, description, recruitmentPeriod, status, dday } =
+    announcement;
+  const nav = useNavigate();
 
   return (
-    <Container>
+    <Container onClick={() => nav(`/jd/detail/${id}`)}>
       <TopContainer>
         <StatusContainer>
           {status !== "마감" && <DdayContainer>{"D-" + dday}</DdayContainer>}

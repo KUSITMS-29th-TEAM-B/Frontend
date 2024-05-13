@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import BundledEditor from "../components/editor/BundleEditor";
 import HeaderInput from "../components/JD/HeaderInput";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
+import ContentInput from "../components/JD/ContentInput";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -132,9 +132,7 @@ const ButtonText = styled.div<ButtonProps>`
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const [content, setContent] = useState(
-    "<p>안녕하세요, 자기소개서 작성법에 대해 알려드리겠습니다. </p>"
-  );
+  //   const [content, setContent] = useState("<p>내용을 입력해주세요. </p>");
 
   const JDtoggleContainer = () => {
     if (!active) {
@@ -160,10 +158,10 @@ const JDEditPage: React.FC = () => {
     }
   };
 
-  const handleEditorChange = (newContent: string) => {
-    console.log("Content was updated:", newContent);
-    setContent(newContent);
-  };
+  //   const handleEditorChange = (newContent: string) => {
+  //     console.log("Content was updated:", newContent);
+  //     setContent(newContent);
+  //   };
 
   return (
     <StyledDivContainer className="page">
@@ -188,16 +186,9 @@ const JDEditPage: React.FC = () => {
           }}
         >
           <HeaderInput />
-          <div>
-            <BundledEditor
-              content={content}
-              onContentChange={handleEditorChange}
-            />
-          </div>
+          <ContentInput />
           <HeaderInput />
-          <div>
-            <BundledEditor content="" onContentChange={handleEditorChange} />
-          </div>
+          <ContentInput />
         </CenteredContainer>
         <AnimatePresence>
           <ActiveContainer

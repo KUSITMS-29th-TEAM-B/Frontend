@@ -13,9 +13,20 @@ export enum RecruitmentStatus {
 }
 
 export interface JobAnnouncement {
+  id: number;
   title: string;
   description: string;
   dday: number;
   recruitmentPeriod: string;
   status: RecruitmentStatus;
+}
+
+export interface Job {
+  id: number;
+  title: string;
+  description: string;
+  dday: number;
+  recruitmentPeriod: string;
+  status: RecruitmentStatus;
+  content: string;
 }
