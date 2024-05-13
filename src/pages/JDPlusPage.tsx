@@ -4,6 +4,7 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import BundleEditor from "../components/editor/BundleEditor";
 import TimeSelector from "../components/common/TimePicker";
 import OneDatePick from "../components/common/DatePicker";
+import { useNavigate } from "react-router-dom";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -139,6 +140,7 @@ const JDPlusPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const nav = useNavigate();
 
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
@@ -186,8 +188,8 @@ const JDPlusPage: React.FC = () => {
       <TopTitleBar>
         <Title>새로운 공고 등록</Title>
         <ButtonContainer>
-          <CancelButton>취소</CancelButton>
-          <SaveButton>저장</SaveButton>
+          <CancelButton onClick={() => nav(-1)}>취소</CancelButton>
+          <SaveButton onClick={() => nav(-1)}>저장</SaveButton>
         </ButtonContainer>
       </TopTitleBar>
       <MainContainer>

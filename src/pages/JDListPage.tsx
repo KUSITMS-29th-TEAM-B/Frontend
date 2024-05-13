@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import JobAnnouncementCard from "../components/JD/Announcement";
 import { jobAnnouncements } from "../services/JD/jdData"; //더미 데이터
 import PlaneLoading from "../components/common/Loading";
+import btnbg from "../assets/icons/icon_plus_button_bg.svg";
+import prebtn from "../assets/icons/icon_page_prev.svg";
+import nextbtn from "../assets/icons/icon_page_next.svg";
+import { useNavigate } from "react-router-dom";
 
 const JDListPage: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
-  const [showClosed, setShowClosed] = useState(false); // 지원 마감 공고 함께 보기
   const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
+  const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
+  const [pageTotal, setpageTotal] = useState(18);
+  const [pages, setPages] = useState<React.ReactNode[]>([]);
+  const nav = useNavigate();
 
-  const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "지원완료"];
+  const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "마감"];
   const handleClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
@@ -18,9 +25,54 @@ const JDListPage: React.FC = () => {
     setSelectedSort(sortType);
   };
 
+  const renderPageNumber = (i: number) => (
+    <PageNumber
+      key={i}
+      activePage={currentPage === i}
+      onClick={() => setCurrentPage(i)}
+    >
+      {i}
+    </PageNumber>
+  );
+
   useEffect(() => {
-    console.log(showClosed, activeButton, selectedSort);
-  }, [showClosed, activeButton, selectedSort]);
+    let tempPages: any = [];
+    const generatePages = () => {
+      tempPages.push(renderPageNumber(1));
+
+      let startPage = Math.max(2, currentPage - 2);
+      let endPage = Math.min(pageTotal - 1, currentPage + 2);
+
+      if (currentPage <= 4) {
+        startPage = 2;
+        endPage = Math.min(5, pageTotal - 1);
+      } else if (currentPage >= pageTotal - 2) {
+        startPage = Math.max(pageTotal - 4, 2);
+        endPage = pageTotal - 1;
+      }
+
+      if (startPage > 2) {
+        tempPages.push(<span key="left-ellipsis">...</span>);
+      } else if (pageTotal === 6 && currentPage === 6) {
+        tempPages.push(<span key="right-ellipsis">...</span>);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        tempPages.push(renderPageNumber(i));
+      }
+
+      if (
+        (pageTotal === 6 && currentPage !== 6) ||
+        currentPage < pageTotal - 2
+      ) {
+        tempPages.push(<span key="right-ellipsis">...</span>);
+      }
+      tempPages.push(renderPageNumber(pageTotal));
+    };
+
+    generatePages();
+    setPages(tempPages);
+  }, [currentPage, pageTotal]);
 
   return (
     <StyledDivContainer className="page">
@@ -40,14 +92,6 @@ const JDListPage: React.FC = () => {
           ))}
         </LeftFilterBox>
         <RightFilterBox>
-          <ClosedFiltetContainer>
-            지원 마감 공고 함께 보기
-            <input
-              type="checkbox"
-              checked={showClosed}
-              onChange={() => setShowClosed(!showClosed)}
-            />
-          </ClosedFiltetContainer>
           <SortContainer>
             <SelectableDiv
               isSelected={selectedSort === "등록순"}
@@ -71,6 +115,26 @@ const JDListPage: React.FC = () => {
           <JobAnnouncementCard key={index} announcement={announcement} />
         ))}
       </MainContainer>
+      <PagenationContainer>
+        <PagenationButton
+          src={prebtn}
+          alt="prevbtn"
+          onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
+        />
+        <PageNumbers>{pages}</PageNumbers>
+        <PagenationButton
+          src={nextbtn}
+          alt="nextbtn"
+          onClick={() =>
+            setCurrentPage(
+              currentPage < pageTotal ? currentPage + 1 : pageTotal
+            )
+          }
+        />
+      </PagenationContainer>
+      <PostButton>
+        <img src={btnbg} alt="공고등록" onClick={() => nav("/jd/post")} />
+      </PostButton>
     </StyledDivContainer>
   );
 };
@@ -175,14 +239,49 @@ const DivideLine = styled.div`
   text-align: center;
 `;
 
-const ClosedFiltetContainer = styled.div`
-  display: flex;
-  color: var(--neutral-600, #63698D);
-  font-size: 1rem;
-  align-items: center;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 1.25rem; 
-  letter-spacing: -0.02rem;
-  margin-right: 1.37rem;
+const PostButton = styled.div`
+  position: fixed;      
+  bottom: 4.6rem;       
+  right: 5rem;        
+  cursor: pointer;      
+  z-index: 1000;   
+`;
+
+const PagenationContainer = styled.div`
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2.5rem;
+`;
+
+const PagenationButton = styled.img`
+
+`;
+
+const PageNumbers = styled.div`
+    display: inline-flex;
+    flex-direction: row;
+    gap: 0.75rem;
+`;
+
+interface ButtonProps {
+  activePage: boolean;
+}
+
+const buttonActiveStyle = css`
+    color: var(--main-500, #7D82FF);
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.25rem;
+`;
+
+const PageNumber = styled.div<ButtonProps>`
+    color: var(--neutral-500, #A6AAC0);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    ${({ activePage }) => activePage && buttonActiveStyle}
 `;

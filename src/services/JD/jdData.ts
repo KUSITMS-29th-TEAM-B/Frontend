@@ -47,7 +47,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     title: "UI/UX 디자이너 모집",
     description: "실무 경험 및 포트폴리오 제출 필수",
     recruitmentPeriod: "2024-04-20 ~ 2024-05-20",
-    status: RecruitmentStatus.ApplicationsClosed,
+    status: RecruitmentStatus.Completed,
     dday: 10,
   },
   {
