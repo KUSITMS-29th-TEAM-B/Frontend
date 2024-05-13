@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Input from "../components/common/Input";
 import Textarea from "../components/common/Textarea";
-import RoundButton from "../components/common/RoundButton";
+import MainButton from "../components/common/MainButton";
 
 const SignupPage = () => {
   return (
@@ -21,9 +21,9 @@ const SignupPage = () => {
           helperText="평소에 가지고 있던 ‘꿈'에 대한 생각을 자유롭게 작성해주셔도 좋아요."
           rows={10}
         />
-        <RoundButton style={{ borderRadius: "6.18px", background: "#D9D9D9" }}>
+        <MainButton style={{ borderRadius: "6.18px", background: "#D9D9D9" }}>
           플라잇 시작하기
-        </RoundButton>
+        </MainButton>
       </FormContainer>
     </Container>
   );
