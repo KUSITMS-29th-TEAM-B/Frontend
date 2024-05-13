@@ -8,6 +8,7 @@ import JDEditPage from "./pages/JDEditPage";
 import JDMainPage from "./pages/JDMainPage";
 import JDDetailPage from "./pages/JDDetailPage";
 import ExperiencePage from "./pages/ExperiencePage";
+import SignupPage from "./pages/SignupPage";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route path="/jd/detail" element={<JDDetailPage />} />
         <Route path="/jd/edit" element={<JDEditPage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/sign-up" element={<SignupPage />} />
       </Routes>
     </>
   );
