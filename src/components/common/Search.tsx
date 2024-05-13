@@ -21,7 +21,7 @@ const SearchContainer = styled.div`
   background: var(--neutral-20, #fbfbfd);
 `;
 const SearchInput = styled.input`
-  ${(props) => props.theme.fonts.body5};
+  ${(props) => props.theme.fonts.cap1};
   color: ${(props) => props.theme.colors.neutral500};
   border: none;
   background-color: transparent;
