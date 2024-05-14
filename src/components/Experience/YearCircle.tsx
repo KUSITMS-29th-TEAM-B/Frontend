@@ -27,7 +27,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
 
-  const radius = 22;
+  const radius = 20;
   const centralWidth = 84;
   const surroundWidth = 88;
   // const angles = [-60, -15, 30, 75, 120];
@@ -56,9 +56,9 @@ const YearCircle: React.FC<YearCircleProps> = ({
       x: calculatePosition(index).x,
       y: calculatePosition(index).y,
       transition: {
-        delay: index * 0.1,
+        delay: index * 0.05,
         type: "spring",
-        stiffness: 120,
+        stiffness: 50,
       },
     }),
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },
