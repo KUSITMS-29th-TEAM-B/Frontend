@@ -12,6 +12,8 @@ const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
 
+  const name = "사용자";
+
   /**
    * 연도별 리스트 컨테이너
    */
@@ -59,27 +61,51 @@ const ExperiencePage = () => {
     <>
       <MainContainer>
         {/* <NoExperience /> */}
+        {selectedYear ? null : (
+          <Description>
+            <span className="user">{name}</span>
+            님의 여정을
+            <br />
+            시작해볼까요?
+          </Description>
+        )}
         {renderCentralContainer()}
         <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-      </MainContainer>
-      {selectedYear ? null : (
-        <RoundButton style={{ position: "fixed", bottom: 30, right: 30 }}>
+        <RoundButton
+          style={{
+            position: "absolute",
+            right: selectedYear ? "52%" : 30,
+            bottom: 30,
+          }}
+        >
           <Plus /> 경험 추가하기
         </RoundButton>
-      )}
+      </MainContainer>
     </>
   );
 };
 
 const MainContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   // background: url(${backgroundImg});
   background-color: #fbfbfd;
+  position: relative;
+`;
+
+const Description = styled.div`
+  position: absolute;
+  top: 165px;
+  left: 80px;
+  ${(props) => props.theme.fonts.headline1};
+  color: #343a5d;
+  .user {
+    color: var(--main-500, #7d82ff);
+    font-weight: 700;
+  }
 `;
 
 const ActiveContainer = styled(motion.div)`
@@ -90,13 +116,27 @@ const ActiveContainer = styled(motion.div)`
 `;
 
 const CenteredContainer = styled(motion.div)`
+  position: relative;
   width: 100%;
-  height: 700px;
+  height: 750px;
   padding-top: 100px;
-  border-box: box-sizing;
-  border: 1px solid black;
   overflow: scroll;
   overflow-y: hidden;
+  /* 스크롤 커스텀 */
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 50px;
+    background: ${(props) => props.theme.colors.neutral300};
+  }
+  &::-webkit-scrollbar-thumb {
+    width: 60%;
+    transform: rotate(90deg);
+    flex-shrink: 0;
+    border-radius: 50px;
+    background: ${(props) => props.theme.colors.neutral400};
+  }
 `;
 
 export default ExperiencePage;
