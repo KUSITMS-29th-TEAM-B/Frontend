@@ -21,12 +21,19 @@ const KeywordTab = () => {
     { title: "대외홍보팀", num: 60 },
   ];
 
-  return (
-    <MainContainer>
+  /**
+   * 사이드 메뉴 컨테이너
+   */
+  const renderLeftContainer = () => {
+    return (
       <LeftContainer>
         <ArrowRight />
         <KeywordText>{keyword}</KeywordText>
-        <YearSelect value={selectedYear} options={years} onChange={setSelectedYear} />
+        <YearSelect
+          value={selectedYear}
+          options={years}
+          onChange={setSelectedYear}
+        />
         <MenuList>
           {menus.map((item) => (
             <MenuItem>
@@ -36,6 +43,14 @@ const KeywordTab = () => {
           ))}
         </MenuList>
       </LeftContainer>
+    );
+  };
+
+  /**
+   * 메인 컨테이너 (질문선택 + 경험 리스트)
+   */
+  const renderContentContainer = () => {
+    return (
       <ContentContainer>
         <QuestionContainer>
           <CircleArrow />
@@ -49,6 +64,16 @@ const KeywordTab = () => {
           </QuestionSelect>
         </QuestionContainer>
       </ContentContainer>
+    );
+  };
+
+  //
+  //
+  //
+  return (
+    <MainContainer>
+      {renderLeftContainer()}
+      {renderContentContainer()}
     </MainContainer>
   );
 };
@@ -58,7 +83,7 @@ const MainContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  background-color: ${(props) => props.theme.colors.neutral20};
+  background: ${(props) => props.theme.colors.neutral20};
 `;
 
 const LeftContainer = styled.div`
@@ -109,7 +134,6 @@ const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 18px 40px;
-  background: ${(props) => props.theme.colors.neutral100};
 `;
 
 const QuestionContainer = styled.div`
