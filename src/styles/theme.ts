@@ -62,6 +62,12 @@ const fonts = {
     size: 32,
     lineHeight: 36,
   }),
+  headline3: FONT({
+    family: "Pretendard-Semibold",
+    weight: 600,
+    size: 32,
+    lineHeight: 36,
+  }),
   title1: FONT({
     family: "Pretendard-Semibold",
     weight: 600,
