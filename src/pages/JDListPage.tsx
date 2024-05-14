@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import JobAnnouncementCard from "../components/JD/Announcement";
 import { jobAnnouncements } from "../services/JD/jdData"; //더미 데이터
-import PlaneLoading from "../components/common/Loading";
+import PlaneLoading from "../components/common/Loading"; // api 연결후 로딩 처리
 import btnbg from "../assets/icons/icon_plus_button_bg.svg";
 import prebtn from "../assets/icons/icon_page_prev.svg";
 import nextbtn from "../assets/icons/icon_page_next.svg";
@@ -12,7 +12,7 @@ const JDListPage: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
   const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
   const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
-  const [pageTotal, setpageTotal] = useState(18);
+  const [pageTotal, setpageTotal] = useState(15);
   const [pages, setPages] = useState<React.ReactNode[]>([]);
   const nav = useNavigate();
 
@@ -25,17 +25,28 @@ const JDListPage: React.FC = () => {
     setSelectedSort(sortType);
   };
 
-  const renderPageNumber = (i: number) => (
-    <PageNumber
-      key={i}
-      activePage={currentPage === i}
-      onClick={() => setCurrentPage(i)}
-    >
-      {i}
-    </PageNumber>
-  );
+  const navToDetail = () => {
+    nav("/jd/post");
+  };
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
+
+  useEffect(() => {
+    //...을 제외한 페이지 렌더 부분
+    const renderPageNumber = (i: number) => (
+      <PageNumber
+        key={i}
+        activePage={currentPage === i}
+        onClick={() => setCurrentPage(i)}
+      >
+        {i}
+      </PageNumber>
+    );
     let tempPages: any = [];
     const generatePages = () => {
       tempPages.push(renderPageNumber(1));
@@ -133,7 +144,7 @@ const JDListPage: React.FC = () => {
         />
       </PagenationContainer>
       <PostButton>
-        <img src={btnbg} alt="공고등록" onClick={() => nav("/jd/post")} />
+        <img src={btnbg} alt="공고등록" onClick={navToDetail} />
       </PostButton>
     </StyledDivContainer>
   );

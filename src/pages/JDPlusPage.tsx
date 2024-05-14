@@ -5,6 +5,7 @@ import BundleEditor from "../components/editor/BundleEditor";
 import TimeSelector from "../components/common/TimePicker";
 import OneDatePick from "../components/common/DatePicker";
 import { useNavigate } from "react-router-dom";
+import Modal from "../components/JD/JDModal";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -140,7 +141,18 @@ const JDPlusPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
 
   const handleTimeChange = (time: string) => {
     setSelectedTime(time);
@@ -182,13 +194,14 @@ const JDPlusPage: React.FC = () => {
 
   return (
     <StyledDivContainer className="page">
+      <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
       <ToggleContainer>
         <AirplaneToggle step={1} />
       </ToggleContainer>
       <TopTitleBar>
         <Title>새로운 공고 등록</Title>
         <ButtonContainer>
-          <CancelButton onClick={() => nav(-1)}>취소</CancelButton>
+          <CancelButton onClick={openModal}>취소</CancelButton>
           <SaveButton onClick={() => nav(-1)}>저장</SaveButton>
         </ButtonContainer>
       </TopTitleBar>

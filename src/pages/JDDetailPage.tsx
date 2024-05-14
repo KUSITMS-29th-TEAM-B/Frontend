@@ -5,10 +5,13 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import { useNavigate, useParams } from "react-router-dom";
 import { Job, RecruitmentStatus } from "../types/type";
+import arrowIcon from "../assets/icons/icon_arrow_right.svg";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
+  const [firstTime, setFirstTime] = useState(true); // 자기소개서 작성한 이력 여부
+
   const job: Job = {
     id: 1,
     title: "프론트엔드 개발자 채용",
@@ -32,6 +35,13 @@ const JDDetailPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
+
   return (
     <StyledDivContainer className="page">
       <MainContainer>
@@ -53,7 +63,10 @@ const JDDetailPage: React.FC = () => {
           <TopTitleBar>
             <Title>공고 상세</Title>
             <TopButton onClick={() => nav(`/jd/edit/${jdId}`)}>
-              자기소개서 작성
+              <TopButtonText>
+                {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
+                <img src={arrowIcon} alt="icon" />
+              </TopButtonText>
             </TopButton>
           </TopTitleBar>
           <JobContainer>{jdId}</JobContainer>
@@ -123,15 +136,28 @@ const Title = styled.h1`
 `;
 
 const TopButton = styled.button`
-  display: inline-flex;
-  padding: 0.625rem 4rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.5rem;
-  border: none;
-  color:var(--white);
-  background: var(--main-500, #7D82FF);
+    display: inline-flex;
+    padding: 0.5rem 2.75rem;
+    align-items: flex-start;
+    gap: 0.625rem;
+    justify-content: center;
+    text-align: center;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    align-items: center;
+    border-radius: 0.5rem;
+    border: none;
+    color:var(--white);
+    background: var(--main-500, #7D82FF);
+`;
+
+const TopButtonText = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 `;
 
 const MainContainer = styled.div`
