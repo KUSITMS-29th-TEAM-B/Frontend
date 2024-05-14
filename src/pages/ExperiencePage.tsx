@@ -91,9 +91,10 @@ const MainContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  // background: url(${backgroundImg});
-  background-color: #fbfbfd;
+  // background-color: #fbfbfd;
   position: relative;
+  background: url(${backgroundImg});
+  background-size: cover;
 `;
 
 const Description = styled.div`
@@ -122,6 +123,7 @@ const CenteredContainer = styled(motion.div)`
   padding-top: 100px;
   overflow: scroll;
   overflow-y: hidden;
+  background: transparent;
   /* 스크롤 커스텀 */
   &::-webkit-scrollbar {
     height: 6px;
