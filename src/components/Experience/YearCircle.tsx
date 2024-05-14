@@ -27,7 +27,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
 
-  const radius = 22;
+  const radius = 20;
   const centralWidth = 84;
   const surroundWidth = 88;
   // const angles = [-60, -15, 30, 75, 120];
