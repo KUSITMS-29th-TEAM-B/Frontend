@@ -74,7 +74,7 @@ const ExperiencePage = () => {
       <RoundButton
         style={{
           position: "absolute",
-          right: selectedYear ? "52%" : 30,
+          right: selectedYear ? "62%" : 30,
           bottom: 30,
         }}
       >

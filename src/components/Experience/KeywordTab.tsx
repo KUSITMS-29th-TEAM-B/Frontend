@@ -1,16 +1,19 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { keywordState } from "../../store/selectedStore";
+import { keywordState, yearState } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
 import { ArrowRight, CircleArrow } from "../../assets";
+import YearSelect from "./YearSelect";
 
 const KeywordTab = () => {
+  const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedQ, setSelectedQ] = React.useState(1);
   const [keyword, setKeyword] = useRecoilState(keywordState);
 
   // 임시 데이터
+  const years = [2000, 2005, 2010, 2015, 2020];
   const menus = [
     { title: "전체", num: 60 },
     { title: "기업프로젝트", num: 60 },
@@ -23,6 +26,7 @@ const KeywordTab = () => {
       <LeftContainer>
         <ArrowRight />
         <KeywordText>{keyword}</KeywordText>
+        <YearSelect value={selectedYear} options={years} onChange={setSelectedYear} />
         <MenuList>
           {menus.map((item) => (
             <MenuItem>
@@ -76,6 +80,7 @@ const KeywordText = styled.div`
 `;
 
 const MenuList = styled.div`
+  margin-top: 48px;
   display: flex;
   flex-direction: column;
   width: 189px;
