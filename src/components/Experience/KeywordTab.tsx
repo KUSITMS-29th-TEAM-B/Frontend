@@ -4,13 +4,24 @@ import styled from "styled-components";
 import { keywordState, yearState } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
-import { ArrowRight, CircleArrow } from "../../assets";
+import {
+  ArrowDownThin,
+  ArrowRight,
+  ArrowUpThin,
+  CircleArrow,
+  Options,
+} from "../../assets";
 import YearSelect from "./YearSelect";
+import { Popper } from "@mui/material";
+import Checkbox from "../common/Checkbox";
 
 const KeywordTab = () => {
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedQ, setSelectedQ] = React.useState(1);
   const [keyword, setKeyword] = useRecoilState(keywordState);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "tag-popper" : undefined;
 
   // 임시 데이터
   const years = [2000, 2005, 2010, 2015, 2020];
@@ -20,6 +31,11 @@ const KeywordTab = () => {
     { title: "밋업데이", num: 60 },
     { title: "대외홍보팀", num: 60 },
   ];
+
+  // 역량 키워드 클릭 함수
+  const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
 
   /**
    * 사이드 메뉴 컨테이너
@@ -63,6 +79,34 @@ const KeywordTab = () => {
             ></Select>
           </QuestionSelect>
         </QuestionContainer>
+        <ExperienceList>
+          <div className="tag-option">
+            <Options /> 역량 키워드
+            <button aria-describedby={id} onClick={handleTagPopper}>
+              {open ? <ArrowUpThin /> : <ArrowDownThin />}
+            </button>
+            <Popper id={id} open={open} anchorEl={anchorEl}>
+              <TagPopperBox>
+                <div className="tab-list">
+                  <div className="tab-item">기본</div>
+                  <div className="tab-item">MY</div>
+                </div>
+                <div
+                  className="checkbox-list"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                  }}
+                >
+                  <Checkbox label="커뮤니케이션" />
+                  <Checkbox label="커뮤니케이션" />
+                  <Checkbox label="커뮤니케이션" />
+                  <Checkbox label="커뮤니케이션" />
+                </div>
+              </TagPopperBox>
+            </Popper>
+          </div>
+        </ExperienceList>
       </ContentContainer>
     );
   };
@@ -77,6 +121,45 @@ const KeywordTab = () => {
     </MainContainer>
   );
 };
+
+const TagPopperBox = styled.div`
+  display: flex;
+  width: 355px;
+  flex-direction: column;
+  height: 245px;
+  padding: 21px 22px 21px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--main-200, #e5e6ff);
+  background: #fff;
+  gap: 25px;
+  .tab-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: var(--neutral-50, #f7f7fb);
+  }
+  .tab-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${(props) => props.theme.fonts.body4};
+    color: ${(props) => props.theme.colors.neutral500};
+    width: 72px;
+    height: 27px;
+    flex-shrink: 0;
+    &:hover {
+      ${(props) => props.theme.fonts.subtitle5};
+      color: ${(props) => props.theme.colors.neutral600};
+      border-radius: 4px;
+      background: var(--neutral-0, #fff);
+    }
+  }
+`;
 
 const MainContainer = styled.div`
   width: 100%;
@@ -131,6 +214,7 @@ const MenuItem = styled.div`
 `;
 
 const ContentContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 18px 40px;
@@ -148,6 +232,7 @@ const QuestionContainer = styled.div`
 `;
 
 const QuestionSelect = styled.div`
+  width: 100%;
   margin: 9px 0px;
   display: flex;
   flex-direction: column;
@@ -155,6 +240,25 @@ const QuestionSelect = styled.div`
   .label {
     ${(props) => props.theme.fonts.subtitle4};
     color: ${(props) => props.theme.colors.main500};
+  }
+`;
+
+const ExperienceList = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  .tag-option {
+    ${(props) => props.theme.fonts.cap1};
+    color: ${(props) => props.theme.colors.neutral600};
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+  }
+  button {
+    border: none;
+    background: none;
   }
 `;
 
