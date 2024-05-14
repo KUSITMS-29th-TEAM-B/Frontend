@@ -7,9 +7,13 @@ const StyledTimePicker = styled(DatePicker)`
   padding: 8px;
   margin: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  background-color: #F7F7FB;
+  border: none;
   font-size: 16px;
   width: 100%;
+  &:focus {
+    outline: none;
+  }
 `;
 
 type TimePickerProps = {

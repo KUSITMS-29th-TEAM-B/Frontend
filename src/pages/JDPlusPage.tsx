@@ -21,6 +21,7 @@ const ToggleContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: left;
+  margin-top: 1.25rem;
 `;
 
 const TopTitleBar = styled.div`
@@ -65,10 +66,13 @@ const SaveButton = styled.button`
 `;
 
 const MainContainer = styled.div`
-  width: 100%; 
-  border-radius: 10px;
-  background: #FFF;
-  min-height: 30rem;
+    width: 100%; 
+    border-radius: 10px;
+    background: #FFF;
+    border-radius: 0.9375rem;
+    border: 1px solid var(--neutral-200, #EEEFF7);
+    background: var(--icon-color, #FFF);
+    margin-bottom: 3.25rem;
 `;
 
 const TopContainer = styled.div`
@@ -77,7 +81,8 @@ const TopContainer = styled.div`
     //background-color: red;
     height: 10rem;
     align-items: center;
-    margin: 1.5rem;
+    //margin: 1.5rem;
+    padding: 2rem;
     justify-content: center;
 `;
 
@@ -85,8 +90,6 @@ const LeftTitleContainer = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid black;
-    padding-right: 2rem;
 `;
 
 const RightTitleContainer = styled.div`
@@ -94,7 +97,6 @@ const RightTitleContainer = styled.div`
     display: flex;
     flex-direction: column;
     z-index: 100;
-    padding-right: 2rem;
 `;
 
 const InputContainer = styled.div`
@@ -106,11 +108,16 @@ const InputContainer = styled.div`
 `;
 
 const InputTitle = styled.div`
+    width: 4rem;
     display: flex;
     justify-content: center;
-    flex: 2;
-    font-size: 16px;
-    color: black;
+    color: var(--neutral-600, #63698D);
+    text-align: right;
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 600;
+    margin-right: 1.25rem;
+    letter-spacing: -0.0225rem;
 `;
 
 const InputBox = styled.input`
@@ -119,8 +126,12 @@ const InputBox = styled.input`
     flex: 8;
     background-color: #F2F3F9;
     border-radius: 10px;
+    padding: 1rem 1.25rem;
     height: 2.5rem;
     border: none;
+    &:focus {
+    outline: none;
+  }
 `;
 
 const PeriodBox = styled.div`
@@ -131,7 +142,6 @@ const PeriodBox = styled.div`
 
 const ContentContainer = styled.div`
     align-items: center;
-    margin: 1.5rem;
     justify-content: center;
     z-index: 1;
 `;
@@ -143,6 +153,13 @@ const JDPlusPage: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);

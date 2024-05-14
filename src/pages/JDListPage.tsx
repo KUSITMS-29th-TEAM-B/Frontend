@@ -6,6 +6,8 @@ import PlaneLoading from "../components/common/Loading"; // api 연결후 로딩
 import btnbg from "../assets/icons/icon_plus_button_bg.svg";
 import prebtn from "../assets/icons/icon_page_prev.svg";
 import nextbtn from "../assets/icons/icon_page_next.svg";
+import prebtn_v2 from "../assets/icons/icon_prev_btn_v2.svg";
+import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
 
 const JDListPage: React.FC = () => {
@@ -128,13 +130,13 @@ const JDListPage: React.FC = () => {
       </MainContainer>
       <PagenationContainer>
         <PagenationButton
-          src={prebtn}
+          src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
           alt="prevbtn"
           onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
         />
         <PageNumbers>{pages}</PageNumbers>
         <PagenationButton
-          src={nextbtn}
+          src={currentPage === pageTotal ? nextbtn_v2 : nextbtn}
           alt="nextbtn"
           onClick={() =>
             setCurrentPage(
