@@ -227,7 +227,7 @@ const JDEditPage: React.FC = () => {
               onClick={JDtoggleContainer}
               active={activebutton === "JD"}
             >
-              <ButtonText active={activebutton === "JD"}>JD분석</ButtonText>
+              <ButtonText active={activebutton === "JD"}>공고보기</ButtonText>
             </JDButton>
             <ExperienceButton
               onClick={ExptoggleContainer}

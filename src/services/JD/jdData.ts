@@ -77,7 +77,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
 ];
 
 //더미데이터 공고 상세
-const jobDetails: Job[] = [
+export const jobDetails: Job[] = [
   {
     id: 1,
     title: "프론트엔드 개발자 채용",
@@ -85,8 +85,14 @@ const jobDetails: Job[] = [
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
     status: RecruitmentStatus.End,
     dday: 11,
-    content:
-      "<p>우리 팀과 함께 혁신적인 프로젝트를 만들어 갈 프론트엔드 개발자를 찾습니다.</p>",
+    content: `<div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>`,
   },
   {
     id: 2,
@@ -95,6 +101,75 @@ const jobDetails: Job[] = [
     recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
     status: RecruitmentStatus.Completed,
     dday: 30,
-    content: "<p>고성능 백엔드 시스템 구축 경험이 있는 개발자를 찾습니다.</p>",
+    content: `<div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>`,
   },
+  {
+    id: 3,
+    title: "백엔드 개발자 채용",
+    description: "Node.js 경험자",
+    recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
+    status: RecruitmentStatus.Completed,
+    dday: 30,
+    content: `<div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+    <h1>Job Description</h1>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>`,
+  },
+];
+
+export const ExpCase = [
+  {
+    id: 1,
+    upper: "큐시즘",
+    lower: ["기업프로젝트", "해커톤"],
+  },
+  {
+    id: 2,
+    upper: "봉사",
+    lower: ["교육봉사", "해외봉사"],
+  },
+  {
+    id: 3,
+    upper: "동아리",
+    lower: ["동아리이름1", "동아리이름2", "동아리이름3"],
+  },
+  {
+    id: 4,
+    upper: "상위태그",
+    lower: ["하위태그1", "하위태그1", "하위태그1"],
+  },
+];
+
+export const defaultKeyWord = [
+  "커뮤니케이션",
+  "리더쉽",
+  "협업",
+  "키워드1",
+  "키워드1",
+  "키워드1",
+];
+export const myKeyWord = [
+  "내가만든키워드",
+  "너를위해",
+  "노동했지",
+  "힘들다",
+  "으아아",
+  "화이팅",
 ];

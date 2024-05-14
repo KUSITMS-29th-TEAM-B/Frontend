@@ -2,6 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { JobAnnouncement } from "../../types/type";
 import { useNavigate } from "react-router-dom";
+import StateBox from "./StateBox";
 
 interface JobAnnouncementProps {
   announcement: JobAnnouncement;
@@ -19,7 +20,7 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
       <TopContainer>
         <StatusContainer>
           {status !== "마감" && <DdayContainer>{"D-" + dday}</DdayContainer>}
-          {status !== "작성전" && <StateBox status={status}>{status}</StateBox>}
+          {status !== "작성전" && <StateBox status={status} />}
         </StatusContainer>
         <DateContainer>24.01.19</DateContainer>
       </TopContainer>
@@ -72,40 +73,6 @@ const DateContainer = styled.div`
 const StatusContainer = styled.div`
     display: flex;
     flex-direction: row;
-`;
-
-const StateBox = styled.div<{ status?: string }>`
-  padding: 0.25rem 0.7rem;
-  border-radius: 0.25rem;
-  font-size: 0.8rem;
-  background-color: ${(props) => {
-    switch (props.status) {
-      case "작성중":
-        return "#E5E6FF";
-      case "지원완료":
-        return "#E5E6FF";
-      case "작성완료":
-        return "#FFF5D1";
-      case "마감":
-        return "#EEEFF7";
-      default:
-        return "transparent";
-    }
-  }};
-  color: ${(props) => {
-    switch (props.status) {
-      case "작성중":
-        return "#5C70DB";
-      case "지원완료":
-        return "#5C70DB";
-      case "작성완료":
-        return "#FFA63E";
-      case "마감":
-        return "#63698D";
-      default:
-        return "transparent";
-    }
-  }};
 `;
 
 const Title = styled.div`

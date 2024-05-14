@@ -21,7 +21,7 @@ const BundleEditor: React.FC<TinyMCEEditorProps> = ({
   let API_KEY = process.env.REACT_APP_TINYMCE_API;
 
   const editorInit = {
-    height: 300,
+    height: 400,
     menubar: false,
     statusbar: false,
     highlight_on_focus: false,

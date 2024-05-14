@@ -219,7 +219,7 @@ const JDPlusPage: React.FC = () => {
         <Title>새로운 공고 등록</Title>
         <ButtonContainer>
           <CancelButton onClick={openModal}>취소</CancelButton>
-          <SaveButton onClick={() => nav(-1)}>저장</SaveButton>
+          <SaveButton onClick={() => nav("/jd")}>저장</SaveButton>
         </ButtonContainer>
       </TopTitleBar>
       <MainContainer>

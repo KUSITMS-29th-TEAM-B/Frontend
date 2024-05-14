@@ -33,7 +33,8 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose }) => {
           </CloseButton>
           <ConfirmButton
             onClick={() => {
-              nav(-1);
+              onClose();
+              nav("/jd");
             }}
           >
             <div>네, 돌아갈게요</div>
