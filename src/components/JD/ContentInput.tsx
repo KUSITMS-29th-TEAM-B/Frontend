@@ -3,12 +3,17 @@ import styled, { css } from "styled-components";
 
 interface ContentInputProps {
   content: string;
+  isEdit: boolean;
   onChange: (value: string) => void;
 }
 
-const ContentInput: React.FC<ContentInputProps> = ({ content, onChange }) => {
+const ContentInput: React.FC<ContentInputProps> = ({
+  content,
+  isEdit,
+  onChange,
+}) => {
   return (
-    <ContentContainer hasContent={content.trim().length > 0}>
+    <ContentContainer isEdit={isEdit} hasContent={content.trim().length > 0}>
       <Content
         placeholder={`문항에 해당하는 답변을 작성해 주세요.
         \n이 문항에서 어필하고 싶은 나의 강점이 있다면, 위의 ‘역량 키워드’ 추가 (+) 버튼을 눌러 등록해 보세요.`}
@@ -19,7 +24,7 @@ const ContentInput: React.FC<ContentInputProps> = ({ content, onChange }) => {
   );
 };
 
-const ContentContainer = styled.div<{ hasContent: boolean }>`
+const ContentContainer = styled.div<{ isEdit: boolean; hasContent: boolean }>`
   display: flex;
   height: 8rem;
   flex-direction: column;
@@ -29,6 +34,7 @@ const ContentContainer = styled.div<{ hasContent: boolean }>`
   padding: 1rem;
 
   ${(props) =>
+    props.isEdit &&
     props.hasContent &&
     css`
       border: 1px solid #D9DBE6;

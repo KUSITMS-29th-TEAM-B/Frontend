@@ -63,7 +63,7 @@ const JDEditPage: React.FC = () => {
     if (editing) {
       setEditing(!editing);
       //저장기능
-    } else {
+    } else if (!editing && !completed) {
       setEditing(!editing);
     }
   };
@@ -144,6 +144,7 @@ const JDEditPage: React.FC = () => {
                       />
                       <ContentInput
                         content={item.content}
+                        isEdit={editing}
                         onChange={(value) => handleContentChange(index, value)}
                       />
                       {/* <button onClick={() => handleRemoveQuestion(index)}>
@@ -190,11 +191,19 @@ const JDEditPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            <ScrollDiv>
-              <ExpContainer>
-                <ExperienceList />
-              </ExpContainer>
-            </ScrollDiv>
+            {activebutton === "Exp" ? (
+              <ScrollDiv>
+                <ExpContainer>
+                  <ExperienceList />
+                </ExpContainer>
+              </ScrollDiv>
+            ) : (
+              <ScrollDiv>
+                <JobContainer>
+                  <div>{activebutton}</div>
+                </JobContainer>
+              </ScrollDiv>
+            )}
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -222,7 +231,18 @@ const ToggleContainer = styled.div`
 
 const ExpContainer = styled.div`
   width: 100%;
-  height: 40rem;
+  height: 35rem;
+  display: flex;
+  padding: 2rem;
+  margin-right: 1rem;
+  flex-direction: column;
+  /* overflow-y: scroll;
+  overflow-x: hidden; */
+`;
+
+const JobContainer = styled.div`
+  width: 100%;
+  height: 35rem;
   display: flex;
   padding: 2rem;
   margin-right: 1rem;
@@ -315,6 +335,7 @@ const CenteredContainer = styled(motion.div)`
 
 const ScrollDiv = styled.div`
     overflow-y: auto;
+    overflow-x: hidden;
     &::-webkit-scrollbar {
         width: 4px;
     }
@@ -346,8 +367,9 @@ const ActiveContainer = styled(motion.div)`
   margin: 0 3.5rem; 
   margin-top : 10rem;
   background: #F7F7FB;
+  //background: red;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 40rem;
+  height: 38rem;
 `;
 
 const buttonActiveStyle = css`
