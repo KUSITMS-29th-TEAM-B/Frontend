@@ -7,6 +7,7 @@ import { yearState } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
 import RoundButton from "../components/common/RoundButton";
 import { Plus } from "../assets";
+import KeywordTab from "../components/Experience/KeywordTab";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
@@ -23,7 +24,7 @@ const ExperiencePage = () => {
         ref={componentRef}
         initial={{ width: "100%" }}
         animate={{
-          width: selectedYear ? "50%" : "100%",
+          width: selectedYear ? "40%" : "100%",
         }}
         transition={{
           type: "spring",
@@ -43,13 +44,13 @@ const ExperiencePage = () => {
     return (
       <ActiveContainer
         initial={{ width: "0%" }}
-        animate={{ width: selectedYear ? "50%" : "0%" }}
+        animate={{ width: selectedYear ? "60%" : "0%" }}
         exit={{
           transition: { delay: 0.5, stiffness: 50, damping: 20 },
         }}
         transition={{ type: "spring", stiffness: 40 }}
       >
-        {selectedYear ? "활동 상세 사이드 탭" : null}
+        {selectedYear ? <KeywordTab /> : null}
       </ActiveContainer>
     );
   };
@@ -58,30 +59,28 @@ const ExperiencePage = () => {
   //
   //
   return (
-    <>
-      <MainContainer>
-        {/* <NoExperience /> */}
-        {selectedYear ? null : (
-          <Description>
-            <span className="user">{name}</span>
-            님의 여정을
-            <br />
-            시작해볼까요?
-          </Description>
-        )}
-        {renderCentralContainer()}
-        <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-        <RoundButton
-          style={{
-            position: "absolute",
-            right: selectedYear ? "52%" : 30,
-            bottom: 30,
-          }}
-        >
-          <Plus /> 경험 추가하기
-        </RoundButton>
-      </MainContainer>
-    </>
+    <MainContainer>
+      {/* <NoExperience /> */}
+      {selectedYear ? null : (
+        <Description>
+          <span className="user">{name}</span>
+          님의 여정을
+          <br />
+          시작해볼까요?
+        </Description>
+      )}
+      {renderCentralContainer()}
+      <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
+      <RoundButton
+        style={{
+          position: "absolute",
+          right: selectedYear ? "62%" : 30,
+          bottom: 30,
+        }}
+      >
+        <Plus /> 경험 추가하기
+      </RoundButton>
+    </MainContainer>
   );
 };
 
@@ -99,7 +98,7 @@ const MainContainer = styled.div`
 
 const Description = styled.div`
   position: absolute;
-  top: 165px;
+  top: 140px;
   left: 80px;
   ${(props) => props.theme.fonts.headline1};
   color: #343a5d;
@@ -110,17 +109,17 @@ const Description = styled.div`
 `;
 
 const ActiveContainer = styled(motion.div)`
+  margin-top: 100px;
   border-radius: 10px;
   background: #f7f7fb;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 700px;
+  height: 600px;
 `;
 
 const CenteredContainer = styled(motion.div)`
   position: relative;
   width: 100%;
-  height: 750px;
-  padding-top: 100px;
+  height: 720px;
   overflow: scroll;
   overflow-y: hidden;
   background: transparent;
