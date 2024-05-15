@@ -1,10 +1,11 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { keywordState, yearState } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
 import {
+  ArrowDown,
   ArrowDownThin,
   ArrowRight,
   ArrowUpThin,
@@ -12,7 +13,12 @@ import {
   Options,
 } from "../../assets";
 import YearSelect from "./YearSelect";
-import { Popper } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Popper,
+} from "@mui/material";
 import Checkbox from "../common/Checkbox";
 import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
@@ -20,14 +26,13 @@ import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
 
 const KeywordTab = () => {
+  const theme = useTheme();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [keyword, setKeyword] = useRecoilState(keywordState);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
-
-  console.log("q", selectedQ);
 
   // 역량 키워드 페이지네이션
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -48,6 +53,16 @@ const KeywordTab = () => {
   // 역량 키워드 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  // 질문 아코디언 관리
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleChange = () => {
+    if (expanded) {
+      setSelectedQ(0);
+    }
+    setExpanded(!expanded);
   };
 
   /**
@@ -92,17 +107,55 @@ const KeywordTab = () => {
     return (
       <ContentContainer>
         {/* 질문과 함께보기 컨테이너 */}
-        <QuestionContainer>
-          <CircleArrow />
-          <QuestionSelect>
-            <div className="label">질문과 함께보기</div>
+        <Accordion
+          expanded={expanded}
+          onChange={handleChange}
+          sx={{
+            background: theme.colors.main50,
+            borderRadius: "12px",
+            boxShadow: "none",
+            "&:first-of-type": {
+              borderRadius: "12px",
+            },
+            "&::before": {
+              backgroundColor: "transparent",
+            },
+          }}
+        >
+          <AccordionSummary
+            // expandIcon={<ArrowDown />}
+            aria-controls="basic-info"
+            id="basic-info"
+            sx={{
+              "&.Mui-expanded": {
+                minHeight: 0,
+              },
+              ".MuiAccordionSummary-content": {
+                "&.Mui-expanded": {
+                  margin: "12px 0px",
+                },
+              },
+              minHeight: 0,
+              borderRadius: "12px",
+              background: theme.colors.main50,
+            }}
+          >
+            <QuestionContainer>
+              <CircleArrow />
+              <QuestionSelect>
+                <div className="label">질문과 함께보기</div>
+              </QuestionSelect>
+            </QuestionContainer>
+          </AccordionSummary>
+          <AccordionDetails sx={{ padding: "0px 23px 20px 72px" }}>
             <Select
               value={selectedQ}
               options={questions.map((item) => item.question)}
               onChange={(e) => setSelectedQ(Number(e.target.value))}
-            ></Select>
-          </QuestionSelect>
-        </QuestionContainer>
+            ></Select>{" "}
+          </AccordionDetails>
+        </Accordion>
+
         {/* 역량 키워드 선택 컨테이너 */}
         <KeywordSelect>
           <Options /> 역량 키워드
@@ -239,7 +292,7 @@ const QuestionContainer = styled.div`
   gap: 15px;
   width: 100%;
   border-radius: 12px;
-  padding: 10px 20px;
+  // padding: 10px 20px;
   background: ${(props) => props.theme.colors.main50};
 `;
 
