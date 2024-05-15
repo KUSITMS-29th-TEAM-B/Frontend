@@ -34,6 +34,10 @@ const Header = styled.input`
   background-color: transparent;
   outline: none;
   padding: 12px 24px;
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.neutral500}; 
+  }
 `;
 
 export default HeaderInput;

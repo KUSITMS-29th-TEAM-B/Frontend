@@ -6,10 +6,11 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
 import Modal from "../components/JD/JDModal";
+import Toggle from "../components/JD/Toggle";
 
 const JDEditPage: React.FC = () => {
-  const [active, setActive] = useState(false);
-  const [activebutton, setActivebutton] = useState("");
+  const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
+  const [activebutton, setActivebutton] = useState(""); // 경험 분석 or 공고 보기
   const [questionContent, setQuestionContent] = useState<{
     question: { header: string; content: string }[];
   }>({
@@ -18,7 +19,17 @@ const JDEditPage: React.FC = () => {
       { header: "", content: "" },
       { header: "", content: "" },
     ],
-  });
+  }); //문항 데이터
+  const [editing, setEditing] = useState(false);
+  const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    if (completed) {
+      console.log("작성 완료 상태입니다.");
+    } else {
+      console.log("작성 중 상태입니다.");
+    }
+  }, [completed]);
 
   const handleHeaderChange = (index: number, value: string) => {
     setQuestionContent((prev) => ({
@@ -46,6 +57,15 @@ const JDEditPage: React.FC = () => {
     setQuestionContent((prev) => ({
       question: prev.question.filter((_, i) => i !== index),
     }));
+  };
+
+  const handleEditButton = () => {
+    if (editing) {
+      setEditing(!editing);
+      //저장기능
+    } else {
+      setEditing(!editing);
+    }
   };
 
   useEffect(() => {
@@ -79,18 +99,13 @@ const JDEditPage: React.FC = () => {
     }
   };
 
-  //   const handleEditorChange = (newContent: string) => {
-  //     console.log("Content was updated:", newContent);
-  //     setContent(newContent);
-  //   };
-
   return (
     <StyledDivContainer className="page">
       <MainContainer>
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "23%",
+            x: active ? "7%" : "25%",
             width: active ? "50%" : "100%",
           }}
           transition={{
@@ -107,28 +122,49 @@ const JDEditPage: React.FC = () => {
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
-              <div>지원 완료 토글</div>
-              <TopButton>저장</TopButton>
+              <ToggleWrapper>
+                작성완료
+                <Toggle
+                  isActive={completed}
+                  onClick={() => (!editing ? setCompleted(!completed) : null)}
+                />
+              </ToggleWrapper>
+              <TopButton isEdit={editing} onClick={handleEditButton}>
+                {editing ? "저장" : "수정"}
+              </TopButton>
             </TopWrapper>
             <ScrollDiv>
-              <QuestionsWrapper>
-                {questionContent.question.map((item, index) => (
-                  <div key={index}>
-                    <HeaderInput
-                      content={item.header}
-                      onChange={(value) => handleHeaderChange(index, value)}
-                    />
-                    <ContentInput
-                      content={item.content}
-                      onChange={(value) => handleContentChange(index, value)}
-                    />
-                    {/* <button onClick={() => handleRemoveQuestion(index)}>
+              {editing ? (
+                <QuestionsWrapper>
+                  {questionContent.question.map((item, index) => (
+                    <div key={index}>
+                      <HeaderInput
+                        content={item.header}
+                        onChange={(value) => handleHeaderChange(index, value)}
+                      />
+                      <ContentInput
+                        content={item.content}
+                        onChange={(value) => handleContentChange(index, value)}
+                      />
+                      {/* <button onClick={() => handleRemoveQuestion(index)}>
                   Remove
                 </button> */}
-                  </div>
-                ))}
-                <button onClick={handleAddQuestions}>문항추가</button>
-              </QuestionsWrapper>
+                    </div>
+                  ))}
+                  <button onClick={handleAddQuestions}>문항추가</button>
+                </QuestionsWrapper>
+              ) : (
+                <AnswersWrapper>
+                  {questionContent.question.map((item, index) => (
+                    <Answer key={index}>
+                      <AnswerHeader>
+                        {`${index + 1}` + `. ` + item.header}
+                      </AnswerHeader>
+                      <AnswerContent>{item.content}</AnswerContent>
+                    </Answer>
+                  ))}
+                </AnswersWrapper>
+              )}
             </ScrollDiv>
           </EditContainer>
         </CenteredContainer>
@@ -214,16 +250,40 @@ const TopWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const TopButton = styled.button`
-  display: inline-flex;
-  padding: 0.625rem 4rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.5rem;
-  border: none;
-  color:var(--white);
-  background: var(--main-500, #7D82FF);
+const TopButton = styled.button<{ isEdit: boolean }>`
+    display: inline-flex;
+    padding: 0.625rem 4rem;
+    justify-content: center;
+    align-items: center;
+    color:#A6AAC0;
+    gap: 0.625rem;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    border: 1px solid #D9DBE6;
+    background-color: white;
+  ${(props) =>
+    props.isEdit &&
+    css`
+        border: 1px solid transparent;
+        color:var(--white);
+        background: var(--main-500, #7D82FF);
+    `}
+`;
+
+const ToggleWrapper = styled.div`
+    display: inline-flex;
+    flex-direction: row;
+    color: var(--neutral-700, #343A5D);
+    font-family: Pretendard;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.25rem; 
+    letter-spacing: -0.02rem;
+    gap: 0.75rem;
+    align-items: center;
 `;
 
 const MainContainer = styled.div`
@@ -269,7 +329,7 @@ const ScrollDiv = styled.div`
 const EditContainer = styled.div`
     width: 100%;
     align-items: flex-start;
-    min-height: 30rem;
+    min-height: 15rem;
     padding: 2rem 0rem;
     gap: 0.625rem;
     flex-shrink: 0;
@@ -329,6 +389,36 @@ const QuestionsWrapper = styled.div`
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
     //overflow-y: scroll;
+`;
+
+const AnswersWrapper = styled.div`
+    height: 28rem;
+    color: var(--neutral-700, #343A5D);
+    padding: 0 2rem;
+    //overflow-y: scroll;
+`;
+
+const Answer = styled.div`
+    margin-bottom: 1.75rem;
+`;
+
+const AnswerHeader = styled.h3`
+    color: var(--neutral-700, #343A5D);
+    /* subtitle 3 (semibold 16pt) */
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    margin-bottom: 1rem;
+`;
+
+const AnswerContent = styled.p`
+    color: var(--neutral-700, #343A5D);
+    /* body 5 (regular 13pt) */
+    font-size: 0.8em;
+    font-style: normal;
+    font-weight: 400;
+    border-top: 1px solid #EAEBF3;
+    padding: 1.25rem;
 `;
 
 const ButtonText = styled.div<ButtonProps>`

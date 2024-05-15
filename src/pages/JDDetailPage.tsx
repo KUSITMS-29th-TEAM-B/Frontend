@@ -89,7 +89,7 @@ const JDDetailPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "23%",
+            x: active ? "7%" : "25%",
             width: active ? "50%" : "100%",
           }}
           transition={{
