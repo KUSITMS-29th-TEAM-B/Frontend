@@ -5,7 +5,7 @@ import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
 import { yearState } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
-import RoundButton from "../components/common/RoundButton";
+import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
 import KeywordTab from "../components/Experience/KeywordTab";
 
@@ -71,7 +71,7 @@ const ExperiencePage = () => {
       )}
       {renderCentralContainer()}
       <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-      <RoundButton
+      <MainButton
         style={{
           position: "absolute",
           right: selectedYear ? "62%" : 30,
@@ -79,7 +79,7 @@ const ExperiencePage = () => {
         }}
       >
         <Plus /> 경험 추가하기
-      </RoundButton>
+      </MainButton>
     </MainContainer>
   );
 };

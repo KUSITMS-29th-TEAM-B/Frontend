@@ -9,6 +9,7 @@ import JDDetailPage from "./pages/JDDetailPage";
 import JDPlusPage from "./pages/JDPlusPage";
 import JDListPage from "./pages/JDListPage";
 import ExperiencePage from "./pages/ExperiencePage";
+import SignupPage from "./pages/SignupPage";
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path="/jd/post" element={<JDPlusPage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/sign-up" element={<SignupPage />} />
       </Routes>
     </>
   );
