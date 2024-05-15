@@ -8,7 +8,7 @@ interface ExpProps {
 }
 
 const StyledContainer = styled.div`
-    width: 90%;
+    width: 100%;
     background-color: white;
     border-radius: 20px;
     padding: 1.25rem;
@@ -17,7 +17,6 @@ const StyledContainer = styled.div`
     min-width: 250px;
     min-height: 12rem;
     justify-content: center;
-    margin: 1.25rem;
 `;
 
 const TopContainer = styled.div`

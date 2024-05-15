@@ -89,8 +89,8 @@ const JDDetailPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "10%" : "23%",
-            width: active ? "60%" : "100%",
+            x: active ? "7%" : "23%",
+            width: active ? "50%" : "100%",
           }}
           transition={{
             type: "spring",
@@ -128,9 +128,11 @@ const JDDetailPage: React.FC = () => {
                   <div className="date">{jdData.date}</div>
                 </JobTopDateBox>
               </JobTopBox>
-              <JobBottomBox>
-                <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
-              </JobBottomBox>
+              <ScrollDiv>
+                <JobBottomBox>
+                  <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
+                </JobBottomBox>
+              </ScrollDiv>
             </div>
           </JobContainer>
         </CenteredContainer>
@@ -138,8 +140,8 @@ const JDDetailPage: React.FC = () => {
           <ActiveContainer
             initial={{ x: "100%", width: "45%" }}
             animate={{
-              x: !active ? "97%" : "10%",
-              width: !active ? "45%" : "60%",
+              x: !active ? "110%" : "5%",
+              width: "45%",
             }}
             exit={{
               x: "0%",
@@ -156,9 +158,11 @@ const JDDetailPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험연결</ButtonText>
             </ExperienceButton>
-            <ExpContainer>
-              <ExperienceList />
-            </ExpContainer>
+            <ScrollDiv>
+              <ExpContainer>
+                <ExperienceList />
+              </ExpContainer>
+            </ScrollDiv>
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -186,12 +190,12 @@ const ToggleContainer = styled.div`
 
 const ExpContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 40rem;
+  padding: 2rem;
   display: flex;
-  padding-right: 3rem;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  //overflow-y: scroll;
+  //overflow-x: hidden;
 `;
 
 const TopTitleBar = styled.div`
@@ -244,9 +248,9 @@ const JobContainer = styled.div`
     flex-direction: column;
     width: 100%;
     height: 40rem;
-    padding: 2rem;
     align-items: flex-start;
     gap: 0.625rem;
+    //padding: 2rem;
     flex-shrink: 0;
     border-radius: 0.9rem;
     border: 1px solid var(--neutral-200, #EEEFF7);
@@ -254,10 +258,25 @@ const JobContainer = styled.div`
     //min-height: 100rem;
 `;
 
+const ScrollDiv = styled.div`
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background: #ccc;
+    }
+    ::-webkit-scrollbar-track {
+    }
+`;
+
 const JobTopBox = styled.div`
     display: flex;
     width: 100%;
     flex-direction: column;
+    padding: 2rem;
+    padding-bottom: 0rem;
 `;
 
 const JobTopTitleBox = styled.div`
@@ -270,7 +289,6 @@ const JobTopTitleBox = styled.div`
     font-size: 1.4rem;
     font-style: normal;
     font-weight: 600;
-    margin-bottom: 1rem;
     .job_detail_dday{
         display: flex;
         height: 1.5rem;
@@ -336,7 +354,13 @@ const JobTopDateBox = styled.div`
 `;
 
 const JobBottomBox = styled.div`
+    height: 28rem;
     color: var(--neutral-700, #343A5D);
+    //overflow-y: scroll;
+    margin: 0rem 0rem 2rem 2rem;
+    div {
+        padding-right: 1rem;
+    }
 `;
 
 const CenteredContainer = styled(motion.div)`
@@ -350,12 +374,13 @@ const CenteredContainer = styled(motion.div)`
 `;
 
 const ActiveContainer = styled(motion.div)`
+  width: 45%;
   border-radius: 10px;
-  margin-top : 2rem;
+  margin: 0 3.5rem; 
+  margin-top : 10rem;
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 40rem;
-  margin-left: 1.5rem;
 `;
 
 const buttonActiveStyle = css`
