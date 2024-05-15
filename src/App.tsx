@@ -11,6 +11,7 @@ import JDListPage from "./pages/JDListPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import SignupPage from "./pages/SignupPage";
 import ExperienceWritePage from "./pages/ExperienceWritePage";
+import ExperienceDetailPage from "./pages/ExperienceDetailPage";
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
         <Route path="/jd/post" element={<JDPlusPage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/experience/write" element={<ExperienceWritePage />} />
+        <Route path="/experience/detail/:id" element={<ExperienceDetailPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
       </Routes>

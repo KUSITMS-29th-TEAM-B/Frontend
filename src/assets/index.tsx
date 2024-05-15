@@ -1,4 +1,5 @@
 export { ReactComponent as Plus } from "./icons/icon_plus.svg";
+export { ReactComponent as Plus2 } from "./icons/icon_keyword_plus.svg";
 export { ReactComponent as ArrowDownThin } from "./icons/arrow-down-thin.svg";
 export { ReactComponent as ArrowUpThin } from "./icons/arrow-up-thin.svg";
 export { ReactComponent as ArrowDown } from "./icons/arrow-down.svg";

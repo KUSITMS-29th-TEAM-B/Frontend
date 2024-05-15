@@ -29,3 +29,8 @@ export interface Job {
   status: RecruitmentStatus;
   content: string;
 }
+
+export interface Question {
+  num: number;
+  content: string;
+}

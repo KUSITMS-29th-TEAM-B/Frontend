@@ -50,6 +50,7 @@ const InputBox = styled.textarea`
   border: 1px solid #a8a8a8;
   background: #eee;
   resize: none;
+  outline: none;
 `;
 
 export default Textarea;
