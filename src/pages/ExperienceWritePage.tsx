@@ -125,7 +125,7 @@ const ExperienceWritePage = () => {
               </div>
             </div>
             <div className="tag">
-              <div className="label">역량 태그 선택</div>
+              <div className="label">역량 키워드 선택</div>
             </div>
           </BasicFormContainer>
         </AccordionDetails>
