@@ -1,9 +1,24 @@
 import styled from "styled-components";
 
-const HeaderInput = () => {
+interface HeaderInputProps {
+  content: string;
+  onChange: (value: string) => void;
+  onRemove: () => void;
+}
+
+const HeaderInput: React.FC<HeaderInputProps> = ({
+  content,
+  onChange,
+  onRemove,
+}) => {
   return (
     <HeaderContainer>
-      <Header placeholder="자기소개서 문항을 옮겨 적어주세요." />
+      <Header
+        placeholder="자기소개서 문항을 입력하세요."
+        value={content}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <RemoveBtn onClick={onRemove}>x</RemoveBtn>
     </HeaderContainer>
   );
 };
@@ -25,6 +40,14 @@ const Header = styled.input`
   background-color: transparent;
   outline: none;
   padding: 12px 24px;
+
+  &::placeholder {
+    color: ${(props) => props.theme.colors.neutral500}; 
+  }
+`;
+
+const RemoveBtn = styled.div`
+   padding-right: 1rem;
 `;
 
 export default HeaderInput;

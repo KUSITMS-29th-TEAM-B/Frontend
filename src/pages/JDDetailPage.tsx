@@ -7,6 +7,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { RecruitmentStatus } from "../types/type";
 import arrowIcon from "../assets/icons/icon_arrow_right.svg";
 import StateBox from "../components/JD/StateBox";
+import { useRecoilState } from "recoil";
+import arrowLeft from "../assets/icons/icon_arrow_left.svg";
+import { detailStore } from "../store/jdStore";
 
 const jdData = {
   id: 3,
@@ -65,6 +68,7 @@ const JDDetailPage: React.FC = () => {
   const firstTime = jdData.status === "작성전"; // 자기소개서 작성한 이력 여부
   const jdId = useParams().id;
   const nav = useNavigate();
+  const [detailId, setDetailId] = useRecoilState<number>(detailStore);
 
   const ExptoggleContainer = () => {
     if (!active) {
@@ -83,14 +87,20 @@ const JDDetailPage: React.FC = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (!active) {
+      setDetailId(0);
+    }
+  }, [active]);
+
   return (
     <StyledDivContainer className="page">
       <MainContainer>
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "10%" : "23%",
-            width: active ? "60%" : "100%",
+            x: active ? "7%" : "23%",
+            width: active ? "50%" : "100%",
           }}
           transition={{
             type: "spring",
@@ -99,10 +109,13 @@ const JDDetailPage: React.FC = () => {
           }}
         >
           <ToggleContainer>
-            <AirplaneToggle step={1} />
+            <AirplaneToggle step={2} />
           </ToggleContainer>
           <TopTitleBar>
-            <Title>공고 상세</Title>
+            <Title>
+              <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
+              공고 상세
+            </Title>
             <TopButton onClick={() => nav(`/jd/edit/${jdId}`)}>
               <TopButtonText>
                 {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
@@ -128,18 +141,21 @@ const JDDetailPage: React.FC = () => {
                   <div className="date">{jdData.date}</div>
                 </JobTopDateBox>
               </JobTopBox>
-              <JobBottomBox>
-                <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
-              </JobBottomBox>
+              <ScrollDiv>
+                <JobBottomBox>
+                  <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
+                </JobBottomBox>
+              </ScrollDiv>
             </div>
           </JobContainer>
         </CenteredContainer>
         <AnimatePresence>
           <ActiveContainer
+            isActive={detailId !== 0}
             initial={{ x: "100%", width: "45%" }}
             animate={{
-              x: !active ? "97%" : "10%",
-              width: !active ? "45%" : "60%",
+              x: !active ? "110%" : "5%",
+              width: "45%",
             }}
             exit={{
               x: "0%",
@@ -156,9 +172,15 @@ const JDDetailPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험연결</ButtonText>
             </ExperienceButton>
-            <ExpContainer>
-              <ExperienceList />
-            </ExpContainer>
+            {detailId !== 0 ? (
+              <div>{detailId}</div>
+            ) : (
+              <ScrollDiv>
+                <ExpContainer>
+                  <ExperienceList />
+                </ExpContainer>
+              </ScrollDiv>
+            )}
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -186,12 +208,11 @@ const ToggleContainer = styled.div`
 
 const ExpContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 40rem;
   display: flex;
-  padding-right: 3rem;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  //overflow-y: scroll;
+  //overflow-x: hidden;
 `;
 
 const TopTitleBar = styled.div`
@@ -202,7 +223,10 @@ const TopTitleBar = styled.div`
 `;
 
 const Title = styled.h1`
-  color:#343A5D;
+    display: flex;
+    flex-direction: row;
+    color:#343A5D;
+    align-items: center;
 `;
 
 const TopButton = styled.button`
@@ -244,9 +268,9 @@ const JobContainer = styled.div`
     flex-direction: column;
     width: 100%;
     height: 40rem;
-    padding: 2rem;
     align-items: flex-start;
     gap: 0.625rem;
+    //padding: 2rem;
     flex-shrink: 0;
     border-radius: 0.9rem;
     border: 1px solid var(--neutral-200, #EEEFF7);
@@ -254,10 +278,25 @@ const JobContainer = styled.div`
     //min-height: 100rem;
 `;
 
+const ScrollDiv = styled.div`
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background: #ccc;
+    }
+    ::-webkit-scrollbar-track {
+    }
+`;
+
 const JobTopBox = styled.div`
     display: flex;
     width: 100%;
     flex-direction: column;
+    padding: 2rem;
+    padding-bottom: 0rem;
 `;
 
 const JobTopTitleBox = styled.div`
@@ -270,7 +309,6 @@ const JobTopTitleBox = styled.div`
     font-size: 1.4rem;
     font-style: normal;
     font-weight: 600;
-    margin-bottom: 1rem;
     .job_detail_dday{
         display: flex;
         height: 1.5rem;
@@ -336,7 +374,13 @@ const JobTopDateBox = styled.div`
 `;
 
 const JobBottomBox = styled.div`
+    height: 28rem;
     color: var(--neutral-700, #343A5D);
+    //overflow-y: scroll;
+    margin: 0rem 0rem 2rem 2rem;
+    div {
+        padding-right: 1rem;
+    }
 `;
 
 const CenteredContainer = styled(motion.div)`
@@ -349,13 +393,15 @@ const CenteredContainer = styled(motion.div)`
   //min-height: 100rem;
 `;
 
-const ActiveContainer = styled(motion.div)`
+const ActiveContainer = styled(motion.div)<{ isActive: boolean }>`
+  width: 45%;
   border-radius: 10px;
-  margin-top : 2rem;
-  background: #F7F7FB;
+  margin: 0 3.5rem; 
+  margin-top : 10rem;
+  background: ${(props) => (props.isActive ? "#FFF" : "#F7F7FB")};
+  //background: red;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 40rem;
-  margin-left: 1.5rem;
+  height: 38rem;
 `;
 
 const buttonActiveStyle = css`

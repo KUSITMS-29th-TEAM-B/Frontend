@@ -1,23 +1,67 @@
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { detailStore } from "../../store/jdStore";
 
 interface ExpProps {
+  id: number;
   title: string;
-  content: string;
   tags: string[];
+  maintag: string;
+  subtag: string;
+  period: string;
+  bookmark: boolean;
+  question: null | string[];
+  onClick: () => void;
 }
 
+const Experience: React.FC<ExpProps> = ({
+  id,
+  title,
+  tags,
+  maintag,
+  subtag,
+  period,
+  bookmark,
+  onClick,
+}) => {
+  const [detailId, setDetailId] = useRecoilState(detailStore);
+
+  const handleClick = () => {
+    setDetailId(id);
+    onClick();
+  };
+  return (
+    <StyledContainer onClick={handleClick}>
+      <TagContainer>
+        {tags.map((tag, index) => (
+          <Tag key={index}>{tag}</Tag>
+        ))}
+      </TagContainer>
+      <TopContainer>
+        <Title>{title}</Title>
+      </TopContainer>
+      <SubContainer>
+        <div>{maintag + ">" + subtag}</div>
+        <div>|</div>
+        <div>{period}</div>
+      </SubContainer>
+    </StyledContainer>
+  );
+};
+
+export default Experience;
+
 const StyledContainer = styled.div`
-    width: 90%;
+    width: 100%;
     background-color: white;
     border-radius: 20px;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
     min-width: 250px;
-    min-height: 12rem;
-    justify-content: center;
-    margin: 1.25rem;
+    display: flex;
+    padding: 1.5625rem 2.75rem 1.5625rem 1.875rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
 `;
 
 const TopContainer = styled.div`
@@ -25,19 +69,23 @@ const TopContainer = styled.div`
     flex-direction: row;
 `;
 
+const SubContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: ${(props) => props.theme.colors.neutral500}; 
+    ${(props) => props.theme.fonts.cap2}; 
+`;
+
 const Title = styled.div`
-    color: var(--neutral-700, #343A5D);
-    font-family: Pretendard;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+    color: ${(props) => props.theme.colors.neutral700}; 
+    ${(props) => props.theme.fonts.subtitle3}; 
 `;
 
 const TagContainer = styled.div`
     display: flex;
-    flex-direction: row;
-    margin-top: 0.8rem;
+    align-items: flex-start;
+    gap: 0.38rem;
 `;
 
 const Tag = styled.div`
@@ -45,44 +93,8 @@ const Tag = styled.div`
     padding: 0.25rem 0.75rem;
     justify-content: center;
     align-items: center;
-    gap: 0.625rem;
     border-radius: 0.6875rem;
-    border: 1px solid var(--main-500, #7D82FF);
+    background: ${(props) => props.theme.colors.main50}; 
     color: var(--main-500, #7D82FF);
-    font-family: Pretendard;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 0.875rem; 
-    letter-spacing: -0.0225rem;
-    margin-right:0.5rem;
+    ${(props) => props.theme.fonts.cap2}; 
 `;
-
-const ContentContainer = styled.div`
-    word-wrap: break-word; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
-    display: -webkit-box;
-    -webkit-line-clamp: 5; 
-    -webkit-box-orient: vertical;
-`;
-
-const Experience: React.FC<ExpProps> = ({ title, content, tags }) => {
-  return (
-    <StyledContainer>
-      <TopContainer>
-        <Title>{title}</Title>
-      </TopContainer>
-      <TagContainer>
-        {tags.map((tag, index) => (
-          <Tag key={index}>{tag}</Tag>
-        ))}
-      </TagContainer>
-      <ContentContainer>
-        <p>{content}</p>
-      </ContentContainer>
-    </StyledContainer>
-  );
-};
-
-export default Experience;
