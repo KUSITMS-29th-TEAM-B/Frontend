@@ -22,6 +22,7 @@ const Select = ({ options, onChange, value, ...props }: SelectProp) => {
 
 const StyledSelect = styled.select`
   ${(props) => props.theme.fonts.body3};
+  width: 100%;
   display: flex;
   padding: 17px 22px;
   justify-content: center;

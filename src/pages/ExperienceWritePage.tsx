@@ -5,23 +5,45 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  IconButton,
+  Popper,
 } from "@mui/material";
 import { ArrowDown, ArrowLeft } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
-import TimePicker from "../components/common/TimePicker";
 import { useNavigate } from "react-router-dom";
+import Chip from "../components/common/Chip";
+import OneDatePick from "../components/common/DatePicker";
+import Input from "../components/common/Input";
+import Checkbox from "../components/common/Checkbox";
+import { basicKeywords } from "../assets/data/keywords";
+import PopperPagination from "../components/Experience/PopperPagination";
 
 const ExperienceWritePage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [popperInfo, setPopperInfo] = React.useState("prime-tag");
+
+  // 상위, 하위 태그 페이지네이션
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const postsPerPage = 9;
+  const firstPostIndex = (currentPage - 1) * postsPerPage;
+  const lastPostIndex = firstPostIndex + postsPerPage;
+  const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+
+  // 경험 분류 클릭 함수
+  const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setPopperInfo(event.currentTarget.id);
+  };
+
   /**
    * 경험 기본 정보
    */
-
   const renderExperienceBasicInfo = () => {
     return (
       <Accordion sx={{ boxShadow: "none" }}>
@@ -47,17 +69,64 @@ const ExperienceWritePage = () => {
         </AccordionSummary>
         <AccordionDetails sx={{ padding: "32px 20px" }}>
           <BasicFormContainer>
-            <div className="period">경험 기간</div>
-            {/* <TimePicker
-              time={startDate}
-              setTime={(time: string) => setStartDate(time)}
-            />
-            <TimePicker
-              time={endDate}
-              setTime={(time: string) => setEndDate(time)}
-            /> */}
-            <div className="keyword">경험 분류</div>
-            <div className="tag">역량 태그 선택</div>
+            <div className="top">
+              <div className="form-item">
+                <div className="label">경험 기간</div>
+                <div className="input">
+                  <OneDatePick
+                    date={startDate}
+                    setDate={(date: Date) => setStartDate(date)}
+                    style={customDatePickerCss}
+                  />
+                  &nbsp;-&nbsp;
+                  <OneDatePick
+                    date={endDate}
+                    setDate={(date: Date) => setEndDate(date)}
+                    style={customDatePickerCss}
+                  />
+                </div>
+              </div>
+              <div className="form-item">
+                <div className="label">경험 분류</div>
+                <div className="input">
+                  <Input
+                    id="prime-tag"
+                    style={customInputCss}
+                    onClick={handleTagPopper}
+                  />
+                  &nbsp;{">"}&nbsp;
+                  <Input
+                    id="sub-tag"
+                    style={customInputCss}
+                    onClick={handleTagPopper}
+                  />
+                  <Popper open={open} anchorEl={anchorEl}>
+                    <TagPopperBox>
+                      {popperInfo === "prime-tag" ? (
+                        <>
+                          <div className="checkbox-list">
+                            {currentPosts.map((item) => (
+                              <Checkbox label={item} />
+                            ))}
+                          </div>
+                          <div className="pagination">
+                            <PopperPagination
+                              postsNum={basicKeywords.length}
+                              postsPerPage={postsPerPage}
+                              setCurrentPage={setCurrentPage}
+                              currentPage={currentPage}
+                            />
+                          </div>
+                        </>
+                      ) : null}
+                    </TagPopperBox>
+                  </Popper>
+                </div>
+              </div>
+            </div>
+            <div className="tag">
+              <div className="label">역량 태그 선택</div>
+            </div>
           </BasicFormContainer>
         </AccordionDetails>
       </Accordion>
@@ -106,18 +175,24 @@ const ExperienceWritePage = () => {
           }}
         >
           {questions.map((item, index) => (
-            <Textarea
-              label={`${index + 1}. ${item}`}
-              rows={8}
-              labelStyle={
-                theme.fonts.title4 + `color: ${theme.colors.neutral700}`
-              }
-              style={{
-                borderRadius: "12px",
-                border: `1px solid ${theme.colors.neutral400}`,
-                background: `${theme.colors.neutral0}`,
-              }}
-            />
+            <>
+              <div style={{ display: "flex" }}>
+                <Chip text={item.type} />
+              </div>
+              <Textarea
+                label={`${index + 1}. ${item.question}`}
+                rows={8}
+                labelStyle={
+                  theme.fonts.title4 + `color: ${theme.colors.neutral700}`
+                }
+                style={{
+                  borderRadius: "12px",
+                  border: `1px solid ${theme.colors.neutral400}`,
+                  background: `${theme.colors.neutral0}`,
+                  padding: "24px 30px",
+                }}
+              />
+            </>
           ))}
         </AccordionDetails>
       </Accordion>
@@ -212,14 +287,62 @@ const BasicFormContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 34px;
-  .forms {
+  .top {
     display: flex;
     flex-direction: row;
     gap: 64px;
   }
+  .form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .label {
     ${(props) => props.theme.fonts.subtitle2};
     color: ${(props) => props.theme.colors.neutral700};
+  }
+  .input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+`;
+
+const customDatePickerCss = `
+  margin: 0px;
+  padding: 9px 35px;
+  background: #FFF;
+  border-radius: 5px;
+  border: 1px solid var(--neutral-400, #D9DBE6);
+  text-align: center;
+`;
+
+const customInputCss = {
+  gap: "0px",
+  padding: "9px 22px",
+  background: "none",
+  borderRadius: "5px",
+  border: `1px solid var(--neutral-400, #D9DBE6)`,
+  maxWidth: "131px",
+};
+
+const TagPopperBox = styled.div`
+  display: flex;
+  width: 355px;
+  flex-direction: column;
+  padding: 21px 22px 21px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--main-200, #e5e6ff);
+  background: #fff;
+  gap: 25px;
+  .checkbox-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
   }
 `;
 
