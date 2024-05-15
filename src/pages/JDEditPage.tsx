@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import BundledEditor from "../components/editor/BundleEditor";
 import HeaderInput from "../components/JD/HeaderInput";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
+import ContentInput from "../components/JD/ContentInput";
+import Modal from "../components/JD/JDModal";
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -32,8 +33,7 @@ const ExpContainer = styled.div`
 `;
 
 const TopTitleBar = styled.div`
-  width: 100vw;
-  padding: 0 4rem;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,7 +41,6 @@ const TopTitleBar = styled.div`
 
 const Title = styled.h1`
   color:#343A5D;
-  margin-left: 3rem;
 `;
 
 const TopButton = styled.button`
@@ -69,16 +68,31 @@ const MainContainer = styled.div`
 const CenteredContainer = styled(motion.div)`
   width: 100%; 
   border-radius: 10px;
-  background: #FFF;
+  background: transparent;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
   min-height: 30rem;
   margin: 0.5rem 0.25rem 0.5rem 0.5rem;  
+`;
+
+const EditContainer = styled.div`
+    width: 100%;
+    align-items: flex-start;
+    min-height: 30rem;
+    padding: 3rem 1.5rem;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    border-radius: 0.9rem;
+    border: 1px solid var(--neutral-200, #EEEFF7);
+    background: var(--neutral-0, #FFF);
 `;
 
 const ActiveContainer = styled(motion.div)`
   width: 45%;
   border-radius: 10px;
   margin: 0 3.5rem; 
+  margin-top : 10rem;
   background: #F7F7FB;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 35rem;
@@ -132,9 +146,14 @@ const ButtonText = styled.div<ButtonProps>`
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const [content, setContent] = useState(
-    "<p>안녕하세요, 자기소개서 작성법에 대해 알려드리겠습니다. </p>"
-  );
+  //   const [content, setContent] = useState("<p>내용을 입력해주세요. </p>");
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
 
   const JDtoggleContainer = () => {
     if (!active) {
@@ -160,20 +179,13 @@ const JDEditPage: React.FC = () => {
     }
   };
 
-  const handleEditorChange = (newContent: string) => {
-    console.log("Content was updated:", newContent);
-    setContent(newContent);
-  };
+  //   const handleEditorChange = (newContent: string) => {
+  //     console.log("Content was updated:", newContent);
+  //     setContent(newContent);
+  //   };
 
   return (
     <StyledDivContainer className="page">
-      <ToggleContainer>
-        <AirplaneToggle step={3} />
-      </ToggleContainer>
-      <TopTitleBar>
-        <Title>자기소개서 작성</Title>
-        <TopButton>저장</TopButton>
-      </TopTitleBar>
       <MainContainer>
         <CenteredContainer
           initial={{ width: "100%" }}
@@ -187,17 +199,19 @@ const JDEditPage: React.FC = () => {
             when: "beforeChildren",
           }}
         >
-          <HeaderInput />
-          <div>
-            <BundledEditor
-              content={content}
-              onContentChange={handleEditorChange}
-            />
-          </div>
-          <HeaderInput />
-          <div>
-            <BundledEditor content="" onContentChange={handleEditorChange} />
-          </div>
+          <ToggleContainer>
+            <AirplaneToggle step={3} />
+          </ToggleContainer>
+          <TopTitleBar>
+            <Title>자기소개서 작성</Title>
+            <TopButton>저장</TopButton>
+          </TopTitleBar>
+          <EditContainer>
+            <HeaderInput />
+            <ContentInput />
+            <HeaderInput />
+            <ContentInput />
+          </EditContainer>
         </CenteredContainer>
         <AnimatePresence>
           <ActiveContainer
@@ -213,7 +227,7 @@ const JDEditPage: React.FC = () => {
               onClick={JDtoggleContainer}
               active={activebutton === "JD"}
             >
-              <ButtonText active={activebutton === "JD"}>JD분석</ButtonText>
+              <ButtonText active={activebutton === "JD"}>공고보기</ButtonText>
             </JDButton>
             <ExperienceButton
               onClick={ExptoggleContainer}

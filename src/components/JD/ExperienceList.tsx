@@ -5,8 +5,9 @@ import Experience from "./Experience";
 const ExperienceList = () => {
   return (
     <>
-      {ExpData.map((post) => (
+      {ExpData.map((post, index) => (
         <Experience
+          key={index}
           title={post.title}
           content={post.content}
           tags={post.tags}
