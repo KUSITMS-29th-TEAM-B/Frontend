@@ -5,6 +5,7 @@ import { detailStore } from "../../store/jdStore";
 import { Question } from "../../types/type";
 
 interface ExpProps {
+  type?: "card" | "section";
   id: number;
   title: string;
   tags: string[];
@@ -18,6 +19,7 @@ interface ExpProps {
 }
 
 const Experience: React.FC<ExpProps> = ({
+  type,
   id,
   title,
   tags,
@@ -30,6 +32,9 @@ const Experience: React.FC<ExpProps> = ({
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
 
+  // 카드 타입, 섹션 타입 구분
+  const isSection = type === "section";
+
   // 경험의 선택된 질문 답변
   const answer = detail?.filter((item) => item.num === question)[0];
 
@@ -40,16 +45,19 @@ const Experience: React.FC<ExpProps> = ({
     }
   };
   return (
-    <StyledContainer onClick={handleClick}>
+    <StyledContainer
+      className={isSection ? "section" : ""}
+      onClick={handleClick}
+    >
       <TagContainer>
         {tags.map((tag, index) => (
           <Tag key={index}>{tag}</Tag>
         ))}
       </TagContainer>
       <TopContainer>
-        <Title>{title}</Title>
+        <Title className={isSection ? "section" : ""}>{title}</Title>
       </TopContainer>
-      <SubContainer>
+      <SubContainer className={isSection ? "section" : ""}>
         <div>{maintag + ">" + subtag}</div>
         <div>|</div>
         <div>{period}</div>
@@ -79,6 +87,9 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
+  &.section {
+    padding: 0px;
+  }
 `;
 
 const TopContainer = styled.div`
@@ -92,11 +103,17 @@ const SubContainer = styled.div`
   gap: 0.75rem;
   color: ${(props) => props.theme.colors.neutral500};
   ${(props) => props.theme.fonts.cap2};
+  &.section {
+    ${(props) => props.theme.fonts.subtitle4};
+  }
 `;
 
 const Title = styled.div`
   color: ${(props) => props.theme.colors.neutral700};
   ${(props) => props.theme.fonts.subtitle3};
+  &.section {
+    ${(props) => props.theme.fonts.title1};
+  }
 `;
 
 const TagContainer = styled.div`
