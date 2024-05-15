@@ -22,7 +22,7 @@ const colors = {
   neutral0: "#FFFFFF",
   neutral20: "#FBFBFD",
   neutral50: "#FBFBFD",
-  neutral100: "#FBFBFD",
+  neutral100: "#F2F3F9",
   neutral200: "#EEEFF7",
   neutral300: "#EAEBF3",
   neutral400: "#A6AAC0",
@@ -57,6 +57,12 @@ const fonts = {
     lineHeight: 48,
   }),
   headline2: FONT({
+    family: "Pretendard-Semibold",
+    weight: 600,
+    size: 32,
+    lineHeight: 36,
+  }),
+  headline3: FONT({
     family: "Pretendard-Semibold",
     weight: 600,
     size: 32,

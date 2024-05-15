@@ -75,7 +75,7 @@ const Experience: React.FC<ExpProps> = ({ title, content, tags }) => {
       </TopContainer>
       <TagContainer>
         {tags.map((tag, index) => (
-          <Tag>{tag}</Tag>
+          <Tag key={index}>{tag}</Tag>
         ))}
       </TagContainer>
       <ContentContainer>

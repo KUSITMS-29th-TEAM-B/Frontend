@@ -4,7 +4,7 @@
 }
 
 .page {
-  margin-top: 6.125rem;
+  margin-top: 3.5rem;
   padding: 3.5625rem 8.75rem;
 }
 
@@ -15,6 +15,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* overflow-y: hidden; */
 }
 
 code {
