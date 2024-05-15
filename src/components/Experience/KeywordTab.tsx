@@ -12,7 +12,7 @@ import {
   Options,
 } from "../../assets";
 import YearSelect from "./YearSelect";
-import { Popper } from "@mui/material";
+import { IconButton, Popper } from "@mui/material";
 import Checkbox from "../common/Checkbox";
 import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
@@ -52,7 +52,17 @@ const KeywordTab = () => {
   const renderLeftContainer = () => {
     return (
       <LeftContainer>
-        <ArrowRight />
+        <button
+          style={{
+            textAlign: "center",
+            width: "50px",
+            background: "transparent",
+            border: "none",
+          }}
+          onClick={() => setKeyword(null)}
+        >
+          <ArrowRight />
+        </button>
         <KeywordText>{keyword}</KeywordText>
         <YearSelect
           value={selectedYear}

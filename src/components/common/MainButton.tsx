@@ -1,10 +1,10 @@
 import React, { ButtonHTMLAttributes } from "react";
 import styled from "styled-components";
 
-interface RoundButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface MainButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
-const RoundButton = ({ children, ...props }: RoundButtonProps) => {
+const MainButton = ({ children, ...props }: MainButtonProps) => {
   return <Button {...props}>{children}</Button>;
 };
 
@@ -22,4 +22,4 @@ const Button = styled.button`
   gap: 5px;
 `;
 
-export default RoundButton;
+export default MainButton;
