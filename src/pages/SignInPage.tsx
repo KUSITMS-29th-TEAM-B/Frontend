@@ -10,7 +10,7 @@ declare global {
 
 const { Kakao } = window;
 
-const MyPage = () => {
+const SignInPage = () => {
   const handleKakoLogin = () => {
     Kakao.Auth.login({
       success: (auth: any) => {
@@ -59,4 +59,4 @@ const MyPage = () => {
   );
 };
 
-export default MyPage;
+export default SignInPage;
