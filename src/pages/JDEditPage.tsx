@@ -7,146 +7,46 @@ import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
 import Modal from "../components/JD/JDModal";
 
-const StyledDivContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  background-color: #FBFBFD;
-  overflow-x: hidden;
-`;
-
-const ToggleContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: left;
-`;
-
-const ExpContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
-`;
-
-const TopTitleBar = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Title = styled.h1`
-  color:#343A5D;
-`;
-
-const TopButton = styled.button`
-  display: inline-flex;
-  padding: 0.625rem 4rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.5rem;
-  border: none;
-  color:var(--white);
-  background: var(--main-500, #7D82FF);
-`;
-
-const MainContainer = styled.div`
-  width: 100vw;
-  display: flex;
-  position: relative;
-  justify-content: center;
-  overflow: hidden;
-  padding-left: 8rem;
-  background-color: #FBFBFD;
-`;
-
-const CenteredContainer = styled(motion.div)`
-  width: 100%; 
-  border-radius: 10px;
-  background: transparent;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  min-height: 30rem;
-  margin: 0.5rem 0.25rem 0.5rem 0.5rem;  
-`;
-
-const EditContainer = styled.div`
-    width: 100%;
-    align-items: flex-start;
-    min-height: 30rem;
-    padding: 3rem 1.5rem;
-    gap: 0.625rem;
-    flex-shrink: 0;
-    border-radius: 0.9rem;
-    border: 1px solid var(--neutral-200, #EEEFF7);
-    background: var(--neutral-0, #FFF);
-`;
-
-const ActiveContainer = styled(motion.div)`
-  width: 45%;
-  border-radius: 10px;
-  margin: 0 3.5rem; 
-  margin-top : 10rem;
-  background: #F7F7FB;
-  box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 35rem;
-`;
-
-const buttonActiveStyle = css`
-  background: #7D82FF; 
-`;
-
-interface ButtonProps {
-  active: boolean;
-}
-
-const JDButton = styled.button<ButtonProps>`
-  position: absolute;
-  left: -2rem;
-  top: 1rem;
-  width: 2rem;
-  height: 7rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
-  background: var(--neutral-300, #EAEBF3);
-  ${({ active }) => active && buttonActiveStyle}
-`;
-
-const ExperienceButton = styled.button<ButtonProps>`
-  position: absolute;
-  left: -2rem;
-  top: 8.5rem;
-  width: 2rem;
-  height: 7rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
-  background: var(--neutral-300, #EAEBF3);
-  ${({ active }) => active && buttonActiveStyle}
-`;
-
-const ButtonText = styled.div<ButtonProps>`
-    display: flex;
-    width: 1rem;
-    ${(props) => props.theme.fonts.body5};
-    height: 5rem;
-    flex-direction: column;
-    justify-content: center;
-    flex-shrink: 0;
-    color: ${({ active }) => (active ? "#FFFFFF" : "#63698D")};
-`;
-
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  //   const [content, setContent] = useState("<p>내용을 입력해주세요. </p>");
+  const [questionContent, setQuestionContent] = useState<{
+    question: { header: string; content: string }[];
+  }>({
+    question: [
+      { header: "", content: "" },
+      { header: "", content: "" },
+      { header: "", content: "" },
+    ],
+  });
+
+  const handleHeaderChange = (index: number, value: string) => {
+    setQuestionContent((prev) => ({
+      question: prev.question.map((item, i) =>
+        i === index ? { ...item, header: value } : item
+      ),
+    }));
+  };
+
+  const handleContentChange = (index: number, value: string) => {
+    setQuestionContent((prev) => ({
+      question: prev.question.map((item, i) =>
+        i === index ? { ...item, content: value } : item
+      ),
+    }));
+  };
+
+  const handleAddQuestions = () => {
+    setQuestionContent((prev) => ({
+      question: [...prev.question, { header: "", content: "" }],
+    }));
+  };
+
+  const handleRemoveQuestion = (index: number) => {
+    setQuestionContent((prev) => ({
+      question: prev.question.filter((_, i) => i !== index),
+    }));
+  };
 
   useEffect(() => {
     window.scrollTo({
@@ -190,8 +90,8 @@ const JDEditPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "-5%" : "10%",
-            width: active ? "45%" : "200%",
+            x: active ? "7%" : "23%",
+            width: active ? "50%" : "100%",
           }}
           transition={{
             type: "spring",
@@ -204,19 +104,38 @@ const JDEditPage: React.FC = () => {
           </ToggleContainer>
           <TopTitleBar>
             <Title>자기소개서 작성</Title>
-            <TopButton>저장</TopButton>
           </TopTitleBar>
           <EditContainer>
-            <HeaderInput />
-            <ContentInput />
-            <HeaderInput />
-            <ContentInput />
+            <TopWrapper>
+              <div>지원 완료 토글</div>
+              <TopButton>저장</TopButton>
+            </TopWrapper>
+            <ScrollDiv>
+              <QuestionsWrapper>
+                {questionContent.question.map((item, index) => (
+                  <div key={index}>
+                    <HeaderInput
+                      content={item.header}
+                      onChange={(value) => handleHeaderChange(index, value)}
+                    />
+                    <ContentInput
+                      content={item.content}
+                      onChange={(value) => handleContentChange(index, value)}
+                    />
+                    {/* <button onClick={() => handleRemoveQuestion(index)}>
+                  Remove
+                </button> */}
+                  </div>
+                ))}
+                <button onClick={handleAddQuestions}>문항추가</button>
+              </QuestionsWrapper>
+            </ScrollDiv>
           </EditContainer>
         </CenteredContainer>
         <AnimatePresence>
           <ActiveContainer
-            initial={{ x: "45%", width: "45%" }}
-            animate={{ x: !active ? "110%" : "0%" }}
+            initial={{ x: "100%", width: "45%" }}
+            animate={{ x: !active ? "110%" : "5%", width: "45%" }}
             exit={{
               x: "0%",
               transition: { delay: 0.5, stiffness: 50, damping: 20 },
@@ -235,9 +154,11 @@ const JDEditPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            <ExpContainer>
-              <ExperienceList />
-            </ExpContainer>
+            <ScrollDiv>
+              <ExpContainer>
+                <ExperienceList />
+              </ExpContainer>
+            </ScrollDiv>
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -246,3 +167,177 @@ const JDEditPage: React.FC = () => {
 };
 
 export default JDEditPage;
+
+const StyledDivContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background-color: #FBFBFD;
+  overflow-x: hidden;
+`;
+
+const ToggleContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: left;
+`;
+
+const ExpContainer = styled.div`
+  width: 100%;
+  height: 40rem;
+  display: flex;
+  padding: 2rem;
+  margin-right: 1rem;
+  flex-direction: column;
+  /* overflow-y: scroll;
+  overflow-x: hidden; */
+`;
+
+const TopTitleBar = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const Title = styled.h1`
+  color:#343A5D;
+`;
+
+const TopWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 0 2rem;
+  padding-bottom: 1rem;
+  justify-content: space-between;
+`;
+
+const TopButton = styled.button`
+  display: inline-flex;
+  padding: 0.625rem 4rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.5rem;
+  border: none;
+  color:var(--white);
+  background: var(--main-500, #7D82FF);
+`;
+
+const MainContainer = styled.div`
+  width: 100vw;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #FBFBFD;
+`;
+
+const CenteredContainer = styled(motion.div)`
+    /* width: 100%; 
+    border-radius: 10px;
+    background: transparent;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 30rem;
+    margin: 0.5rem 0.25rem 0.5rem 0.5rem;   */
+    width: 100%; 
+    border-radius: 10px;
+    background: transparent;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    //min-height: 100rem;
+`;
+
+const ScrollDiv = styled.div`
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        background: #ccc;
+    }
+    ::-webkit-scrollbar-track {
+    }
+`;
+
+const EditContainer = styled.div`
+    width: 100%;
+    align-items: flex-start;
+    min-height: 30rem;
+    padding: 2rem 0rem;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    border-radius: 0.9rem;
+    border: 1px solid var(--neutral-200, #EEEFF7);
+    background: var(--neutral-0, #FFF);
+`;
+
+const ActiveContainer = styled(motion.div)`
+  width: 45%;
+  border-radius: 10px;
+  padding: 1rem;
+  padding-right: 0rem;
+  margin: 0 3.5rem; 
+  margin-top : 10rem;
+  background: #F7F7FB;
+  box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
+  height: 40rem;
+`;
+
+const buttonActiveStyle = css`
+  background: #7D82FF; 
+`;
+
+interface ButtonProps {
+  active: boolean;
+}
+
+const JDButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 1rem;
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
+`;
+
+const ExperienceButton = styled.button<ButtonProps>`
+  position: absolute;
+  left: -2rem;
+  top: 8.5rem;
+  width: 2rem;
+  height: 7rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.66019rem 0rem 0rem 0.66019rem;
+  background: var(--neutral-300, #EAEBF3);
+  ${({ active }) => active && buttonActiveStyle}
+`;
+
+const QuestionsWrapper = styled.div`
+    height: 28rem;
+    color: var(--neutral-700, #343A5D);
+    padding: 0 2rem;
+    //overflow-y: scroll;
+`;
+
+const ButtonText = styled.div<ButtonProps>`
+    display: flex;
+    width: 1rem;
+    ${(props) => props.theme.fonts.body5};
+    height: 5rem;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+    color: ${({ active }) => (active ? "#FFFFFF" : "#63698D")};
+`;

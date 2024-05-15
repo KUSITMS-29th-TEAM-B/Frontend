@@ -1,9 +1,18 @@
 import styled from "styled-components";
 
-const HeaderInput = () => {
+interface HeaderInputProps {
+  content: string;
+  onChange: (value: string) => void;
+}
+
+const HeaderInput: React.FC<HeaderInputProps> = ({ content, onChange }) => {
   return (
     <HeaderContainer>
-      <Header placeholder="자기소개서 문항을 옮겨 적어주세요." />
+      <Header
+        placeholder="자기소개서 문항을 입력하세요."
+        value={content}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </HeaderContainer>
   );
 };
