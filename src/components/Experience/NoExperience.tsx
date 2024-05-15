@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import RoundButton from "../common/RoundButton";
+import MainButton from "../common/MainButton";
 import noExperienceImg from "../../assets/images/noExperience.png";
 import { Plus } from "../../assets";
 
@@ -10,9 +10,9 @@ const NoExperience = () => {
       <Section>
         아직 작성된 경험이 없어요. <br />새 경험을 작성해주세요.
       </Section>
-      <RoundButton>
+      <MainButton>
         경험추가하기 <Plus />
-      </RoundButton>
+      </MainButton>
       <img
         src={noExperienceImg}
         alt="no-experience"
