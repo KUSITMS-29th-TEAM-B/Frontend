@@ -17,12 +17,16 @@ import Input from "../components/common/Input";
 import Checkbox from "../components/common/Checkbox";
 import { basicKeywords } from "../assets/data/keywords";
 import PopperPagination from "../components/Experience/PopperPagination";
+import Modal from "../components/common/Modal";
+import airplaneImg from "../assets/images/airplane.png";
 
 const ExperienceWritePage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
+  // 저장 모달
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -34,6 +38,17 @@ const ExperienceWritePage = () => {
   const firstPostIndex = (currentPage - 1) * postsPerPage;
   const lastPostIndex = firstPostIndex + postsPerPage;
   const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+
+  // 모달 관리
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
 
   // 경험 분류 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -203,29 +218,45 @@ const ExperienceWritePage = () => {
   //
   //
   return (
-    <MainContainer className="page">
-      <TopContainer>
-        <div className="title">
-          <button
-            onClick={() => navigate(-1)}
-            style={{
-              padding: 0,
-              background: "none",
-              border: "none",
-            }}
-          >
-            <ArrowLeft />
-          </button>
-          경험 작성
-        </div>
-        <CustomButton>저장</CustomButton>
-      </TopContainer>
-      <ContentContainer>
-        <TitleInput placeholder="경험의 제목을 입력해주세요"></TitleInput>
-        {renderExperienceBasicInfo()}
-        {renderQuestionForm()}
-      </ContentContainer>
-    </MainContainer>
+    <>
+      <MainContainer className="page">
+        <TopContainer>
+          <div className="title">
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                padding: 0,
+                background: "none",
+                border: "none",
+              }}
+            >
+              <ArrowLeft />
+            </button>
+            경험 작성
+          </div>
+          <CustomButton onClick={() => openModal()}>저장</CustomButton>
+        </TopContainer>
+        <ContentContainer>
+          <TitleInput placeholder="경험의 제목을 입력해주세요"></TitleInput>
+          {renderExperienceBasicInfo()}
+          {renderQuestionForm()}
+        </ContentContainer>
+      </MainContainer>
+      <Modal
+        image={<img src={airplaneImg} alt="airplane" />}
+        title={
+          <>
+            새로운 경험 작성이
+            <br />
+            완료되었어요!
+          </>
+        }
+        buttons={["작성된 경험 확인하기"]}
+        onConfirm={() => navigate(`/experience/detail/1`)}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
+    </>
   );
 };
 
