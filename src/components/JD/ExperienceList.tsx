@@ -40,7 +40,6 @@ const ExperienceList = () => {
                     subtag={post.subTag}
                     period={post.period}
                     bookmark={post.bookmark}
-                    question={null}
                     onClick={() => setshowDetail(true)}
                   />
                 ))}
@@ -58,7 +57,6 @@ const ExperienceList = () => {
                   tags={post.tags}
                   period={post.period}
                   bookmark={post.bookmark}
-                  question={null}
                   onClick={() => setshowDetail(true)}
                 />
               ))}
@@ -101,7 +99,7 @@ const SearchBar = styled.input`
   width: 90%;
   border-radius: 0.9rem;
   margin: 2rem;
-  background: #FFF;
+  background: #fff;
   height: 3rem;
   border: none;
   outline: none;
@@ -110,20 +108,20 @@ const SearchBar = styled.input`
 `;
 
 const ScrollDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0 1rem;
-    gap: 1rem;
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        border-radius: 2px;
-        background: #ccc;
-    }
-    ::-webkit-scrollbar-track {
-    }
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 1rem;
+  gap: 1rem;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
+  ::-webkit-scrollbar-track {
+  }
 `;

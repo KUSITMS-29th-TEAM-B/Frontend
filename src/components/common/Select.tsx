@@ -10,9 +10,15 @@ interface SelectProp extends React.HTMLAttributes<HTMLSelectElement> {
 
 const Select = ({ options, onChange, value, ...props }: SelectProp) => {
   return (
-    <StyledSelect value={options[value]} onChange={onChange}>
+    <StyledSelect
+      value={value === 0 ? 0 : value}
+      onChange={onChange}
+    >
+      <option disabled hidden selected value={0}>
+        질문을 선택해주세요
+      </option>
       {options.map((item, index) => (
-        <option>
+        <option value={index + 1}>
           {index + 1}. {item}
         </option>
       ))}

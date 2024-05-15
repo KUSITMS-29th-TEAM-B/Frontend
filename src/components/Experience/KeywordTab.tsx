@@ -16,14 +16,18 @@ import { Popper } from "@mui/material";
 import Checkbox from "../common/Checkbox";
 import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
+import Experience from "../JD/Experience";
+import ExpData from "../../services/JD/ExpData";
 
 const KeywordTab = () => {
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
-  const [selectedQ, setSelectedQ] = React.useState(1);
+  const [selectedQ, setSelectedQ] = React.useState(0);
   const [keyword, setKeyword] = useRecoilState(keywordState);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
+
+  console.log("q", selectedQ);
 
   // 역량 키워드 페이지네이션
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -95,11 +99,7 @@ const KeywordTab = () => {
             <Select
               value={selectedQ}
               options={questions.map((item) => item.question)}
-              onChange={(e) =>
-                setSelectedQ(
-                  questions.map((item) => item.question).indexOf(e.target.value)
-                )
-              }
+              onChange={(e) => setSelectedQ(Number(e.target.value))}
             ></Select>
           </QuestionSelect>
         </QuestionContainer>
@@ -142,6 +142,23 @@ const KeywordTab = () => {
             </TagPopperBox>
           </Popper>
         </KeywordSelect>
+        {/* 경험 카드 리스트 */}
+        <ExperienceList>
+          {ExpData.map((post, index: number) => (
+            <Experience
+              id={post.id}
+              key={index}
+              title={post.title}
+              tags={post.tags}
+              maintag={post.mainTag}
+              subtag={post.subTag}
+              period={post.period}
+              bookmark={post.bookmark}
+              question={selectedQ}
+              detail={post.detail}
+            />
+          ))}
+        </ExperienceList>
       </ContentContainer>
     );
   };
@@ -239,6 +256,7 @@ const QuestionSelect = styled.div`
 `;
 
 const KeywordSelect = styled.div`
+  margin-top: 28px;
   ${(props) => props.theme.fonts.cap1};
   color: ${(props) => props.theme.colors.neutral600};
   width: 100%;
@@ -305,6 +323,23 @@ const TagPopperBox = styled.div`
     .accent {
       color: ${(props) => props.theme.colors.main500};
     }
+  }
+`;
+
+const ExperienceList = styled.div`
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
+  ::-webkit-scrollbar-track {
   }
 `;
 
