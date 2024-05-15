@@ -1,13 +1,8 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 import MainButton from "../components/common/MainButton";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Popper,
-} from "@mui/material";
-import { ArrowDown, ArrowLeft } from "../assets";
+import { Popper } from "@mui/material";
+import { ArrowLeft } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -61,90 +56,69 @@ const ExperienceWritePage = () => {
    */
   const renderExperienceBasicInfo = () => {
     return (
-      <Accordion sx={{ boxShadow: "none" }}>
-        <AccordionSummary
-          expandIcon={<ArrowDown />}
-          aria-controls="basic-info"
-          id="basic-info"
-          sx={{
-            "&.Mui-expanded": {
-              minHeight: 0,
-            },
-            ".MuiAccordionSummary-content": {
-              "&.Mui-expanded": {
-                margin: "12px 0px",
-              },
-            },
-            minHeight: 0,
-            borderRadius: "12px",
-            background: theme.colors.main50,
-          }}
-        >
-          경험 기본 정보
-        </AccordionSummary>
-        <AccordionDetails sx={{ padding: "32px 20px" }}>
-          <BasicFormContainer>
-            <div className="top">
-              <div className="form-item">
-                <div className="label">경험 기간</div>
-                <div className="input">
-                  <OneDatePick
-                    date={startDate}
-                    setDate={(date: Date) => setStartDate(date)}
-                    style={customDatePickerCss}
-                  />
-                  &nbsp;-&nbsp;
-                  <OneDatePick
-                    date={endDate}
-                    setDate={(date: Date) => setEndDate(date)}
-                    style={customDatePickerCss}
-                  />
-                </div>
-              </div>
-              <div className="form-item">
-                <div className="label">경험 분류</div>
-                <div className="input">
-                  <Input
-                    id="prime-tag"
-                    style={customInputCss}
-                    onClick={handleTagPopper}
-                  />
-                  &nbsp;{">"}&nbsp;
-                  <Input
-                    id="sub-tag"
-                    style={customInputCss}
-                    onClick={handleTagPopper}
-                  />
-                  <Popper open={open} anchorEl={anchorEl}>
-                    <TagPopperBox>
-                      {popperInfo === "prime-tag" ? (
-                        <>
-                          <div className="checkbox-list">
-                            {currentPosts.map((item) => (
-                              <Checkbox label={item} />
-                            ))}
-                          </div>
-                          <div className="pagination">
-                            <PopperPagination
-                              postsNum={basicKeywords.length}
-                              postsPerPage={postsPerPage}
-                              setCurrentPage={setCurrentPage}
-                              currentPage={currentPage}
-                            />
-                          </div>
-                        </>
-                      ) : null}
-                    </TagPopperBox>
-                  </Popper>
-                </div>
+      <SectionContainer>
+        <SectionTitle>경험 기본 정보</SectionTitle>
+        <BasicFormContainer>
+          <div className="top">
+            <div className="form-item">
+              <div className="label">경험 기간</div>
+              <div className="input">
+                <OneDatePick
+                  date={startDate}
+                  setDate={(date: Date) => setStartDate(date)}
+                  style={customDatePickerCss}
+                />
+                &nbsp;-&nbsp;
+                <OneDatePick
+                  date={endDate}
+                  setDate={(date: Date) => setEndDate(date)}
+                  style={customDatePickerCss}
+                />
               </div>
             </div>
-            <div className="tag">
-              <div className="label">역량 키워드 선택</div>
+            <div className="form-item">
+              <div className="label">경험 분류</div>
+              <div className="input">
+                <Input
+                  id="prime-tag"
+                  style={customInputCss}
+                  onClick={handleTagPopper}
+                />
+                &nbsp;{">"}&nbsp;
+                <Input
+                  id="sub-tag"
+                  style={customInputCss}
+                  onClick={handleTagPopper}
+                />
+                <Popper open={open} anchorEl={anchorEl}>
+                  <TagPopperBox>
+                    {popperInfo === "prime-tag" ? (
+                      <>
+                        <div className="checkbox-list">
+                          {currentPosts.map((item) => (
+                            <Checkbox label={item} />
+                          ))}
+                        </div>
+                        <div className="pagination">
+                          <PopperPagination
+                            postsNum={basicKeywords.length}
+                            postsPerPage={postsPerPage}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                          />
+                        </div>
+                      </>
+                    ) : null}
+                  </TagPopperBox>
+                </Popper>
+              </div>
             </div>
-          </BasicFormContainer>
-        </AccordionDetails>
-      </Accordion>
+          </div>
+          <div className="tag">
+            <div className="label">역량 키워드 선택</div>
+          </div>
+        </BasicFormContainer>
+      </SectionContainer>
     );
   };
 
@@ -153,44 +127,11 @@ const ExperienceWritePage = () => {
    */
   const renderQuestionForm = () => {
     return (
-      <Accordion
-        sx={{
-          boxShadow: "none",
-          "&::before": {
-            backgroundColor: "transparent",
-          },
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ArrowDown />}
-          aria-controls="basic-info"
-          id="basic-info"
-          sx={{
-            "&.Mui-expanded": {
-              minHeight: 0,
-            },
-            ".MuiAccordionSummary-content": {
-              "&.Mui-expanded": {
-                margin: "12px 0px",
-              },
-            },
-            minHeight: 0,
-            borderRadius: "12px",
-            background: theme.colors.main50,
-          }}
-        >
-          경험 질문
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{
-            padding: "32px 0px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-          }}
-        >
+      <SectionContainer>
+        <SectionTitle>경험 질문</SectionTitle>
+        <QuestionList>
           {questions.map((item, index) => (
-            <>
+            <div className="question-item">
               <div style={{ display: "flex" }}>
                 <Chip text={item.type} />
               </div>
@@ -207,10 +148,10 @@ const ExperienceWritePage = () => {
                   padding: "24px 30px",
                 }}
               />
-            </>
+            </div>
           ))}
-        </AccordionDetails>
-      </Accordion>
+        </QuestionList>
+      </SectionContainer>
     );
   };
 
@@ -313,11 +254,26 @@ const TitleInput = styled.input`
   }
 `;
 
+const SectionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SectionTitle = styled.div`
+  margin-bottom: 32px;
+  border-radius: 12px;
+  background: ${(props) => props.theme.colors.main50};
+  padding: 15px 30px;
+  ${(props) => props.theme.fonts.title3};
+  color: ${(props) => props.theme.colors.neutral600};
+`;
+
 const BasicFormContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 34px;
+  padding: 0px 20px;
   .top {
     display: flex;
     flex-direction: row;
@@ -336,6 +292,17 @@ const BasicFormContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+`;
+
+const QuestionList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  .question-item {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
   }
 `;
 
