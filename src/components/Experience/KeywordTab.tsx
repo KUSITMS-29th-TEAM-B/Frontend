@@ -52,7 +52,17 @@ const KeywordTab = () => {
   const renderLeftContainer = () => {
     return (
       <LeftContainer>
-        <ArrowRight />
+        <button
+          style={{
+            textAlign: "center",
+            width: "50px",
+            background: "transparent",
+            border: "none",
+          }}
+          onClick={() => setKeyword(null)}
+        >
+          <ArrowRight />
+        </button>
         <KeywordText>{keyword}</KeywordText>
         <YearSelect
           value={selectedYear}
@@ -84,8 +94,12 @@ const KeywordTab = () => {
             <div className="label">질문과 함께보기</div>
             <Select
               value={selectedQ}
-              options={questions}
-              onChange={(e) => setSelectedQ(questions.indexOf(e.target.value))}
+              options={questions.map((item) => item.question)}
+              onChange={(e) =>
+                setSelectedQ(
+                  questions.map((item) => item.question).indexOf(e.target.value)
+                )
+              }
             ></Select>
           </QuestionSelect>
         </QuestionContainer>
@@ -242,7 +256,6 @@ const TagPopperBox = styled.div`
   display: flex;
   width: 355px;
   flex-direction: column;
-  height: 245px;
   padding: 21px 22px 21px 20px;
   border-radius: 8px;
   border: 1px solid var(--main-200, #e5e6ff);

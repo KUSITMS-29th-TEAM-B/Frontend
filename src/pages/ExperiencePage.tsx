@@ -3,28 +3,31 @@ import YearListContainer from "../components/Experience/YearList";
 import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
-import { yearState } from "../store/selectedStore";
+import { keywordState, yearState } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
 import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
 import KeywordTab from "../components/Experience/KeywordTab";
+import { useNavigate } from "react-router-dom";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
+  const [selectedKeyword, setSelectedKeyword] = useRecoilState(keywordState);
+  const navigate = useNavigate();
 
   const name = "사용자";
 
   /**
    * 연도별 리스트 컨테이너
    */
-  const renderCentralContainer = () => {
+  const renderCenterContainer = () => {
     return (
       <CenteredContainer
         ref={componentRef}
         initial={{ width: "100%" }}
         animate={{
-          width: selectedYear ? "40%" : "100%",
+          width: selectedKeyword ? "40%" : "100%",
         }}
         transition={{
           type: "spring",
@@ -44,13 +47,13 @@ const ExperiencePage = () => {
     return (
       <ActiveContainer
         initial={{ width: "0%" }}
-        animate={{ width: selectedYear ? "60%" : "0%" }}
+        animate={{ width: selectedKeyword ? "60%" : "0%" }}
         exit={{
           transition: { delay: 0.5, stiffness: 50, damping: 20 },
         }}
         transition={{ type: "spring", stiffness: 40 }}
       >
-        {selectedYear ? <KeywordTab /> : null}
+        {selectedKeyword ? <KeywordTab /> : null}
       </ActiveContainer>
     );
   };
@@ -61,7 +64,7 @@ const ExperiencePage = () => {
   return (
     <MainContainer>
       {/* <NoExperience /> */}
-      {selectedYear ? null : (
+      {selectedKeyword ? null : (
         <Description>
           <span className="user">{name}</span>
           님의 여정을
@@ -69,14 +72,15 @@ const ExperiencePage = () => {
           시작해볼까요?
         </Description>
       )}
-      {renderCentralContainer()}
+      {renderCenterContainer()}
       <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
       <MainButton
         style={{
           position: "absolute",
-          right: selectedYear ? "62%" : 30,
+          right: selectedKeyword ? "62%" : 30,
           bottom: 30,
         }}
+        onClick={() => navigate(`/experience/write`)}
       >
         <Plus /> 경험 추가하기
       </MainButton>
