@@ -1,8 +1,13 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 import MainButton from "../components/common/MainButton";
-import { Popper } from "@mui/material";
-import { ArrowLeft } from "../assets";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Popper,
+} from "@mui/material";
+import { ArrowDown, ArrowLeft, Plus2 } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +19,9 @@ import { basicKeywords } from "../assets/data/keywords";
 import PopperPagination from "../components/Experience/PopperPagination";
 import Modal from "../components/common/Modal";
 import airplaneImg from "../assets/images/airplane.png";
+import Tag from "../components/common/Tag";
+
+type TabType = "basic" | "my";
 
 const ExperienceWritePage = () => {
   const theme = useTheme();
@@ -27,12 +35,34 @@ const ExperienceWritePage = () => {
   const open = Boolean(anchorEl);
   const [popperInfo, setPopperInfo] = React.useState("prime-tag");
 
+  const [keywordTabOption, setKeywordTabOption] =
+    React.useState<TabType>("basic");
+  const [myKeywords, setMyKeywords] = React.useState<string[]>([]);
+  const [newKeywords, setNewKeywords] = React.useState("");
+
+  const handleMyKeywords = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      setMyKeywords([...myKeywords, newKeywords]);
+      setNewKeywords("");
+    }
+  };
+
   // 상위, 하위 태그 페이지네이션
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const postsPerPage = 9;
-  const firstPostIndex = (currentPage - 1) * postsPerPage;
-  const lastPostIndex = firstPostIndex + postsPerPage;
-  const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+  const [currentTagPage, setCurrentTagPage] = React.useState(1);
+  const tagsPerPage = 9;
+  const firstTagIndex = (currentTagPage - 1) * tagsPerPage;
+  const lastTagIndex = firstTagIndex + tagsPerPage;
+  const currentTags = basicKeywords.slice(firstTagIndex, lastTagIndex);
+
+  // 키워드 선택 페이지네이션
+  const [currentKeywordPage, setCurrentKeywordPage] = React.useState(1);
+  const keywordsPerPage = 12;
+  const firstKeywordIndex = (currentKeywordPage - 1) * keywordsPerPage;
+  const lastKeywordIndex = firstKeywordIndex + keywordsPerPage;
+  const currentKeywords = basicKeywords.slice(
+    firstKeywordIndex,
+    lastKeywordIndex
+  );
 
   // 모달 관리
   const openModal = () => {
@@ -95,16 +125,16 @@ const ExperienceWritePage = () => {
                     {popperInfo === "prime-tag" ? (
                       <>
                         <div className="checkbox-list">
-                          {currentPosts.map((item) => (
+                          {currentTags.map((item) => (
                             <Checkbox label={item} />
                           ))}
                         </div>
                         <div className="pagination">
                           <PopperPagination
                             postsNum={basicKeywords.length}
-                            postsPerPage={postsPerPage}
-                            setCurrentPage={setCurrentPage}
-                            currentPage={currentPage}
+                            postsPerPage={tagsPerPage}
+                            setCurrentPage={setCurrentTagPage}
+                            currentPage={currentTagPage}
                           />
                         </div>
                       </>
@@ -114,8 +144,111 @@ const ExperienceWritePage = () => {
               </div>
             </div>
           </div>
-          <div className="tag">
+          <div className="form-item">
             <div className="label">역량 키워드 선택</div>
+            <Accordion
+              sx={{
+                maxWidth: "800px",
+                background: theme.colors.neutral0,
+                borderRadius: "12px",
+                border: `1px solid ${theme.colors.neutral200}`,
+                boxShadow: "none",
+                "&:first-of-type": {
+                  borderRadius: "12px",
+                },
+                "&:last-of-type": {
+                  borderRadius: "12px",
+                },
+                "&::before": {
+                  backgroundColor: "transparent",
+                },
+                "&.Mui-expanded": {
+                  margin: "0px",
+                },
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ArrowDown />}
+                aria-controls="basic-info"
+                id="basic-info"
+                sx={{
+                  "&.Mui-expanded": {
+                    minHeight: 0,
+                  },
+                  ".MuiAccordionSummary-content": {
+                    "&.Mui-expanded": {
+                      margin: "12px 0px",
+                    },
+                  },
+                  minHeight: 0,
+                  borderBottom: `1px solid ${theme.colors.neutral200}`,
+                }}
+              >
+                <KeywordInput>
+                  최대 5개까지 추가 가능 (ex. 커뮤니케이션, 협업 등)
+                </KeywordInput>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: "0px" }}>
+                <KeywordSelect>
+                  <div className="top-container">
+                    <div className="tab-list">
+                      <div
+                        className={
+                          keywordTabOption === "basic"
+                            ? "tab-item active"
+                            : "tab-item"
+                        }
+                        onClick={() => setKeywordTabOption("basic")}
+                      >
+                        기본
+                      </div>
+                      <div
+                        className={
+                          keywordTabOption === "my"
+                            ? "tab-item active"
+                            : "tab-item"
+                        }
+                        onClick={() => setKeywordTabOption("my")}
+                      >
+                        MY
+                      </div>
+                    </div>
+                    {keywordTabOption === "basic" ? (
+                      <PopperPagination
+                        postsNum={basicKeywords.length}
+                        postsPerPage={keywordsPerPage}
+                        setCurrentPage={setCurrentKeywordPage}
+                        currentPage={currentKeywordPage}
+                      />
+                    ) : null}
+                  </div>
+                  {keywordTabOption === "basic" ? (
+                    <div className="checkbox-list">
+                      {currentKeywords.map((item) => (
+                        <Checkbox label={item} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="my-keyword">
+                      <MyKeywordInput>
+                        <Plus2 />
+                        <input
+                          value={newKeywords}
+                          placeholder="직접 역량 태그를 생성할 수 있어요"
+                          onChange={(e) => setNewKeywords(e.target.value)}
+                          onKeyDown={(e) => handleMyKeywords(e)}
+                        />
+                      </MyKeywordInput>
+                      <div className="keyword-list">
+                        {myKeywords.map((item) => (
+                          <Tag text={item} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </KeywordSelect>
+              </AccordionDetails>
+            </Accordion>
           </div>
         </BasicFormContainer>
       </SectionContainer>
@@ -292,6 +425,84 @@ const BasicFormContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+`;
+
+const KeywordSelect = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 25px 32px;
+  gap: 20px;
+  .top-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tab-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: var(--neutral-50, #f7f7fb);
+  }
+  .tab-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${(props) => props.theme.fonts.body4};
+    color: ${(props) => props.theme.colors.neutral500};
+    width: 72px;
+    height: 27px;
+    flex-shrink: 0;
+    &:hover,
+    &.active {
+      ${(props) => props.theme.fonts.subtitle5};
+      color: ${(props) => props.theme.colors.neutral600};
+      border-radius: 4px;
+      background: var(--neutral-0, #fff);
+    }
+  }
+  .checkbox-list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .my-keyword {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .keyword-list {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+`;
+
+const KeywordInput = styled.div`
+  ${(props) => props.theme.fonts.body3};
+  color: ${(props) => props.theme.colors.neutral500};
+`;
+
+const MyKeywordInput = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 9px;
+  padding: 10px 15px;
+  border-radius: 4px;
+  background: ${(props) => props.theme.colors.neutral50};
+  input {
+    ${(props) => props.theme.fonts.cap3};
+    color: ${(props) => props.theme.colors.neutral600};
+    border: none;
+    background: none;
+    outline: none;
   }
 `;
 
