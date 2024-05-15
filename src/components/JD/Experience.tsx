@@ -1,88 +1,156 @@
-import React, { useState } from "react";
+import React from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { detailStore } from "../../store/jdStore";
+import { Question } from "../../types/type";
 
 interface ExpProps {
+  type?: "card" | "section";
+  id: number;
   title: string;
-  content: string;
   tags: string[];
+  maintag: string;
+  subtag: string;
+  period: string;
+  bookmark: boolean;
+  question?: number;
+  detail?: Question[];
+  onClick?: () => void;
 }
 
-const StyledContainer = styled.div`
-    width: 90%;
-    background-color: white;
-    border-radius: 20px;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    min-width: 250px;
-    min-height: 12rem;
-    justify-content: center;
-    margin: 1.25rem;
-`;
+const Experience: React.FC<ExpProps> = ({
+  type,
+  id,
+  title,
+  tags,
+  maintag,
+  subtag,
+  period,
+  question,
+  detail,
+  onClick,
+}) => {
+  const [detailId, setDetailId] = useRecoilState(detailStore);
 
-const TopContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
+  // 카드 타입, 섹션 타입 구분
+  const isSection = type === "section";
 
-const Title = styled.div`
-    color: var(--neutral-700, #343A5D);
-    font-family: Pretendard;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-`;
+  // 경험의 선택된 질문 답변
+  const answer = detail?.filter((item) => item.num === question)[0];
 
-const TagContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 0.8rem;
-`;
-
-const Tag = styled.div`
-    display: flex;
-    padding: 0.25rem 0.75rem;
-    justify-content: center;
-    align-items: center;
-    gap: 0.625rem;
-    border-radius: 0.6875rem;
-    border: 1px solid var(--main-500, #7D82FF);
-    color: var(--main-500, #7D82FF);
-    font-family: Pretendard;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 0.875rem; 
-    letter-spacing: -0.0225rem;
-    margin-right:0.5rem;
-`;
-
-const ContentContainer = styled.div`
-    word-wrap: break-word; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
-    display: -webkit-box;
-    -webkit-line-clamp: 5; 
-    -webkit-box-orient: vertical;
-`;
-
-const Experience: React.FC<ExpProps> = ({ title, content, tags }) => {
+  const handleClick = () => {
+    setDetailId(id);
+    if (onClick) {
+      onClick();
+    }
+  };
   return (
-    <StyledContainer>
-      <TopContainer>
-        <Title>{title}</Title>
-      </TopContainer>
+    <StyledContainer
+      className={isSection ? "section" : ""}
+      onClick={handleClick}
+    >
       <TagContainer>
         {tags.map((tag, index) => (
           <Tag key={index}>{tag}</Tag>
         ))}
       </TagContainer>
-      <ContentContainer>
-        <p>{content}</p>
-      </ContentContainer>
+      <TopContainer>
+        <Title className={isSection ? "section" : ""}>{title}</Title>
+      </TopContainer>
+      <SubContainer className={isSection ? "section" : ""}>
+        <div>{maintag + ">" + subtag}</div>
+        <div>|</div>
+        <div>{period}</div>
+      </SubContainer>
+      {question ? (
+        <AnswerContainer>
+          <div className="label">내가 작성한 답변</div>
+          <hr />
+          <div className={answer ? "content" : "noContent"}>
+            {answer?.content || "작성한 답변이 없습니다"}
+          </div>
+        </AnswerContainer>
+      ) : null}
     </StyledContainer>
   );
 };
 
 export default Experience;
+
+const StyledContainer = styled.div`
+  width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  min-width: 250px;
+  display: flex;
+  padding: 1.5625rem 2.75rem 1.5625rem 1.875rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  &.section {
+    padding: 0px;
+  }
+`;
+
+const TopContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const SubContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: ${(props) => props.theme.colors.neutral500};
+  ${(props) => props.theme.fonts.cap2};
+  &.section {
+    ${(props) => props.theme.fonts.subtitle4};
+  }
+`;
+
+const Title = styled.div`
+  color: ${(props) => props.theme.colors.neutral700};
+  ${(props) => props.theme.fonts.subtitle3};
+  &.section {
+    ${(props) => props.theme.fonts.title1};
+  }
+`;
+
+const TagContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.38rem;
+`;
+
+const Tag = styled.div`
+  display: flex;
+  padding: 0.25rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.6875rem;
+  background: ${(props) => props.theme.colors.main50};
+  color: var(--main-500, #7d82ff);
+  ${(props) => props.theme.fonts.cap2};
+`;
+
+const AnswerContainer = styled.div`
+  width: 100%;
+  padding: 19px 31px;
+  border-radius: 8px;
+  background: var(--neutral-50, #f7f7fb);
+  .label {
+    ${(props) => props.theme.fonts.body4};
+    color: ${(props) => props.theme.colors.neutral600};
+    margin-bottom: 12px;
+  }
+  .content {
+    margin-top: 18px;
+    ${(props) => props.theme.fonts.cap1};
+    color: ${(props) => props.theme.colors.neutral700};
+  }
+  .noContent {
+    margin-top: 18px;
+    ${(props) => props.theme.fonts.cap1};
+    color: ${(props) => props.theme.colors.neutral600};
+  }
+`;
