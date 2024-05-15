@@ -3,9 +3,14 @@ import styled from "styled-components";
 interface HeaderInputProps {
   content: string;
   onChange: (value: string) => void;
+  onRemove: () => void;
 }
 
-const HeaderInput: React.FC<HeaderInputProps> = ({ content, onChange }) => {
+const HeaderInput: React.FC<HeaderInputProps> = ({
+  content,
+  onChange,
+  onRemove,
+}) => {
   return (
     <HeaderContainer>
       <Header
@@ -13,6 +18,7 @@ const HeaderInput: React.FC<HeaderInputProps> = ({ content, onChange }) => {
         value={content}
         onChange={(e) => onChange(e.target.value)}
       />
+      <RemoveBtn onClick={onRemove}>x</RemoveBtn>
     </HeaderContainer>
   );
 };
@@ -38,6 +44,10 @@ const Header = styled.input`
   &::placeholder {
     color: ${(props) => props.theme.colors.neutral500}; 
   }
+`;
+
+const RemoveBtn = styled.div`
+   padding-right: 1rem;
 `;
 
 export default HeaderInput;

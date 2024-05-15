@@ -7,6 +7,13 @@ import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
 import Modal from "../components/JD/JDModal";
 import Toggle from "../components/JD/Toggle";
+import { useRecoilState } from "recoil";
+import { detailStore } from "../store/jdStore";
+import arrowLeft from "../assets/icons/icon_arrow_left.svg";
+import plusBtn from "../assets/icons/icon_plus_btn_question.svg";
+import { useNavigate } from "react-router-dom";
+import QuestionModal from "../components/JD/QuestionModal";
+import DiscardModal from "../components/JD/DiscardModal";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -17,19 +24,47 @@ const JDEditPage: React.FC = () => {
     question: [
       { header: "", content: "" },
       { header: "", content: "" },
-      { header: "", content: "" },
     ],
   }); //문항 데이터
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(true);
   const [completed, setCompleted] = useState(false);
+  const [detailId, setDetailId] = useRecoilState<number>(detailStore);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [discardModal, setdiscardModal] = useState(false);
+  const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
+  const nav = useNavigate();
 
-  useEffect(() => {
-    if (completed) {
-      console.log("작성 완료 상태입니다.");
-    } else {
-      console.log("작성 중 상태입니다.");
+  useEffect(() => {}, [detailId]);
+
+  const openDiscardModal = () => {
+    setdiscardModal(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeDiscardModal = () => {
+    setdiscardModal(false);
+    document.body.style.overflow = "auto";
+  };
+
+  const openModal = (index: number) => {
+    setDeleteIdx(index);
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (deleteIdx >= 0) {
+      handleRemoveQuestion(deleteIdx);
+      setDeleteIdx(-1);
     }
-  }, [completed]);
+    document.body.style.overflow = "auto";
+  };
+
+  const cancelModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
 
   const handleHeaderChange = (index: number, value: string) => {
     setQuestionContent((prev) => ({
@@ -75,6 +110,12 @@ const JDEditPage: React.FC = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (!active) {
+      setDetailId(0);
+    }
+  }, [active]);
+
   const JDtoggleContainer = () => {
     if (!active) {
       setActive(!active);
@@ -84,6 +125,7 @@ const JDEditPage: React.FC = () => {
       setActivebutton("");
     } else if (active && activebutton === "Exp") {
       setActivebutton("JD");
+      setDetailId(0);
     }
   };
 
@@ -101,6 +143,12 @@ const JDEditPage: React.FC = () => {
 
   return (
     <StyledDivContainer className="page">
+      <QuestionModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onCancel={cancelModal}
+      />
+      <DiscardModal isOpen={discardModal} onClose={closeDiscardModal} />
       <MainContainer>
         <CenteredContainer
           initial={{ width: "100%" }}
@@ -118,7 +166,14 @@ const JDEditPage: React.FC = () => {
             <AirplaneToggle step={3} />
           </ToggleContainer>
           <TopTitleBar>
-            <Title>자기소개서 작성</Title>
+            <Title>
+              <img
+                src={arrowLeft}
+                alt="arrowicon"
+                onClick={() => (editing ? openDiscardModal() : nav(-1))}
+              />
+              자기소개서 작성
+            </Title>
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
@@ -141,18 +196,24 @@ const JDEditPage: React.FC = () => {
                       <HeaderInput
                         content={item.header}
                         onChange={(value) => handleHeaderChange(index, value)}
+                        onRemove={() => openModal(index)}
                       />
                       <ContentInput
                         content={item.content}
                         isEdit={editing}
                         onChange={(value) => handleContentChange(index, value)}
                       />
-                      {/* <button onClick={() => handleRemoveQuestion(index)}>
-                  Remove
-                </button> */}
                     </div>
                   ))}
-                  <button onClick={handleAddQuestions}>문항추가</button>
+                  <div className="img_box">
+                    <img
+                      width={44}
+                      height={44}
+                      src={plusBtn}
+                      alt="plusbtn"
+                      onClick={handleAddQuestions}
+                    />
+                  </div>
                 </QuestionsWrapper>
               ) : (
                 <AnswersWrapper>
@@ -171,6 +232,7 @@ const JDEditPage: React.FC = () => {
         </CenteredContainer>
         <AnimatePresence>
           <ActiveContainer
+            isActive={detailId !== 0}
             initial={{ x: "100%", width: "45%" }}
             animate={{ x: !active ? "110%" : "5%", width: "45%" }}
             exit={{
@@ -191,19 +253,16 @@ const JDEditPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            {activebutton === "Exp" ? (
-              <ScrollDiv>
-                <ExpContainer>
-                  <ExperienceList />
-                </ExpContainer>
-              </ScrollDiv>
+            {activebutton === "Exp" && detailId === 0 ? (
+              <ExpContainer>
+                <ExperienceList />
+              </ExpContainer>
             ) : (
-              <ScrollDiv>
-                <JobContainer>
-                  <div>{activebutton}</div>
-                </JobContainer>
-              </ScrollDiv>
+              <JobContainer>
+                <div>{activebutton}</div>
+              </JobContainer>
             )}
+            {detailId !== 0 ? <div>{detailId}</div> : null}
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -233,8 +292,6 @@ const ExpContainer = styled.div`
   width: 100%;
   height: 35rem;
   display: flex;
-  padding: 2rem;
-  margin-right: 1rem;
   flex-direction: column;
   /* overflow-y: scroll;
   overflow-x: hidden; */
@@ -244,8 +301,8 @@ const JobContainer = styled.div`
   width: 100%;
   height: 35rem;
   display: flex;
-  padding: 2rem;
-  margin-right: 1rem;
+  padding: 1rem;
+  padding-right: 2rem;
   flex-direction: column;
   /* overflow-y: scroll;
   overflow-x: hidden; */
@@ -259,7 +316,10 @@ const TopTitleBar = styled.div`
 `;
 
 const Title = styled.h1`
+  display: flex;
+  flex-direction: row;
   color:#343A5D;
+  align-items: center;
 `;
 
 const TopWrapper = styled.div`
@@ -359,14 +419,12 @@ const EditContainer = styled.div`
     background: var(--neutral-0, #FFF);
 `;
 
-const ActiveContainer = styled(motion.div)`
+const ActiveContainer = styled(motion.div)<{ isActive: boolean }>`
   width: 45%;
   border-radius: 10px;
-  padding: 1rem;
-  padding-right: 0rem;
   margin: 0 3.5rem; 
   margin-top : 10rem;
-  background: #F7F7FB;
+  background: ${(props) => (props.isActive ? "#FFF" : "#F7F7FB")};
   //background: red;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
   height: 38rem;
@@ -410,6 +468,11 @@ const QuestionsWrapper = styled.div`
     height: 28rem;
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
+    .img_box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     //overflow-y: scroll;
 `;
 
