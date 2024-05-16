@@ -20,16 +20,7 @@ const YearList = ({ width }: YearListProps) => {
 
   // 임시 데이터
   const years = [2000, 2005, 2010, 2015, 2020];
-  const keywords = [
-    "큐시즘",
-    "밋업",
-    "밤양갱",
-    "화이팅",
-    "승효",
-    "아자",
-    "도키",
-    "zz",
-  ];
+  const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅", "승효", "더보기"];
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
   const yearRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
