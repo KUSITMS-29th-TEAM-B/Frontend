@@ -7,7 +7,7 @@ import {
   AccordionSummary,
   Popper,
 } from "@mui/material";
-import { ArrowDown, ArrowLeft, Plus2 } from "../assets";
+import { ArrowDown, ArrowLeft, Plus2, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -20,8 +20,11 @@ import PopperPagination from "../components/Experience/PopperPagination";
 import Modal from "../components/common/Modal";
 import airplaneImg from "../assets/images/airplane.png";
 import Tag from "../components/common/Tag";
+import RadioGroup from "../components/common/RadioGroup";
+import { primeTags } from "../services/Experience/tagsData";
 
 type TabType = "basic" | "my";
+type TagPopperType = "prime" | "sub" | null;
 
 const ExperienceWritePage = () => {
   const theme = useTheme();
@@ -33,26 +36,32 @@ const ExperienceWritePage = () => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [popperInfo, setPopperInfo] = React.useState("prime-tag");
+  const [popperInfo, setPopperInfo] = React.useState<TagPopperType>(null);
 
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
+  const [newTag, setNewTag] = React.useState("");
+  const [primeTagList, setPrimeTagList] = React.useState(primeTags);
+  const [primeTag, setPrimeTag] = React.useState("");
+  const [subTagList, setSubTagList] = React.useState(primeTags);
+  const [subTag, setSubTag] = React.useState("");
   const [myKeywords, setMyKeywords] = React.useState<string[]>([]);
   const [newKeywords, setNewKeywords] = React.useState("");
 
-  const handleMyKeywords = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      setMyKeywords([...myKeywords, newKeywords]);
-      setNewKeywords("");
-    }
-  };
-
-  // 상위, 하위 태그 페이지네이션
-  const [currentTagPage, setCurrentTagPage] = React.useState(1);
+  // 상위 태그 페이지네이션
   const tagsPerPage = 9;
-  const firstTagIndex = (currentTagPage - 1) * tagsPerPage;
-  const lastTagIndex = firstTagIndex + tagsPerPage;
-  const currentTags = basicKeywords.slice(firstTagIndex, lastTagIndex);
+  const [currentPrimeTagPage, setCurrentPrimeTagPage] = React.useState(1);
+  const firstPrimeTagIndex = (currentPrimeTagPage - 1) * tagsPerPage;
+  const lastPrimeTagIndex = firstPrimeTagIndex + tagsPerPage;
+  const currentPrimeTags = primeTagList.slice(
+    firstPrimeTagIndex,
+    lastPrimeTagIndex
+  );
+  // 하위 태그 페이지네이션
+  const [currentSubTagPage, setCurrentSubTagPage] = React.useState(1);
+  const firstSubTagIndex = (currentSubTagPage - 1) * tagsPerPage;
+  const lastSubTagIndex = firstSubTagIndex + tagsPerPage;
+  const currentSubTags = subTagList.slice(firstSubTagIndex, lastSubTagIndex);
 
   // 키워드 선택 페이지네이션
   const [currentKeywordPage, setCurrentKeywordPage] = React.useState(1);
@@ -63,6 +72,57 @@ const ExperienceWritePage = () => {
     firstKeywordIndex,
     lastKeywordIndex
   );
+
+  // 상위 태그 라디오 버튼 클릭 함수
+  const handlePrimeRadioChange = (item: string) => {
+    setPrimeTag(item);
+    setPopperInfo(null);
+  };
+
+  // 하위 태그 라디오 버튼 클릭 함수
+  const handleSubRadioChange = (item: string) => {
+    setSubTag(item);
+    setPopperInfo(null);
+  };
+
+  // 태그 생성 및 검색
+  const handleTagSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      if (popperInfo === "prime") {
+        if (primeTagList.includes(newTag)) {
+          const tagIndex = primeTagList.indexOf(newTag);
+          const primeTagPage =
+            Math.floor((tagIndex + 1) / (tagsPerPage + 1)) + 1;
+          setCurrentPrimeTagPage(primeTagPage);
+        } else {
+          setPrimeTagList([...primeTagList, newTag]);
+          const lastPrimePage =
+            Math.floor((primeTagList.length + 1) / (tagsPerPage + 1)) + 1;
+          setCurrentPrimeTagPage(lastPrimePage);
+        }
+      }
+      if (popperInfo === "sub") {
+        if (primeTagList.includes(newTag)) {
+          const tagIndex = subTagList.indexOf(newTag);
+          const subTagPage = Math.floor((tagIndex + 1) / (tagsPerPage + 1)) + 1;
+          setCurrentSubTagPage(subTagPage);
+        } else {
+          setSubTagList([...subTagList, newTag]);
+          const lastSubPage =
+            Math.floor((subTagList.length + 1) / tagsPerPage) + 1;
+          setCurrentSubTagPage(lastSubPage);
+        }
+      }
+      setNewTag("");
+    }
+  };
+
+  const handleMyKeywords = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      setMyKeywords([...myKeywords, newKeywords]);
+      setNewKeywords("");
+    }
+  };
 
   // 모달 관리
   const openModal = () => {
@@ -77,8 +137,12 @@ const ExperienceWritePage = () => {
 
   // 경험 분류 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-    setPopperInfo(event.currentTarget.id);
+    if (popperInfo === event.currentTarget.id) {
+      setPopperInfo(null);
+    } else {
+      setAnchorEl(event.currentTarget);
+      setPopperInfo(event.currentTarget.id as TagPopperType);
+    }
   };
 
   /**
@@ -110,37 +174,69 @@ const ExperienceWritePage = () => {
               <div className="label">경험 분류</div>
               <div className="input">
                 <Input
-                  id="prime-tag"
+                  readOnly
+                  id="prime"
+                  value={primeTag}
                   style={customInputCss}
                   onClick={handleTagPopper}
                 />
                 &nbsp;{">"}&nbsp;
                 <Input
-                  id="sub-tag"
+                  readOnly
+                  id="sub"
+                  value={subTag}
                   style={customInputCss}
                   onClick={handleTagPopper}
                 />
-                <Popper open={open} anchorEl={anchorEl}>
-                  <TagPopperBox>
-                    {popperInfo === "prime-tag" ? (
-                      <>
-                        <div className="checkbox-list">
-                          {currentTags.map((item) => (
-                            <Checkbox label={item} />
-                          ))}
-                        </div>
-                        <div className="pagination">
-                          <PopperPagination
-                            postsNum={basicKeywords.length}
-                            postsPerPage={tagsPerPage}
-                            setCurrentPage={setCurrentTagPage}
-                            currentPage={currentTagPage}
+                {popperInfo && (
+                  <Popper open={open} anchorEl={anchorEl}>
+                    <TagPopperBox>
+                      <TagSearchBox>
+                        <input
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                          onKeyDown={handleTagSearch}
+                        />
+                        <Search />
+                      </TagSearchBox>
+                      {popperInfo === "prime" ? (
+                        <>
+                          <RadioGroup
+                            value={primeTag}
+                            name="prime-tag"
+                            options={currentPrimeTags}
+                            onChange={handlePrimeRadioChange}
                           />
-                        </div>
-                      </>
-                    ) : null}
-                  </TagPopperBox>
-                </Popper>
+                          <div className="pagination">
+                            <PopperPagination
+                              postsNum={primeTagList.length}
+                              postsPerPage={tagsPerPage}
+                              setCurrentPage={setCurrentPrimeTagPage}
+                              currentPage={currentPrimeTagPage}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <RadioGroup
+                            value={subTag}
+                            name="sub-tag"
+                            options={currentSubTags}
+                            onChange={handleSubRadioChange}
+                          />
+                          <div className="pagination">
+                            <PopperPagination
+                              postsNum={subTagList.length}
+                              postsPerPage={tagsPerPage}
+                              setCurrentPage={setCurrentSubTagPage}
+                              currentPage={currentSubTagPage}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </TagPopperBox>
+                  </Popper>
+                )}
               </div>
             </div>
           </div>
@@ -533,11 +629,12 @@ const customInputCss = {
   borderRadius: "5px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
   maxWidth: "131px",
+  color: `var(--main-500, #7D82FF)`,
 };
 
 const TagPopperBox = styled.div`
-  display: flex;
   width: 355px;
+  display: flex;
   flex-direction: column;
   padding: 21px 22px 21px 20px;
   border-radius: 8px;
@@ -552,6 +649,21 @@ const TagPopperBox = styled.div`
   .pagination {
     display: flex;
     justify-content: flex-end;
+  }
+`;
+
+const TagSearchBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  background: var(--neutral-50, #f7f7fb);
+  padding: 8px 12px;
+  input {
+    width: 100%;
+    border: none;
+    background: none;
+    outline: none;
   }
 `;
 

@@ -10,3 +10,4 @@ export { ReactComponent as PolygonRight } from "./icons/polygon-right.svg";
 export { ReactComponent as PolygonLeft } from "./icons/polygon-left.svg";
 export { ReactComponent as Options } from "./icons/options.svg";
 export { ReactComponent as Check } from "./icons/check.svg";
+export { ReactComponent as Search } from "./icons/icon_search.svg";
