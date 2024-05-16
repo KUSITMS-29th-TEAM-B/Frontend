@@ -179,6 +179,7 @@ const ExperienceWritePage = () => {
                   value={primeTag}
                   style={customInputCss}
                   onClick={handleTagPopper}
+                  placeholder="상위 경험 분류"
                 />
                 &nbsp;{">"}&nbsp;
                 <Input
@@ -187,9 +188,14 @@ const ExperienceWritePage = () => {
                   value={subTag}
                   style={customInputCss}
                   onClick={handleTagPopper}
+                  placeholder="하위 경험 분류"
                 />
                 {popperInfo && (
-                  <Popper open={open} anchorEl={anchorEl}>
+                  <Popper
+                    open={open}
+                    anchorEl={anchorEl}
+                    sx={{ paddingTop: "8px" }}
+                  >
                     <TagPopperBox>
                       <TagSearchBox>
                         <input
