@@ -5,15 +5,16 @@ import HeaderInput from "../components/JD/HeaderInput";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
-import Modal from "../components/JD/JDModal";
 import Toggle from "../components/JD/Toggle";
 import { useRecoilState } from "recoil";
 import { detailStore } from "../store/jdStore";
 import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import plusBtn from "../assets/icons/icon_plus_btn_question.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QuestionModal from "../components/JD/QuestionModal";
 import DiscardModal from "../components/JD/DiscardModal";
+import JDContainer from "../components/JD/JDContainer";
+import { jobDetails } from "../services/JD/jdData";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -26,16 +27,20 @@ const JDEditPage: React.FC = () => {
       { header: "", content: "" },
     ],
   }); //문항 데이터
-  const [editing, setEditing] = useState(true);
-  const [completed, setCompleted] = useState(false);
-  const [detailId, setDetailId] = useRecoilState<number>(detailStore);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [discardModal, setdiscardModal] = useState(false);
+  const [editing, setEditing] = useState(true); //수정중 여부
+  const [completed, setCompleted] = useState(false); //작성 완료
+  const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
+  const [isModalOpen, setIsModalOpen] = useState(false); // 문항 삭제 모달
+  const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
+  const jdId: number = parseInt(useParams().jdId!); //공고 id
 
-  useEffect(() => {}, [detailId]);
+  useEffect(() => {
+    console.log(jdId);
+  }, [jdId]);
 
+  //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
     setdiscardModal(true);
     document.body.style.overflow = "hidden";
@@ -46,6 +51,7 @@ const JDEditPage: React.FC = () => {
     document.body.style.overflow = "auto";
   };
 
+  //자기소개서 문항 삭제하기
   const openModal = (index: number) => {
     setDeleteIdx(index);
     setIsModalOpen(true);
@@ -110,6 +116,7 @@ const JDEditPage: React.FC = () => {
     });
   }, []);
 
+  //activecontainer 변경사항 있을 시 detailId 초기화
   useEffect(() => {
     if (!active) {
       setDetailId(0);
@@ -253,16 +260,21 @@ const JDEditPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            {activebutton === "Exp" && detailId === 0 ? (
-              <ExpContainer>
-                <ExperienceList />
-              </ExpContainer>
+            {activebutton === "Exp" ? (
+              <>
+                {detailId !== 0 ? (
+                  <div>{detailId}</div>
+                ) : (
+                  <ExpContainer>
+                    <ExperienceList />
+                  </ExpContainer>
+                )}
+              </>
             ) : (
               <JobContainer>
-                <div>{activebutton}</div>
+                {jdId ? <JDContainer jdId={jdId!} /> : null}
               </JobContainer>
             )}
-            {detailId !== 0 ? <div>{detailId}</div> : null}
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
