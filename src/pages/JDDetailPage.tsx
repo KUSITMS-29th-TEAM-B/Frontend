@@ -12,6 +12,7 @@ import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import { detailStore } from "../store/jdStore";
 import calendarIcon from "../assets/icons/icon_calendar.svg";
 import linkIcon from "../assets/icons/icon_link.svg";
+import ExperienceBox from "../components/JD/ExpContainer";
 
 const jdData = {
   id: 3,
@@ -102,7 +103,7 @@ const JDDetailPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "28%",
+            x: active ? "7%" : "25%",
             width: active ? "50%" : "100%",
           }}
           transition={{
@@ -179,7 +180,7 @@ const JDDetailPage: React.FC = () => {
             }}
             exit={{
               x: "0%",
-              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+              transition: { stiffness: 50, damping: 20 },
             }}
             transition={{
               type: "spring",
@@ -193,7 +194,7 @@ const JDDetailPage: React.FC = () => {
               <ButtonText active={activebutton === "Exp"}>경험연결</ButtonText>
             </ExperienceButton>
             {detailId !== 0 ? (
-              <div>{detailId}</div>
+              <ExperienceBox expId={detailId} />
             ) : (
               <ScrollDiv>
                 <ExpContainer>

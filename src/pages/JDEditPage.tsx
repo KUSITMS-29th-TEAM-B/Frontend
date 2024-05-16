@@ -15,6 +15,7 @@ import QuestionModal from "../components/JD/QuestionModal";
 import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import { jobDetails } from "../services/JD/jdData";
+import ExperienceBox from "../components/JD/ExpContainer";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -177,7 +178,7 @@ const JDEditPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "28%",
+            x: active ? "7%" : "25%",
             width: active ? "50%" : "100%",
           }}
           transition={{
@@ -253,7 +254,7 @@ const JDEditPage: React.FC = () => {
                   {questionContent.question.map((item, index) => (
                     <Answer key={index}>
                       <AnswerHeader>
-                        {`${index + 1}` + `. ` + item.header}
+                        {`${index + 1}` + ". " + item.header}
                       </AnswerHeader>
                       <AnswerContent>{item.content}</AnswerContent>
                       <TextCountWrapper>
@@ -273,7 +274,7 @@ const JDEditPage: React.FC = () => {
             animate={{ x: !active ? "110%" : "5%", width: "45%" }}
             exit={{
               x: "0%",
-              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+              transition: { stiffness: 50, damping: 20 },
             }}
             transition={{ type: "spring", stiffness: 40 }}
           >
@@ -292,7 +293,7 @@ const JDEditPage: React.FC = () => {
             {activebutton === "Exp" ? (
               <>
                 {detailId !== 0 ? (
-                  <div>{detailId}</div>
+                  <ExperienceBox expId={detailId} />
                 ) : (
                   <ExpContainer>
                     <ExperienceList />

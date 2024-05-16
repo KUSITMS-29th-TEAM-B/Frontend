@@ -30,7 +30,7 @@ const Navbar = () => {
         </MenuList>
       </ItemContainer>
       <ItemContainer>
-        <Search />
+        {/* <Search /> */}
         <UserInfo onClick={() => navigate(`/mypage`)}>사용자님</UserInfo>
       </ItemContainer>
     </NavContainer>

@@ -8,7 +8,7 @@ import SearchIcon from "../../assets/icons/icon_search_grey500.svg";
 
 const ExperienceList = () => {
   const [selectedTab, setSelectedTab] = useState<string>("경험검색");
-  const filteredData = ExpData.filter((post) => post.bookmark);
+  const filteredData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
   const [showDetail, setshowDetail] = useState(false); //경험 상세 보여주기
 
   return (
