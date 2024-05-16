@@ -26,10 +26,11 @@ const ContentInput: React.FC<ContentInputProps> = ({
 
 const ContentContainer = styled.div<{ isEdit: boolean; hasContent: boolean }>`
   display: flex;
-  height: 8rem;
+  height: 7rem;
   flex-direction: column;
   border-radius: 0.75rem;
-  background: var(--neutral-50, #fbfbfd);
+  border: 1px solid #D9DBE6;
+  background-color: white;
   margin: 1rem 0;
   padding: 1rem;
 
@@ -37,9 +38,7 @@ const ContentContainer = styled.div<{ isEdit: boolean; hasContent: boolean }>`
     props.isEdit &&
     props.hasContent &&
     css`
-      border: 1px solid #D9DBE6;
-      background-color: white;
-      height: 15rem;
+      height: 10rem;
     `}
 `;
 

@@ -5,15 +5,17 @@ import HeaderInput from "../components/JD/HeaderInput";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
-import Modal from "../components/JD/JDModal";
 import Toggle from "../components/JD/Toggle";
 import { useRecoilState } from "recoil";
 import { detailStore } from "../store/jdStore";
 import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import plusBtn from "../assets/icons/icon_plus_btn_question.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QuestionModal from "../components/JD/QuestionModal";
 import DiscardModal from "../components/JD/DiscardModal";
+import JDContainer from "../components/JD/JDContainer";
+import { jobDetails } from "../services/JD/jdData";
+import ExperienceBox from "../components/JD/ExpContainer";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -26,16 +28,30 @@ const JDEditPage: React.FC = () => {
       { header: "", content: "" },
     ],
   }); //문항 데이터
-  const [editing, setEditing] = useState(true);
-  const [completed, setCompleted] = useState(false);
-  const [detailId, setDetailId] = useRecoilState<number>(detailStore);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [discardModal, setdiscardModal] = useState(false);
+  const [editing, setEditing] = useState(true); //수정중 여부
+  const [completed, setCompleted] = useState(false); //작성 완료
+  const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
+
+  const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
+  const [isModalOpen, setIsModalOpen] = useState(false); // 문항 삭제 모달
+  const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
+  const jdId: number = parseInt(useParams().jdId!); //공고 id
 
-  useEffect(() => {}, [detailId]);
+  useEffect(() => {
+    console.log(jdId);
+  }, [jdId]);
 
+  useEffect(() => {
+    const isAnyQuestionEmpty = questionContent.question.some(
+      (question) => question.header === "" || question.content === ""
+    );
+
+    setIsAllFilled(!isAnyQuestionEmpty);
+  }, [questionContent]);
+
+  //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
     setdiscardModal(true);
     document.body.style.overflow = "hidden";
@@ -46,6 +62,7 @@ const JDEditPage: React.FC = () => {
     document.body.style.overflow = "auto";
   };
 
+  //자기소개서 문항 삭제하기
   const openModal = (index: number) => {
     setDeleteIdx(index);
     setIsModalOpen(true);
@@ -103,6 +120,13 @@ const JDEditPage: React.FC = () => {
     }
   };
 
+  const handleSaveButton = () => {
+    if (isAllFilled) {
+      setEditing(false);
+      //api post 요청
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -110,6 +134,7 @@ const JDEditPage: React.FC = () => {
     });
   }, []);
 
+  //activecontainer 변경사항 있을 시 detailId 초기화
   useEffect(() => {
     if (!active) {
       setDetailId(0);
@@ -184,9 +209,15 @@ const JDEditPage: React.FC = () => {
                   onClick={() => (!editing ? setCompleted(!completed) : null)}
                 />
               </ToggleWrapper>
-              <TopButton isEdit={editing} onClick={handleEditButton}>
-                {editing ? "저장" : "수정"}
-              </TopButton>
+              {editing ? (
+                <SaveButton isNotNull={isAllFilled} onClick={handleSaveButton}>
+                  저장
+                </SaveButton>
+              ) : (
+                <EditButton iscanEdit={completed} onClick={handleEditButton}>
+                  수정
+                </EditButton>
+              )}
             </TopWrapper>
             <ScrollDiv>
               {editing ? (
@@ -203,6 +234,9 @@ const JDEditPage: React.FC = () => {
                         isEdit={editing}
                         onChange={(value) => handleContentChange(index, value)}
                       />
+                      <TextCountWrapper>
+                        <div>{item.content.length + "자(공백 포함)"}</div>
+                      </TextCountWrapper>
                     </div>
                   ))}
                   <div className="img_box">
@@ -220,9 +254,12 @@ const JDEditPage: React.FC = () => {
                   {questionContent.question.map((item, index) => (
                     <Answer key={index}>
                       <AnswerHeader>
-                        {`${index + 1}` + `. ` + item.header}
+                        {`${index + 1}` + ". " + item.header}
                       </AnswerHeader>
                       <AnswerContent>{item.content}</AnswerContent>
+                      <TextCountWrapper>
+                        <div>{item.content.length + "자(공백 포함)"}</div>
+                      </TextCountWrapper>
                     </Answer>
                   ))}
                 </AnswersWrapper>
@@ -237,7 +274,7 @@ const JDEditPage: React.FC = () => {
             animate={{ x: !active ? "110%" : "5%", width: "45%" }}
             exit={{
               x: "0%",
-              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+              transition: { stiffness: 50, damping: 20 },
             }}
             transition={{ type: "spring", stiffness: 40 }}
           >
@@ -253,16 +290,21 @@ const JDEditPage: React.FC = () => {
             >
               <ButtonText active={activebutton === "Exp"}>경험분석</ButtonText>
             </ExperienceButton>
-            {activebutton === "Exp" && detailId === 0 ? (
-              <ExpContainer>
-                <ExperienceList />
-              </ExpContainer>
+            {activebutton === "Exp" ? (
+              <>
+                {detailId !== 0 ? (
+                  <ExperienceBox expId={detailId} />
+                ) : (
+                  <ExpContainer>
+                    <ExperienceList />
+                  </ExpContainer>
+                )}
+              </>
             ) : (
               <JobContainer>
-                <div>{activebutton}</div>
+                {jdId ? <JDContainer jdId={jdId!} /> : null}
               </JobContainer>
             )}
-            {detailId !== 0 ? <div>{detailId}</div> : null}
           </ActiveContainer>
         </AnimatePresence>
       </MainContainer>
@@ -301,8 +343,6 @@ const JobContainer = styled.div`
   width: 100%;
   height: 35rem;
   display: flex;
-  padding: 1rem;
-  padding-right: 2rem;
   flex-direction: column;
   /* overflow-y: scroll;
   overflow-x: hidden; */
@@ -330,7 +370,35 @@ const TopWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const TopButton = styled.button<{ isEdit: boolean }>`
+const TextCountWrapper = styled.div`
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    color: ${(props) => props.theme.colors.neutral500};
+    ${(props) => props.theme.fonts.cap3}
+`;
+
+const SaveButton = styled.button<{ isNotNull: boolean }>`
+    display: inline-flex;
+    padding: 0.625rem 4rem;
+    justify-content: center;
+    align-items: center;
+    color:#FFF;
+    gap: 0.625rem;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background:  ${(props) => props.theme.colors.neutral500};
+  ${(props) =>
+    props.isNotNull &&
+    css`
+        background: ${(props) => props.theme.colors.main500};
+    `}
+`;
+
+const EditButton = styled.button<{ iscanEdit: boolean }>`
     display: inline-flex;
     padding: 0.625rem 4rem;
     justify-content: center;
@@ -341,14 +409,15 @@ const TopButton = styled.button<{ isEdit: boolean }>`
     font-style: normal;
     font-weight: 700;
     border-radius: 0.5rem;
-    border: 1px solid #D9DBE6;
-    background-color: white;
+    border: 1px solid ${(props) => props.theme.colors.main500};
+    background: #FFF;
+    ${(props) => props.theme.fonts.button2}
+    color: ${(props) => props.theme.colors.main500};
   ${(props) =>
-    props.isEdit &&
+    props.iscanEdit &&
     css`
-        border: 1px solid transparent;
-        color:var(--white);
-        background: var(--main-500, #7D82FF);
+        border: 1px solid var(--neutral-500, #A6AAC0);
+        color: ${(props) => props.theme.colors.neutral500};
     `}
 `;
 
@@ -465,7 +534,7 @@ const ExperienceButton = styled.button<ButtonProps>`
 `;
 
 const QuestionsWrapper = styled.div`
-    height: 28rem;
+    height: 30rem;
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
     .img_box {
@@ -477,7 +546,7 @@ const QuestionsWrapper = styled.div`
 `;
 
 const AnswersWrapper = styled.div`
-    height: 28rem;
+    height: 30rem;
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
     //overflow-y: scroll;
@@ -485,25 +554,22 @@ const AnswersWrapper = styled.div`
 
 const Answer = styled.div`
     margin-bottom: 1.75rem;
+    ${(props) => props.theme.fonts.body5};
 `;
 
 const AnswerHeader = styled.h3`
     color: var(--neutral-700, #343A5D);
     /* subtitle 3 (semibold 16pt) */
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
+    ${(props) => props.theme.fonts.subtitle3}
     margin-bottom: 1rem;
 `;
 
 const AnswerContent = styled.p`
     color: var(--neutral-700, #343A5D);
     /* body 5 (regular 13pt) */
-    font-size: 0.8em;
-    font-style: normal;
-    font-weight: 400;
     border-top: 1px solid #EAEBF3;
     padding: 1.25rem;
+    ${(props) => props.theme.fonts.body5};
 `;
 
 const ButtonText = styled.div<ButtonProps>`

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
@@ -10,6 +10,9 @@ import StateBox from "../components/JD/StateBox";
 import { useRecoilState } from "recoil";
 import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import { detailStore } from "../store/jdStore";
+import calendarIcon from "../assets/icons/icon_calendar.svg";
+import linkIcon from "../assets/icons/icon_link.svg";
+import ExperienceBox from "../components/JD/ExpContainer";
 
 const jdData = {
   id: 3,
@@ -18,6 +21,7 @@ const jdData = {
   recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
   status: RecruitmentStatus.End,
   dday: 30,
+  link: "https://www.naver.com/",
   date: "2013.01.10",
   content: `<div>
         <h2>Job Description</h2>
@@ -99,7 +103,7 @@ const JDDetailPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "23%",
+            x: active ? "7%" : "25%",
             width: active ? "50%" : "100%",
           }}
           transition={{
@@ -125,21 +129,38 @@ const JDDetailPage: React.FC = () => {
           </TopTitleBar>
           <JobContainer>
             <div className="job_box">
+              <JobStatusBar>
+                <StateBox className="job_status" status={jdData.status} />
+                <div className="job_date">{jdData.date}</div>
+              </JobStatusBar>
               <JobTopBox>
                 <JobTopTitleBox>
                   <div className="job_detail_dday">{"D-" + jdData.dday}</div>
                   <div className="job_detail_title">{jdData.title}</div>
-                  <div className="job_detail_status">
-                    <StateBox status={jdData.status} />
-                  </div>
                 </JobTopTitleBox>
                 <JobTopDescription>{jdData.description}</JobTopDescription>
-                <JobTopDateBox>
+                <JobSubBox>
                   <div className="period">
-                    {"지원기간 : " + jdData.recruitmentPeriod}
+                    <img
+                      src={calendarIcon}
+                      alt="calendar"
+                      width={16}
+                      height={16}
+                    />
+                    {jdData.recruitmentPeriod}
                   </div>
-                  <div className="date">{jdData.date}</div>
-                </JobTopDateBox>
+                  <div className="link">
+                    <img src={linkIcon} alt="link" width={16} height={16} />
+                    <a
+                      href={jdData.link}
+                      className="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {jdData.link}
+                    </a>
+                  </div>
+                </JobSubBox>
               </JobTopBox>
               <ScrollDiv>
                 <JobBottomBox>
@@ -159,7 +180,7 @@ const JDDetailPage: React.FC = () => {
             }}
             exit={{
               x: "0%",
-              transition: { delay: 0.5, stiffness: 50, damping: 20 },
+              transition: { stiffness: 50, damping: 20 },
             }}
             transition={{
               type: "spring",
@@ -173,7 +194,7 @@ const JDDetailPage: React.FC = () => {
               <ButtonText active={activebutton === "Exp"}>경험연결</ButtonText>
             </ExperienceButton>
             {detailId !== 0 ? (
-              <div>{detailId}</div>
+              <ExperienceBox expId={detailId} />
             ) : (
               <ScrollDiv>
                 <ExpContainer>
@@ -295,8 +316,26 @@ const JobTopBox = styled.div`
     display: flex;
     width: 100%;
     flex-direction: column;
-    padding: 2rem;
+    padding: 1.5rem;
     padding-bottom: 0rem;
+`;
+
+const JobStatusBar = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    padding: 0.75rem 2rem;
+    height: 3rem;
+    background: ${(props) => props.theme.colors.neutral50};
+    border-top-right-radius: 0.9rem;
+    border-top-left-radius: 0.9rem;
+    align-items: center;
+    .job_date {
+        color:  ${(props) => props.theme.colors.neutral500};
+        ${(props) => props.theme.fonts.cap1};
+        margin-left: 1rem;
+    }
+    
 `;
 
 const JobTopTitleBox = styled.div`
@@ -334,15 +373,6 @@ const JobTopTitleBox = styled.div`
         align-items: center;
         padding-top: 0.25rem;
     }
-    .job_detail_status{
-        display: flex;
-        min-width: 8rem;
-        flex:1;
-        padding: 0.25rem 0.6875rem;
-        justify-content: end;
-        gap: 0.625rem;
-        border-radius: 0.25rem;
-    }
 `;
 
 const JobTopDescription = styled.div`
@@ -351,13 +381,13 @@ const JobTopDescription = styled.div`
     font-style: normal;
     font-weight: 600;
     line-height: 1.25rem; 
-    margin-bottom: 0.75rem;
+    padding: 1rem 0;
 `;
 
-const JobTopDateBox = styled.div`
+const JobSubBox = styled.div`
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     color: var(--neutral-500, #A6AAC0);
     font-size: 0.875rem;
@@ -366,15 +396,21 @@ const JobTopDateBox = styled.div`
     padding-bottom: 1rem;
     border-bottom: 1px solid #EAEBF3;
     .period{
-        flex: 9;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
-    .date{
-        flex: 1;
+    .link{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--neutral-500, #A6AAC0);
+        ${(props) => props.theme.fonts.link};
     }
 `;
 
 const JobBottomBox = styled.div`
-    height: 28rem;
+    height: 23rem;
     color: var(--neutral-700, #343A5D);
     //overflow-y: scroll;
     margin: 0rem 0rem 2rem 2rem;
@@ -401,7 +437,7 @@ const ActiveContainer = styled(motion.div)<{ isActive: boolean }>`
   background: ${(props) => (props.isActive ? "#FFF" : "#F7F7FB")};
   //background: red;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 38rem;
+  height: 40rem;
 `;
 
 const buttonActiveStyle = css`

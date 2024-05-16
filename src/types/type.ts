@@ -26,6 +26,8 @@ export interface Job {
   description: string;
   dday: number;
   recruitmentPeriod: string;
+  date: string;
+  link: string;
   status: RecruitmentStatus;
   content: string;
 }
