@@ -5,11 +5,33 @@ import styled from "styled-components";
 import FillfilterIcon from "../../assets/icons/icon_filter_fill.svg";
 import BlankfilterIcon from "../../assets/icons/icon_filter_blank.svg";
 import SearchIcon from "../../assets/icons/icon_search_grey500.svg";
+import { TagList } from "../../services/JD/TagData";
+import ArrowIcon_net from "../../assets/icons/icon_arrow_right_net500.svg";
+import ArrowIcon_main from "../../assets/icons/icon_arrow_right_main500.svg";
+import FilterRemoveIcon from "../../assets/icons/icon_filter_remove.svg";
 
 const ExperienceList = () => {
   const [selectedTab, setSelectedTab] = useState<string>("경험검색");
-  const filteredData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
   const [showDetail, setshowDetail] = useState(false); //경험 상세 보여주기
+  const [showTagPopup, setShowTagPopup] = useState(false); // 태그 필터링
+  const [searchText, setSearchText] = useState(""); //검색 입력
+  const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
+  const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
+  const filteredData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
+
+  const handleTagSelection = (
+    selectedmainTag: string,
+    selectedsubTag?: string
+  ): void => {
+    setSearchText("");
+    setMainTag(selectedmainTag);
+    if (selectedsubTag) {
+      setSubTag(selectedsubTag);
+      setShowTagPopup(false);
+    } else {
+      setSubTag("");
+    }
+  };
 
   return (
     <StyledContainer>
@@ -30,11 +52,43 @@ const ExperienceList = () => {
             </Tab>
           </TabContainer>
           <SearchContainer>
-            <SearchBar />
+            {mainTag ? (
+              <SearchBar value="" readOnly />
+            ) : (
+              <SearchBar
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            )}
+            <FilterContainer>
+              {mainTag}
+              {subTag && <img src={ArrowIcon_main} alt="Arrow" />}
+              {subTag && subTag}
+              {mainTag && (
+                <img
+                  src={FilterRemoveIcon}
+                  alt="remove"
+                  className="deletebtn"
+                  onClick={() => {
+                    setMainTag("");
+                    setSubTag("");
+                  }}
+                />
+              )}
+            </FilterContainer>
             <IconContainer>
-              <img src={BlankfilterIcon} alt="filter" />
+              <img
+                src={mainTag ? FillfilterIcon : BlankfilterIcon}
+                alt="filter"
+                onClick={() => {
+                  setShowTagPopup(!showTagPopup);
+                  setMainTag("");
+                  setSubTag("");
+                }}
+              />
               <img src={SearchIcon} alt="filter" />
             </IconContainer>
+            {showTagPopup && <TagPopup onSelect={handleTagSelection} />}
           </SearchContainer>
           {selectedTab === "경험검색" ? (
             <>
@@ -81,6 +135,72 @@ const ExperienceList = () => {
 
 export default ExperienceList;
 
+interface TagPopupProps {
+  onSelect: (mainTag: string, subTag?: string) => void;
+}
+
+const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
+  const [visibleSubTag, setVisibleSubTag] = useState<number | null>(null);
+
+  const toggleSubTags = (id: number, mainTag: string) => {
+    onSelect(mainTag);
+    if (visibleSubTag === id) {
+      setVisibleSubTag(null);
+    } else {
+      setVisibleSubTag(id);
+    }
+  };
+  return (
+    <PopupContainer>
+      {TagList.map((tag) => (
+        <div key={tag.id}>
+          <Tag onClick={() => toggleSubTags(tag.id, tag.mainTag)}>
+            <img src={ArrowIcon_net} alt="arrow" />
+            {tag.mainTag}
+          </Tag>
+          {visibleSubTag === tag.id &&
+            tag.subTag.map((sub) => (
+              <SubTag key={sub} onClick={() => onSelect(tag.mainTag, sub)}>
+                <img src={ArrowIcon_net} alt="arrow" />
+                {sub}
+              </SubTag>
+            ))}
+        </div>
+      ))}
+    </PopupContainer>
+  );
+};
+
+const PopupContainer = styled.div`
+  position: absolute;
+  background: #FFF;
+  border: 1px solid #ccc;
+  right: 0.5rem;
+  top: 3.5rem;
+  z-index: 10;
+  width: 11rem; 
+  max-height: 20rem;
+  overflow: auto;
+  border-radius: 0.5rem;
+  color:  ${(props) => props.theme.colors.neutral700};
+  border: 1px solid ${(props) => props.theme.colors.neutral200};
+`;
+
+const Tag = styled.div`
+  cursor: pointer;
+  display: flex;
+  padding: 0.75rem 0.5rem;
+  align-items: center;
+  ${(props) => props.theme.fonts.body4};
+  &:hover {
+    background: ${(props) => props.theme.colors.neutral300}
+  }
+`;
+
+const SubTag = styled(Tag)`
+  padding-left: 20px;
+`;
+
 const StyledContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -125,6 +245,20 @@ const SearchBar = styled.input`
   font-size: 1rem;
   padding: 1rem;
   margin-bottom: 1rem;
+`;
+
+const FilterContainer = styled.div`
+  position: absolute;
+  align-items: center;
+  left: 1rem;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  ${(props) => props.theme.fonts.body4};
+  color:  ${(props) => props.theme.colors.main500};
+  .deletebtn{
+    margin-left: 0.5rem;
+  }
 `;
 
 const IconContainer = styled.div`

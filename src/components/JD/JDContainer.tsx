@@ -10,7 +10,7 @@ interface JobContainerProps {
 }
 
 const JDContainer: React.FC<JobContainerProps> = ({ jdId }) => {
-  const jdData = jobDetails[jdId - 1];
+  const jdData = jobDetails[jdId - 1]; // api data로 변경
 
   return (
     <JobContainer>

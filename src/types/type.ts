@@ -36,3 +36,9 @@ export interface Question {
   num: number;
   content: string;
 }
+
+export type TagType = {
+  id: number;
+  mainTag: string;
+  subTag: string[];
+};
