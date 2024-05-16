@@ -12,3 +12,7 @@ export { ReactComponent as Options } from "./icons/options.svg";
 export { ReactComponent as Check } from "./icons/check.svg";
 export { ReactComponent as Search } from "./icons/icon_search.svg";
 export { ReactComponent as Delete } from "./icons/icon_delete_purple.svg";
+export { ReactComponent as GoogleIcon } from "./icons/Google.svg";
+export { ReactComponent as KakaoIcon } from "./icons/Kakao.svg";
+export { ReactComponent as AirplaneWindow } from "./images/window.svg";
+export { ReactComponent as Bubble } from "./images/bubble.svg";
