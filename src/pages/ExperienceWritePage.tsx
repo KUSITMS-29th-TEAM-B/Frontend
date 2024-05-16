@@ -146,10 +146,20 @@ const ExperienceWritePage = () => {
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = "auto";
+  };
+
+  // 질문 아코디언 관리
+  const [expanded, setExpanded] = React.useState(false);
+  const [resultKeywords, setResultKeywords] = React.useState<string[]>([]);
+
+  const handleChange = () => {
+    if (expanded) {
+      setResultKeywords([...checkedKeywords]);
+    }
+    setExpanded(!expanded);
   };
 
   // 경험 분류 클릭 함수
@@ -266,6 +276,8 @@ const ExperienceWritePage = () => {
           <div className="form-item">
             <div className="label">역량 키워드 선택</div>
             <Accordion
+              expanded={expanded}
+              onChange={handleChange}
               sx={{
                 maxWidth: "800px",
                 background: theme.colors.neutral0,
@@ -304,7 +316,15 @@ const ExperienceWritePage = () => {
                 }}
               >
                 <KeywordInput>
-                  최대 5개까지 추가 가능 (ex. 커뮤니케이션, 협업 등)
+                  {resultKeywords.length > 0 ? (
+                    <div className="tag-list">
+                      {resultKeywords.map((item) => (
+                        <Tag text={item} />
+                      ))}
+                    </div>
+                  ) : (
+                    "최대 5개까지 추가 가능 (ex) 커뮤니케이션, 협업 등)"
+                  )}
                 </KeywordInput>
               </AccordionSummary>
               <AccordionDetails sx={{ padding: "0px" }}>
@@ -616,6 +636,11 @@ const KeywordSelect = styled.div`
 const KeywordInput = styled.div`
   ${(props) => props.theme.fonts.body3};
   color: ${(props) => props.theme.colors.neutral500};
+  .tag-list {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
 `;
 
 const MyKeywordInput = styled.div`
