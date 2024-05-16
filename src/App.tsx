@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import MyPage from "./pages/MyPage";
 import Navbar from "./components/common/Navbar";
 import JDEditPage from "./pages/JDEditPage";
 import JDDetailPage from "./pages/JDDetailPage";
@@ -12,6 +11,7 @@ import ExperiencePage from "./pages/ExperiencePage";
 import SignupPage from "./pages/SignupPage";
 import ExperienceWritePage from "./pages/ExperienceWritePage";
 import ExperienceDetailPage from "./pages/ExperienceDetailPage";
+import SignInPage from "./pages/SignInPage";
 
 const App: React.FC = () => {
   return (
@@ -25,8 +25,11 @@ const App: React.FC = () => {
         <Route path="/jd/post" element={<JDPlusPage />} />
         <Route path="/experience" element={<ExperiencePage />} />
         <Route path="/experience/write" element={<ExperienceWritePage />} />
-        <Route path="/experience/detail/:id" element={<ExperienceDetailPage />} />
-        <Route path="/mypage" element={<MyPage />} />
+        <Route
+          path="/experience/detail/:id"
+          element={<ExperienceDetailPage />}
+        />
+        <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
       </Routes>
     </>
