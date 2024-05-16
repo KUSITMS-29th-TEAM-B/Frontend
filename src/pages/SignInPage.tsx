@@ -5,6 +5,7 @@ import styled from "styled-components";
 import backgroundImg from "../assets/images/background2.png";
 import { AirplaneWindow, Bubble, GoogleIcon, KakaoIcon } from "../assets";
 import logoImg from "../assets/images/logo.png";
+import { login } from "../services/user";
 declare global {
   interface Window {
     Kakao: any;
@@ -18,7 +19,9 @@ const SignInPage = () => {
     Kakao.Auth.login({
       success: (auth: any) => {
         let accessToken = auth.access_token;
-        console.log("kakao", accessToken);
+        login("KAKAO", accessToken)
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
       },
       fail: (error: any) => {
         alert(JSON.stringify(error));
@@ -41,9 +44,10 @@ const SignInPage = () => {
         axios
           .post("https://oauth2.googleapis.com/token", payload)
           .then((res) => {
-            console.log(res);
             let accessToken = res.data.access_token;
-            console.log("google", accessToken);
+            login("GOOGLE", accessToken)
+              .then((res) => console.log("성공", res))
+              .catch((err) => console.log(err));
           })
           .catch((err) => {
             console.log(err);
