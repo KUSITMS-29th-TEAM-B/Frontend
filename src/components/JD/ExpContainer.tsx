@@ -23,7 +23,10 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
             <div style={{ display: "flex" }}>
               <Chip text={item.type} />
               <div>{item.question}</div>
-              <div>{expData.detail![index].content}</div>
+              <div>
+                {expData.detail?.find((detail) => detail.num === index)
+                  ?.content || "질문에 대한 정보가 없습니다."}
+              </div>
             </div>
           ))}
           <button onClick={() => setDetailId(0)}>이전으로</button>

@@ -26,15 +26,6 @@ export const ExpData = [
         num: 4,
         content: "4번 질문입니다.",
       },
-
-      {
-        num: 5,
-        content: "5번 질문입니다.",
-      },
-      {
-        num: 6,
-        content: "6번 질문입니다.",
-      },
       {
         num: 7,
         content: "7번 질문입니다.",
@@ -63,15 +54,6 @@ export const ExpData = [
       {
         num: 3,
         content: "3번 질문입니다.",
-      },
-      {
-        num: 4,
-        content: "4번 질문입니다.",
-      },
-
-      {
-        num: 5,
-        content: "5번 질문입니다.",
       },
       {
         num: 6,
@@ -116,10 +98,6 @@ export const ExpData = [
       {
         num: 3,
         content: "3번 질문입니다.",
-      },
-      {
-        num: 4,
-        content: "4번 질문입니다.",
       },
 
       {
