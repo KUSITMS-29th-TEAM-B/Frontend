@@ -9,6 +9,7 @@ import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
 import KeywordTab from "../components/Experience/KeywordTab";
 import { useNavigate } from "react-router-dom";
+import MoreTab from "../components/Experience/MoreTab";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
@@ -53,7 +54,8 @@ const ExperiencePage = () => {
         }}
         transition={{ type: "spring", stiffness: 40 }}
       >
-        {selectedKeyword ? <KeywordTab /> : null}
+        {selectedKeyword &&
+          (selectedKeyword === "더보기" ? <MoreTab /> : <KeywordTab />)}
       </ActiveContainer>
     );
   };

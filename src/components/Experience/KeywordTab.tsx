@@ -101,7 +101,7 @@ const KeywordTab = () => {
   };
 
   /**
-   * 메인 컨테이너 (질문선택 + 경험 리스트)
+   * 콘텐츠 컨테이너 (질문선택 + 경험 리스트)
    */
   const renderContentContainer = () => {
     return (
