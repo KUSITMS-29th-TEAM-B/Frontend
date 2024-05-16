@@ -17,7 +17,7 @@ const Navbar = () => {
             className={
               location.pathname.includes("/experience") ? "active" : ""
             }
-            onClick={() => navigate(`/experience?tab=역량별`)}
+            onClick={() => navigate(`/experience`)}
           >
             나의 경험
           </MenuItem>

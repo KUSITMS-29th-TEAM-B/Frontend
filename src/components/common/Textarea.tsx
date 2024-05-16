@@ -18,8 +18,15 @@ const Textarea = ({
 }: TextareaProps) => {
   return (
     <InputContainer labelStyle={labelStyle} helperTextStyle={helperTextStyle}>
-      <div className="label">{label}</div>
-      <div className="helperText">{helperText}</div>
+      {label && (
+        <div className="label">
+          <div className="label-text">{label}</div>
+          {required !== undefined && (
+            <div className="required">{required ? "*" : "(선택)"}</div>
+          )}
+        </div>
+      )}
+      {helperText && <div className="helperText">{helperText}</div>}
       <InputBox {...props} />
     </InputContainer>
   );
@@ -33,6 +40,12 @@ const InputContainer = styled.div<{
   flex-direction: column;
   gap: 6px;
   .label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+  .label-text {
     ${(props) => props.theme.fonts.subtitle1};
     color: #aaaaaa;
     ${(props) => props.labelStyle};
@@ -42,15 +55,23 @@ const InputContainer = styled.div<{
     color: #aaaaaa;
     ${(props) => props.helperTextStyle};
   }
+  .required {
+    ${(props) => props.theme.fonts.cap1};
+    color: var(--sub-tertiary-800, #ffa63e);
+  }
 `;
 
 const InputBox = styled.textarea`
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #a8a8a8;
-  background: #eee;
   resize: none;
   outline: none;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid ${(props) => props.theme.colors.neutral400};
+  background: ${(props) => props.theme.colors.neutral50};
+  &:hover,
+  &:focus {
+    border: 2px solid ${(props) => props.theme.colors.main500};
+  }
 `;
 
 export default Textarea;
