@@ -1,12 +1,20 @@
 import React, { HTMLAttributes } from "react";
 import styled from "styled-components";
+import { Delete } from "../../assets";
 
 interface TagProps extends HTMLAttributes<HTMLDivElement> {
   text: string;
+  deleteOption?: boolean;
+  onDelete?: () => void;
 }
 
-const Tag = ({ text }: TagProps) => {
-  return <TagContainer>{text}</TagContainer>;
+const Tag = ({ text, deleteOption, onDelete }: TagProps) => {
+  return (
+    <TagContainer>
+      {text}
+      {deleteOption ? <Delete onClick={onDelete} /> : null}
+    </TagContainer>
+  );
 };
 
 export default Tag;

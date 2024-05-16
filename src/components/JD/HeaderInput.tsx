@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import closeIcon from "../../assets/icons/icon_close.svg";
 
 interface HeaderInputProps {
   content: string;
@@ -18,7 +19,9 @@ const HeaderInput: React.FC<HeaderInputProps> = ({
         value={content}
         onChange={(e) => onChange(e.target.value)}
       />
-      <RemoveBtn onClick={onRemove}>x</RemoveBtn>
+      <RemoveBtn onClick={onRemove}>
+        <img src={closeIcon} alt="close" />
+      </RemoveBtn>
     </HeaderContainer>
   );
 };

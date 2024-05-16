@@ -1,8 +1,8 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import Search from "./Search";
+import MainButton from "./MainButton";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Navbar = () => {
             className={
               location.pathname.includes("/experience") ? "active" : ""
             }
-            onClick={() => navigate(`/experience?tab=역량별`)}
+            onClick={() => navigate(`/experience`)}
           >
             나의 경험
           </MenuItem>
@@ -30,7 +30,7 @@ const Navbar = () => {
         </MenuList>
       </ItemContainer>
       <ItemContainer>
-        <Search />
+        <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
         <UserInfo onClick={() => navigate(`/mypage`)}>사용자님</UserInfo>
       </ItemContainer>
     </NavContainer>
@@ -86,4 +86,11 @@ const UserInfo = styled.div`
   flex-shrink: 0;
 `;
 
+const LoginButton = styled.div`
+  padding: 6px 24px;
+  ${(props) => props.theme.fonts.subtitle5};
+  color: white;
+  border-radius: 8px;
+  background: var(--sub-secondary-500, #9aaaff);
+`;
 export default Navbar;

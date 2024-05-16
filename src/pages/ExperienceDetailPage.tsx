@@ -15,6 +15,13 @@ const ExperienceDetailPage = () => {
 
   const { id } = useParams();
 
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
+
   return (
     <MainContainer className="page">
       <TopContainer>

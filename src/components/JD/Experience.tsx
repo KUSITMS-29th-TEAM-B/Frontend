@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { detailStore } from "../../store/jdStore";
 import { Question } from "../../types/type";
+import bookmarkFillIcon from "../../assets/icons/icon_bookmark_fill.svg";
+import bookmarkBlankIcon from "../../assets/icons/icon_bookmark_blank.svg";
 
 interface ExpProps {
   type?: "card" | "section";
@@ -25,12 +27,14 @@ const Experience: React.FC<ExpProps> = ({
   tags,
   maintag,
   subtag,
+  bookmark,
   period,
   question,
   detail,
   onClick,
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
+  const [localbookmark, setLocalbookmark] = useState(bookmark);
 
   // 카드 타입, 섹션 타입 구분
   const isSection = type === "section";
@@ -44,16 +48,31 @@ const Experience: React.FC<ExpProps> = ({
       onClick();
     }
   };
+
+  const handleBookmarkClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setLocalbookmark(!localbookmark);
+    //북마크 요청 api
+  };
   return (
     <StyledContainer
       className={isSection ? "section" : ""}
       onClick={handleClick}
     >
-      <TagContainer>
-        {tags.map((tag, index) => (
-          <Tag key={index}>{tag}</Tag>
-        ))}
-      </TagContainer>
+      <Topbar>
+        <TagContainer>
+          {tags.map((tag, index) => (
+            <Tag key={index}>{tag}</Tag>
+          ))}
+        </TagContainer>
+        <div onClick={handleBookmarkClick}>
+          {localbookmark ? (
+            <img src={bookmarkFillIcon} alt="bookmarkfill" />
+          ) : (
+            <img src={bookmarkBlankIcon} alt="bookmarkblank" />
+          )}
+        </div>
+      </Topbar>
       <TopContainer>
         <Title className={isSection ? "section" : ""}>{title}</Title>
       </TopContainer>
@@ -120,6 +139,13 @@ const TagContainer = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 0.38rem;
+`;
+
+const Topbar = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const Tag = styled.div`

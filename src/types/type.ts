@@ -26,6 +26,8 @@ export interface Job {
   description: string;
   dday: number;
   recruitmentPeriod: string;
+  date: string;
+  link: string;
   status: RecruitmentStatus;
   content: string;
 }
@@ -34,3 +36,9 @@ export interface Question {
   num: number;
   content: string;
 }
+
+export type TagType = {
+  id: number;
+  mainTag: string;
+  subTag: string[];
+};
