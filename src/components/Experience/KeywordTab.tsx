@@ -232,10 +232,12 @@ const MainContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
+  border-radius: 10px;
   background: ${(props) => props.theme.colors.neutral20};
 `;
 
 const LeftContainer = styled.div`
+  border-radius: 10px 0px 0px 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
