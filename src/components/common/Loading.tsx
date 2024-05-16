@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import airplane from "../../assets/images/airplane.png";
 
 const Container = styled.div`
   display: flex;
@@ -12,11 +13,13 @@ const Container = styled.div`
 `;
 
 const Airplane = styled(motion.div)`
-  width: 50px; 
-  height: 50px; 
-  background-image: url('https://icons.iconarchive.com/icons/icons8/windows-8/512/Transport-Airplane-Mode-On-icon.png'); // Airplane icon URL
-  background-size: cover;
-  position: absolute;
+    width: 10rem;
+    height: 10rem;
+    background-image: url(${airplane}); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center; 
+    position: absolute;
 `;
 
 const Path = styled(motion.div)`
@@ -30,7 +33,7 @@ const PlaneLoading: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setWidth(window.innerWidth); // Set the full width of the screen
+      setWidth(window.innerWidth);
     };
     handleResize();
     window.addEventListener("resize", handleResize);

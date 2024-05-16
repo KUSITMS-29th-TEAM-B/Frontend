@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import ExpData from "../../services/JD/ExpData";
 import Experience from "./Experience";
 import styled from "styled-components";
+import FillfilterIcon from "../../assets/icons/icon_filter_fill.svg";
+import BlankfilterIcon from "../../assets/icons/icon_filter_blank.svg";
+import SearchIcon from "../../assets/icons/icon_search_grey500.svg";
 
 const ExperienceList = () => {
   const [selectedTab, setSelectedTab] = useState<string>("경험검색");
@@ -26,9 +29,15 @@ const ExperienceList = () => {
               북마크
             </Tab>
           </TabContainer>
+          <SearchContainer>
+            <SearchBar />
+            <IconContainer>
+              <img src={BlankfilterIcon} alt="filter" />
+              <img src={SearchIcon} alt="filter" />
+            </IconContainer>
+          </SearchContainer>
           {selectedTab === "경험검색" ? (
             <>
-              <SearchBar />
               <ScrollDiv>
                 {ExpData.map((post, index: number) => (
                   <Experience
@@ -83,28 +92,49 @@ const StyledContainer = styled.div`
 
 const TabContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin: 1rem 0;
+  width: 100%;
+  justify-content: start;
+  padding: 1rem;
 `;
 
 const Tab = styled.div<{ isSelected: boolean }>`
-  padding: 1rem 2rem;
   cursor: pointer;
+  width: 4rem;
+  padding: 0.5rem 0;
+  text-align: center;
+  ${(props) => props.theme.fonts.body4};
   border-bottom: ${({ isSelected }) =>
-    isSelected ? "2px solid #000" : "none"};
-  font-weight: ${({ isSelected }) => (isSelected ? "bold" : "normal")};
+    isSelected ? "3px solid #9AAAFF" : "3px solid #D9DBE6"};
+  color:${({ isSelected }) => (isSelected ? "#343A5D" : "#A6AAC0")};
+  
+`;
+
+const SearchContainer = styled.div`
+  position: relative;
+  width: 90%;
+  margin-bottom: 1rem;
 `;
 
 const SearchBar = styled.input`
-  width: 90%;
+  width: 100%;
   border-radius: 0.9rem;
-  margin: 2rem;
   background: #fff;
   height: 3rem;
   border: none;
   outline: none;
   font-size: 1rem;
   padding: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const IconContainer = styled.div`
+  position: absolute;
+  align-items: center;
+  right: 1rem;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.5rem;
 `;
 
 const ScrollDiv = styled.div`

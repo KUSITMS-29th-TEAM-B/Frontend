@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
@@ -436,7 +436,7 @@ const ActiveContainer = styled(motion.div)<{ isActive: boolean }>`
   background: ${(props) => (props.isActive ? "#FFF" : "#F7F7FB")};
   //background: red;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 38rem;
+  height: 40rem;
 `;
 
 const buttonActiveStyle = css`

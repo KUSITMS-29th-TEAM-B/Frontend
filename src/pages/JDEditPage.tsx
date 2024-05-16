@@ -29,6 +29,8 @@ const JDEditPage: React.FC = () => {
   }); //문항 데이터
   const [editing, setEditing] = useState(true); //수정중 여부
   const [completed, setCompleted] = useState(false); //작성 완료
+  const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
+
   const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
   const [isModalOpen, setIsModalOpen] = useState(false); // 문항 삭제 모달
   const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
@@ -39,6 +41,14 @@ const JDEditPage: React.FC = () => {
   useEffect(() => {
     console.log(jdId);
   }, [jdId]);
+
+  useEffect(() => {
+    const isAnyQuestionEmpty = questionContent.question.some(
+      (question) => question.header === "" || question.content === ""
+    );
+
+    setIsAllFilled(!isAnyQuestionEmpty);
+  }, [questionContent]);
 
   //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
@@ -106,6 +116,13 @@ const JDEditPage: React.FC = () => {
       //저장기능
     } else if (!editing && !completed) {
       setEditing(!editing);
+    }
+  };
+
+  const handleSaveButton = () => {
+    if (isAllFilled) {
+      setEditing(false);
+      //api post 요청
     }
   };
 
@@ -191,9 +208,15 @@ const JDEditPage: React.FC = () => {
                   onClick={() => (!editing ? setCompleted(!completed) : null)}
                 />
               </ToggleWrapper>
-              <TopButton isEdit={editing} onClick={handleEditButton}>
-                {editing ? "저장" : "수정"}
-              </TopButton>
+              {editing ? (
+                <SaveButton isNotNull={isAllFilled} onClick={handleSaveButton}>
+                  저장
+                </SaveButton>
+              ) : (
+                <EditButton iscanEdit={completed} onClick={handleEditButton}>
+                  수정
+                </EditButton>
+              )}
             </TopWrapper>
             <ScrollDiv>
               {editing ? (
@@ -210,6 +233,9 @@ const JDEditPage: React.FC = () => {
                         isEdit={editing}
                         onChange={(value) => handleContentChange(index, value)}
                       />
+                      <TextCountWrapper>
+                        <div>{item.content.length + "자(공백 포함)"}</div>
+                      </TextCountWrapper>
                     </div>
                   ))}
                   <div className="img_box">
@@ -230,6 +256,9 @@ const JDEditPage: React.FC = () => {
                         {`${index + 1}` + `. ` + item.header}
                       </AnswerHeader>
                       <AnswerContent>{item.content}</AnswerContent>
+                      <TextCountWrapper>
+                        <div>{item.content.length + "자(공백 포함)"}</div>
+                      </TextCountWrapper>
                     </Answer>
                   ))}
                 </AnswersWrapper>
@@ -342,7 +371,35 @@ const TopWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const TopButton = styled.button<{ isEdit: boolean }>`
+const TextCountWrapper = styled.div`
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    color: ${(props) => props.theme.colors.neutral500};
+    ${(props) => props.theme.fonts.cap3}
+`;
+
+const SaveButton = styled.button<{ isNotNull: boolean }>`
+    display: inline-flex;
+    padding: 0.625rem 4rem;
+    justify-content: center;
+    align-items: center;
+    color:#FFF;
+    gap: 0.625rem;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background:  ${(props) => props.theme.colors.neutral500};
+  ${(props) =>
+    props.isNotNull &&
+    css`
+        background: ${(props) => props.theme.colors.main500};
+    `}
+`;
+
+const EditButton = styled.button<{ iscanEdit: boolean }>`
     display: inline-flex;
     padding: 0.625rem 4rem;
     justify-content: center;
@@ -353,14 +410,15 @@ const TopButton = styled.button<{ isEdit: boolean }>`
     font-style: normal;
     font-weight: 700;
     border-radius: 0.5rem;
-    border: 1px solid #D9DBE6;
-    background-color: white;
+    border: 1px solid ${(props) => props.theme.colors.main500};
+    background: #FFF;
+    ${(props) => props.theme.fonts.button2}
+    color: ${(props) => props.theme.colors.main500};
   ${(props) =>
-    props.isEdit &&
+    props.iscanEdit &&
     css`
-        border: 1px solid transparent;
-        color:var(--white);
-        background: var(--main-500, #7D82FF);
+        border: 1px solid var(--neutral-500, #A6AAC0);
+        color: ${(props) => props.theme.colors.neutral500};
     `}
 `;
 
