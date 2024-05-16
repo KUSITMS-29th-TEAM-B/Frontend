@@ -89,6 +89,7 @@ const ExperiencePage = () => {
 };
 
 const MainContainer = styled.div`
+  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -113,17 +114,17 @@ const Description = styled.div`
 `;
 
 const ActiveContainer = styled(motion.div)`
-  margin-top: 100px;
+  height: 100vh;
+  padding-top: 15vh;
   border-radius: 10px;
-  background: #f7f7fb;
+  // background: #f7f7fb;
   box-shadow: 5px 5px 10px 0px rgba(166, 170, 192, 0.09);
-  height: 600px;
 `;
 
 const CenteredContainer = styled(motion.div)`
+  height: 100%;
   position: relative;
   width: 100%;
-  height: 720px;
   overflow: scroll;
   overflow-y: hidden;
   background: transparent;
