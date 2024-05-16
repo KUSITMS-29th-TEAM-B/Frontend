@@ -332,7 +332,7 @@ const ToggleContainer = styled.div`
 
 const ExpContainer = styled.div`
   width: 100%;
-  height: 35rem;
+  height: 38rem;
   display: flex;
   flex-direction: column;
   /* overflow-y: scroll;
