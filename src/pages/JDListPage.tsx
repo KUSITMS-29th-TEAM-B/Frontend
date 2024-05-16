@@ -9,12 +9,13 @@ import nextbtn from "../assets/icons/icon_page_next.svg";
 import prebtn_v2 from "../assets/icons/icon_prev_btn_v2.svg";
 import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
+import PlusIcon from "../assets/icons/icon_plus_white.svg";
 
 const JDListPage: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
   const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
   const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
-  const [pageTotal, setpageTotal] = useState(15);
+  const [pageTotal, setpageTotal] = useState(20);
   const [pages, setPages] = useState<React.ReactNode[]>([]);
   const nav = useNavigate();
 
@@ -51,7 +52,9 @@ const JDListPage: React.FC = () => {
     );
     let tempPages: any = [];
     const generatePages = () => {
-      tempPages.push(renderPageNumber(1));
+      if (pageTotal !== 1) {
+        tempPages.push(renderPageNumber(1));
+      }
 
       let startPage = Math.max(2, currentPage - 2);
       let endPage = Math.min(pageTotal - 1, currentPage + 2);
@@ -123,11 +126,21 @@ const JDListPage: React.FC = () => {
         </RightFilterBox>
       </MiddleContainer>
       {/* <PlaneLoading /> api 추가 되었을때 loading 처리해주기 */}
-      <MainContainer>
-        {jobAnnouncements.map((announcement, index) => (
-          <JobAnnouncementCard key={index} announcement={announcement} />
-        ))}
-      </MainContainer>
+      {jobAnnouncements.length === 0 ? (
+        <NullContainer>
+          <div>아직 등록된 공고가 없어요.</div>
+          <div>새 공고를 등록해주세요.</div>
+          <button onClick={navToDetail}>
+            공고 등록하기 <img src={PlusIcon} alt="plus" />
+          </button>
+        </NullContainer>
+      ) : (
+        <MainContainer>
+          {jobAnnouncements.map((announcement, index) => (
+            <JobAnnouncementCard key={index} announcement={announcement} />
+          ))}
+        </MainContainer>
+      )}
       <PagenationContainer>
         <PagenationButton
           src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
@@ -145,9 +158,11 @@ const JDListPage: React.FC = () => {
           }
         />
       </PagenationContainer>
-      <PostButton>
-        <img src={btnbg} alt="공고등록" onClick={navToDetail} />
-      </PostButton>
+      {jobAnnouncements.length !== 0 ? (
+        <PostButton>
+          <img src={btnbg} alt="공고등록" onClick={navToDetail} />
+        </PostButton>
+      ) : null}
     </StyledDivContainer>
   );
 };
@@ -258,6 +273,33 @@ const PostButton = styled.div`
   right: 5rem;        
   cursor: pointer;      
   z-index: 1000;   
+`;
+
+const NullContainer = styled.div`
+    display: flex;
+    width: 100%;
+    height: 20rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    div{
+        ${(props) => props.theme.fonts.title2}
+        color:${(props) => props.theme.colors.neutral700}
+    }
+    button{
+        width: 15rem;
+        height: 3rem;
+        border: none;
+        margin-top: 2rem;
+        display: flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        color: #FFF;
+        ${(props) => props.theme.fonts.title4}
+        border-radius: 3.125rem;
+        background:${(props) => props.theme.colors.main500}
+    }
 `;
 
 const PagenationContainer = styled.div`

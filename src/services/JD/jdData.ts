@@ -27,7 +27,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: 20,
   },
   {
-    id: 1,
+    id: 4,
     title: "프론트엔드 개발자 채용",
     description: "React 및 TypeScript 경험자 우대",
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
@@ -35,7 +35,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: 0,
   },
   {
-    id: 1,
+    id: 5,
     title: "백엔드 개발자 채용",
     description: "Node.js 및 데이터베이스 경험 필수",
     recruitmentPeriod: "2024-05-10 ~ 2024-07-01",
@@ -43,7 +43,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: -1,
   },
   {
-    id: 1,
+    id: 6,
     title: "UI/UX 디자이너 모집",
     description: "실무 경험 및 포트폴리오 제출 필수",
     recruitmentPeriod: "2024-04-20 ~ 2024-05-20",
@@ -51,7 +51,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: 10,
   },
   {
-    id: 1,
+    id: 7,
     title: "프론트엔드 개발자 채용",
     description: "React 및 TypeScript 경험자 우대",
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
@@ -59,7 +59,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: 10,
   },
   {
-    id: 1,
+    id: 8,
     title: "프론트엔드 개발자 채용",
     description: "React 및 TypeScript 경험자 우대",
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
@@ -67,7 +67,7 @@ export const jobAnnouncements: JobAnnouncement[] = [
     dday: 10,
   },
   {
-    id: 1,
+    id: 9,
     title: "프론트엔드 개발자 채용",
     description: "React 및 TypeScript 경험자 우대",
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
