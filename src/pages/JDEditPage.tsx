@@ -293,7 +293,9 @@ const JDEditPage: React.FC = () => {
             {activebutton === "Exp" ? (
               <>
                 {detailId !== 0 ? (
-                  <ExperienceBox expId={detailId} />
+                  <ExpDetailWrapper>
+                    <ExperienceBox expId={detailId} />
+                  </ExpDetailWrapper>
                 ) : (
                   <ExpContainer>
                     <ExperienceList />
@@ -341,7 +343,16 @@ const ExpContainer = styled.div`
 
 const JobContainer = styled.div`
   width: 100%;
-  height: 35rem;
+  height: 38rem;
+  display: flex;
+  flex-direction: column;
+  /* overflow-y: scroll;
+  overflow-x: hidden; */
+`;
+
+const ExpDetailWrapper = styled.div`
+  width: 100%;
+  height: 38rem;
   display: flex;
   flex-direction: column;
   /* overflow-y: scroll;
