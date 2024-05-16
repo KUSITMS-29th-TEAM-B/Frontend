@@ -111,7 +111,7 @@ const Tab = styled.div<{ isSelected: boolean }>`
 
 const SearchContainer = styled.div`
   position: relative;
-  width: 90%;
+  width: 95%;
   margin-bottom: 1rem;
 `;
 

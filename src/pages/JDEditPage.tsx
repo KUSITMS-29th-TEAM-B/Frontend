@@ -177,7 +177,7 @@ const JDEditPage: React.FC = () => {
         <CenteredContainer
           initial={{ width: "100%" }}
           animate={{
-            x: active ? "7%" : "25%",
+            x: active ? "7%" : "28%",
             width: active ? "50%" : "100%",
           }}
           transition={{
@@ -342,8 +342,6 @@ const JobContainer = styled.div`
   width: 100%;
   height: 35rem;
   display: flex;
-  padding: 1rem;
-  padding-right: 2rem;
   flex-direction: column;
   /* overflow-y: scroll;
   overflow-x: hidden; */
@@ -535,7 +533,7 @@ const ExperienceButton = styled.button<ButtonProps>`
 `;
 
 const QuestionsWrapper = styled.div`
-    height: 28rem;
+    height: 30rem;
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
     .img_box {
@@ -547,7 +545,7 @@ const QuestionsWrapper = styled.div`
 `;
 
 const AnswersWrapper = styled.div`
-    height: 28rem;
+    height: 30rem;
     color: var(--neutral-700, #343A5D);
     padding: 0 2rem;
     //overflow-y: scroll;
@@ -555,25 +553,22 @@ const AnswersWrapper = styled.div`
 
 const Answer = styled.div`
     margin-bottom: 1.75rem;
+    ${(props) => props.theme.fonts.body5};
 `;
 
 const AnswerHeader = styled.h3`
     color: var(--neutral-700, #343A5D);
     /* subtitle 3 (semibold 16pt) */
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 600;
+    ${(props) => props.theme.fonts.subtitle3}
     margin-bottom: 1rem;
 `;
 
 const AnswerContent = styled.p`
     color: var(--neutral-700, #343A5D);
     /* body 5 (regular 13pt) */
-    font-size: 0.8em;
-    font-style: normal;
-    font-weight: 400;
     border-top: 1px solid #EAEBF3;
     padding: 1.25rem;
+    ${(props) => props.theme.fonts.body5};
 `;
 
 const ButtonText = styled.div<ButtonProps>`

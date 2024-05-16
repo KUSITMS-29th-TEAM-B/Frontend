@@ -85,7 +85,33 @@ export const jobDetails: Job[] = [
     recruitmentPeriod: "2024-05-01 ~ 2024-06-01",
     status: RecruitmentStatus.End,
     dday: 11,
+    link: "https://www.naver.com/",
+    date: "2013.01.10",
     content: `<div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>
+     <div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>
+     <div>
+    <h2>Job Description</h2>
+    <p>
+      We are looking for a talented frontend developer to join our team. The
+      ideal candidate should have experience with HTML, CSS, JavaScript, and
+      modern frontend frameworks such as React.
+    </p>
+     </div>
+     <div>
     <h2>Job Description</h2>
     <p>
       We are looking for a talented frontend developer to join our team. The
@@ -101,6 +127,8 @@ export const jobDetails: Job[] = [
     recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
     status: RecruitmentStatus.Completed,
     dday: 30,
+    link: "https://www.naver.com/",
+    date: "2013.01.10",
     content: `<div>
     <h2>Job Description</h2>
     <p>
@@ -117,6 +145,8 @@ export const jobDetails: Job[] = [
     recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
     status: RecruitmentStatus.Completed,
     dday: 30,
+    link: "https://www.naver.com/",
+    date: "2013.01.10",
     content: `<div>
     <h2>Job Description</h2>
     <p>

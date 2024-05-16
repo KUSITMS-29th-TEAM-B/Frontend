@@ -52,7 +52,7 @@ const Experience: React.FC<ExpProps> = ({
   const handleBookmarkClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     setLocalbookmark(!localbookmark);
-    console.log("bookmark");
+    //북마크 요청 api
   };
   return (
     <StyledContainer
