@@ -45,7 +45,7 @@ const ExperienceWritePage = () => {
   const [primeTag, setPrimeTag] = React.useState("");
   const [subTagList, setSubTagList] = React.useState(primeTags);
   const [subTag, setSubTag] = React.useState("");
-  const [myKeywords, setMyKeywords] = React.useState<string[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
   const [newKeywords, setNewKeywords] = React.useState("");
 
   // 상위 태그 페이지네이션
@@ -117,11 +117,28 @@ const ExperienceWritePage = () => {
     }
   };
 
+  // 기본 키워드 체크박스 관리 함수
+  const handleBasicKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target) {
+      e.target.checked
+        ? setCheckedKeywords([...checkedKeywords, e.target.value])
+        : setCheckedKeywords(
+            checkedKeywords.filter((choice) => choice !== e.target.value)
+          );
+    }
+  };
+
+  // 키워드 생성
   const handleMyKeywords = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      setMyKeywords([...myKeywords, newKeywords]);
+      setCheckedKeywords([...checkedKeywords, newKeywords]);
       setNewKeywords("");
     }
+  };
+
+  // 키워드 삭제
+  const handleDeleteTag = (item: string) => {
+    setCheckedKeywords(checkedKeywords.filter((choice) => choice !== item));
   };
 
   // 모달 관리
@@ -327,7 +344,12 @@ const ExperienceWritePage = () => {
                   {keywordTabOption === "basic" ? (
                     <div className="checkbox-list">
                       {currentKeywords.map((item) => (
-                        <Checkbox label={item} />
+                        <Checkbox
+                          value={item}
+                          label={item}
+                          checked={checkedKeywords.includes(item)}
+                          onChange={handleBasicKeyword}
+                        />
                       ))}
                     </div>
                   ) : (
@@ -341,13 +363,17 @@ const ExperienceWritePage = () => {
                           onKeyDown={(e) => handleMyKeywords(e)}
                         />
                       </MyKeywordInput>
-                      <div className="keyword-list">
-                        {myKeywords.map((item) => (
-                          <Tag text={item} />
-                        ))}
-                      </div>
                     </div>
                   )}
+                  <div className="keyword-list">
+                    {checkedKeywords.map((item) => (
+                      <Tag
+                        text={item}
+                        deleteOption={true}
+                        onDelete={() => handleDeleteTag(item)}
+                      />
+                    ))}
+                  </div>
                 </KeywordSelect>
               </AccordionDetails>
             </Accordion>
@@ -600,6 +626,7 @@ const MyKeywordInput = styled.div`
   border-radius: 4px;
   background: ${(props) => props.theme.colors.neutral50};
   input {
+    width: 100%;
     ${(props) => props.theme.fonts.cap3};
     color: ${(props) => props.theme.colors.neutral600};
     border: none;

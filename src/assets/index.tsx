@@ -11,3 +11,4 @@ export { ReactComponent as PolygonLeft } from "./icons/polygon-left.svg";
 export { ReactComponent as Options } from "./icons/options.svg";
 export { ReactComponent as Check } from "./icons/check.svg";
 export { ReactComponent as Search } from "./icons/icon_search.svg";
+export { ReactComponent as Delete } from "./icons/icon_delete_purple.svg";
