@@ -10,3 +10,8 @@ export const keywordState = atom<string | null>({
   key: "keywordState",
   default: null,
 });
+
+export const deleteState = atom<boolean>({
+  key: "deleteState",
+  default: false,
+});
