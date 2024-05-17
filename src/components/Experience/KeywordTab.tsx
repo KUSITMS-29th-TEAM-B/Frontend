@@ -31,6 +31,7 @@ import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
 import { myKeywords } from "../../services/Experience/myKeywords";
+import { useNavigate } from "react-router-dom";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {
@@ -39,6 +40,7 @@ interface KeywordTabProp {
 
 const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
@@ -337,6 +339,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                 question={selectedQ}
                 detail={post.detail}
                 checkedKeywords={checkedKeywords}
+                onClick={() => navigate(`/experience/detail/${post.id}`)}
               />
             )
           )}
