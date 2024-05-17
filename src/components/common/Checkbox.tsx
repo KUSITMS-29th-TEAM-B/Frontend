@@ -3,7 +3,10 @@ import styled from "styled-components";
 import Check from "../../assets/icons/check.svg";
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+  value?: string | number;
   label?: string;
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Checkbox = ({ label, ...props }: CheckboxProps) => {
