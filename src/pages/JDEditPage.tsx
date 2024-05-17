@@ -64,9 +64,11 @@ const JDEditPage: React.FC = () => {
 
   //자기소개서 문항 삭제하기
   const openModal = (index: number) => {
-    setDeleteIdx(index);
-    setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
+    if (questionContent.question.length > 1) {
+      setDeleteIdx(index);
+      setIsModalOpen(true);
+      document.body.style.overflow = "hidden";
+    }
   };
 
   const closeModal = () => {

@@ -13,7 +13,7 @@ import { ArrowDownThin, ArrowUpThin, Options } from "../../assets";
 import { Popper } from "@mui/material";
 import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
-import Checkbox from "../common/Checkbox";
+import KeyWordCheckbox from "./KeywordCheck";
 
 const ExperienceList = () => {
   const [selectedTab, setSelectedTab] = useState<string>("경험검색");
@@ -27,6 +27,7 @@ const ExperienceList = () => {
 
   // 역량 키워드
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [strongKeyword, setStrongKeyword] = useState<string[]>([]); // 선택된 keyword 목록
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -38,6 +39,17 @@ const ExperienceList = () => {
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+
+  // 체크박스 변경 핸들러
+  const handleCheckboxChange = (item: string) => {
+    if (strongKeyword.includes(item)) {
+      setStrongKeyword(strongKeyword.filter((keyword) => keyword !== item));
+    } else {
+      setStrongKeyword([...strongKeyword, item]);
+    }
+  };
+
+  const isChecked = (item: string) => strongKeyword.includes(item);
 
   const handleTagSelection = (
     selectedmainTag: string,
@@ -115,8 +127,9 @@ const ExperienceList = () => {
                   총 <p>{filterCount}</p>개의 검색 결과가 있습니다
                 </FilteredTextWrapper>
               )}
-              <KeywordSelect>
+              <KeywordSelect isSelected={strongKeyword.length > 0}>
                 <Options /> 역량 키워드
+                {strongKeyword.length > 0 && `(${strongKeyword.length})`}
                 <button aria-describedby={id} onClick={handleTagPopper}>
                   {open ? <ArrowUpThin /> : <ArrowDownThin />}
                 </button>
@@ -143,7 +156,11 @@ const ExperienceList = () => {
                       }}
                     >
                       {currentPosts.map((item) => (
-                        <Checkbox label={item} />
+                        <KeyWordCheckbox
+                          label={item}
+                          checked={isChecked(item)}
+                          onChange={handleCheckboxChange}
+                        />
                       ))}
                     </div>
                     <div className="checkbox-num">
@@ -369,7 +386,7 @@ const ScrollDiv = styled.div`
   }
 `;
 
-const KeywordSelect = styled.div`
+const KeywordSelect = styled.div<{ isSelected: boolean }>`
   ${(props) => props.theme.fonts.cap1};
   color: ${(props) => props.theme.colors.neutral600};
   width: 100%;
