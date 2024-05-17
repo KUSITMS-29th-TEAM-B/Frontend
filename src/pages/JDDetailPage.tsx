@@ -19,7 +19,7 @@ const jdData = {
   title: "백엔드 개발자 채용",
   description: "Node.js 경험자",
   recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
-  status: RecruitmentStatus.End,
+  status: RecruitmentStatus.InProgress,
   dday: 30,
   link: "https://www.naver.com/",
   date: "2013.01.10",
@@ -130,7 +130,9 @@ const JDDetailPage: React.FC = () => {
           <JobContainer>
             <div className="job_box">
               <JobStatusBar>
-                <StateBox className="job_status" status={jdData.status} />
+                {jdData.status !== "작성전" && (
+                  <StateBox className="job_status" status={jdData.status} />
+                )}
                 <div className="job_date">{jdData.date}</div>
               </JobStatusBar>
               <JobTopBox>

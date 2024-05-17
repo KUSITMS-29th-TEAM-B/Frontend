@@ -10,6 +10,7 @@ const StyledTimePicker = styled(DatePicker)`
   background-color: #F7F7FB;
   border: none;
   font-size: 16px;
+  color: #63698D;
   width: 100%;
   &:focus {
     outline: none;
