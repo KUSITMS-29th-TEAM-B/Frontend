@@ -200,7 +200,7 @@ const JDDetailPage: React.FC = () => {
             ) : (
               <ScrollDiv>
                 <ExpContainer>
-                  <ExperienceList />
+                  <ExperienceList showBookmarksOnly={false} />
                 </ExpContainer>
               </ScrollDiv>
             )}

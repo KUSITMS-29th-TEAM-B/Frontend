@@ -284,7 +284,8 @@ const NullContainer = styled.div`
     align-items: center;
     div{
         ${(props) => props.theme.fonts.title2}
-        color:${(props) => props.theme.colors.neutral700}
+        color:${(props) => props.theme.colors.neutral700};
+        padding: 0.25rem;
     }
     button{
         width: 15rem;
