@@ -144,11 +144,9 @@ const ExperienceWritePage = () => {
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   // 질문 아코디언 관리

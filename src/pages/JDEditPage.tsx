@@ -54,12 +54,10 @@ const JDEditPage: React.FC = () => {
   //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
     setdiscardModal(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeDiscardModal = () => {
     setdiscardModal(false);
-    document.body.style.overflow = "auto";
   };
 
   //자기소개서 문항 삭제하기
