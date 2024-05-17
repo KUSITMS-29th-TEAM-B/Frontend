@@ -1,7 +1,11 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled, { useTheme } from "styled-components";
-import { keywordState, yearState } from "../../store/selectedStore";
+import {
+  deleteState,
+  keywordState,
+  yearState,
+} from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
 import {
@@ -10,6 +14,7 @@ import {
   ArrowRight,
   ArrowUpThin,
   CircleArrow,
+  DeleteIcon,
   Options,
 } from "../../assets";
 import YearSelect from "./YearSelect";
@@ -24,12 +29,19 @@ import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
+import editIcon from "../../assets/images/editIcon.png";
 
-const KeywordTab = () => {
+interface KeywordTabProp {
+  openDeleteModal: () => void;
+}
+
+const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const theme = useTheme();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
-  const [selectedQ, setSelectedQ] = React.useState(0);
+  const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
+  const [selectedQ, setSelectedQ] = React.useState(0);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
@@ -58,11 +70,20 @@ const KeywordTab = () => {
   // 질문 아코디언 관리
   const [expanded, setExpanded] = React.useState(false);
 
-  const handleChange = () => {
+  const handleBackButton = () => {
+    setIsDelete(false);
+    setKeyword(null);
+  }
+
+  const handleQuestionChange = () => {
     if (expanded) {
       setSelectedQ(0);
     }
     setExpanded(!expanded);
+  };
+
+  const handleDelete = () => {
+    setIsDelete(!isDelete);
   };
 
   /**
@@ -70,33 +91,59 @@ const KeywordTab = () => {
    */
   const renderLeftContainer = () => {
     return (
-      <LeftContainer>
-        <button
-          style={{
-            textAlign: "center",
-            width: "50px",
-            background: "transparent",
-            border: "none",
-          }}
-          onClick={() => setKeyword(null)}
-        >
-          <ArrowRight />
-        </button>
-        <KeywordText>{keyword}</KeywordText>
-        <YearSelect
-          value={selectedYear}
-          options={years}
-          onChange={setSelectedYear}
-        />
-        <MenuList>
-          {menus.map((item) => (
-            <MenuItem>
-              <div className="text">{item.title}</div>
-              <div className="text">{item.num}</div>
-            </MenuItem>
-          ))}
-        </MenuList>
-      </LeftContainer>
+      <>
+        <LeftContainer>
+          <button
+            style={{
+              textAlign: "center",
+              width: "50px",
+              background: "transparent",
+              border: "none",
+            }}
+            onClick={handleBackButton}
+          >
+            <ArrowRight />
+          </button>
+          <KeywordText>{keyword}</KeywordText>
+          <YearSelect
+            value={selectedYear}
+            options={years}
+            onChange={setSelectedYear}
+          />
+          <MenuList>
+            {menus.map((item, index) => (
+              <MenuItem>
+                <div className="text">{item.title}</div>
+                <div className="text">{item.num}</div>
+                {isDelete && index !== 0 ? (
+                  <DeleteIcon
+                    width={"20px"}
+                    style={{ position: "absolute", left: -10 }}
+                    onClick={openDeleteModal}
+                  />
+                ) : null}
+              </MenuItem>
+            ))}
+          </MenuList>
+          {keyword && isDelete ? (
+            <div
+              className="edit-end"
+              style={{ marginTop: "40px", marginLeft: "auto", padding: "5px" }}
+              onClick={handleDelete}
+            >
+              완료
+            </div>
+          ) : (
+            <img
+              src={editIcon}
+              alt="edit-icon"
+              width={"32px"}
+              style={{ marginTop: "40px", marginLeft: "auto" }}
+              onClick={handleDelete}
+            />
+          )}
+        </LeftContainer>
+      </>
     );
   };
 
@@ -109,7 +156,7 @@ const KeywordTab = () => {
         {/* 질문과 함께보기 컨테이너 */}
         <Accordion
           expanded={expanded}
-          onChange={handleChange}
+          onChange={handleQuestionChange}
           sx={{
             background: theme.colors.main50,
             borderRadius: "12px",
@@ -262,6 +309,7 @@ const MenuList = styled.div`
 `;
 
 const MenuItem = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   padding: 16px 29px;

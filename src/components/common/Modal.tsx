@@ -123,7 +123,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const ConfirmButton = styled.div`
-  width: 100%;
+  width: 50%;
   height: 4.5rem;
   flex-shrink: 0;
   border-radius: 0rem 0rem 1.25rem 0rem;
@@ -146,7 +146,7 @@ const ConfirmButton = styled.div`
 `;
 
 const CloseButton = styled.div`
-  width: 100%;
+  width: 50%;
   height: 4.5rem;
   flex-shrink: 0;
   border-radius: 0rem 0rem 0rem 1.25rem;

@@ -3,19 +3,26 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import YearCircle from "./YearCircle";
 import { useRecoilState } from "recoil";
-import { keywordState, yearState } from "../../store/selectedStore";
+import {
+  deleteState,
+  keywordState,
+  yearState,
+} from "../../store/selectedStore";
 
 interface YearListProps {
   width: number;
+  openDeleteModal: () => void;
 }
 
-const YearList = ({ width }: YearListProps) => {
+const YearList = ({ width, openDeleteModal }: YearListProps) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
   const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
     keywordState
   );
+  const [isDelete, setIsDelete] = useRecoilState(deleteState);
+
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
   // 임시 데이터
@@ -44,6 +51,7 @@ const YearList = ({ width }: YearListProps) => {
     if (selectedYear === year) {
       setSelectedYear(null);
       setSelectedKeyword(null);
+      setIsDelete(false);
     } else {
       setSelectedYear(year);
     }
@@ -122,6 +130,7 @@ const YearList = ({ width }: YearListProps) => {
             year={year}
             keywordList={keywords}
             hoveredYear={hoveredYear}
+            openDeleteModal={openDeleteModal}
           />
         </YearMotionDiv>
       ))}
