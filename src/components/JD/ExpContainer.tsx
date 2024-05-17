@@ -24,8 +24,8 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
               <Tag key={index}>{tag}</Tag>
             ))}
           </TagContainer>
-          <ButtonContainer>
-            <div onClick={() => setDetailId(0)}>이전으로</div>
+          <ButtonContainer onClick={() => setDetailId(0)}>
+            <div>이전으로</div>
             <img src={ArrowIcon} alt="arrow" />
           </ButtonContainer>
         </Topbar>
