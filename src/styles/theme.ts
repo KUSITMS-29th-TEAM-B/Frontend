@@ -47,6 +47,8 @@ const colors = {
   subYellow200: "#FFF5D1",
   subYellow300: "#FFEDAA",
   subYellow400: "#FFE483",
+  subSecondary500: "#9AAAFF",
+  mainbg: "#FAFAFF",
 };
 
 const fonts = {
