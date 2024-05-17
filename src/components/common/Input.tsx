@@ -68,6 +68,7 @@ const InputBox = styled.input`
   background: ${(props) => props.theme.colors.neutral50};
   &:hover,
   &:focus {
+    padding: 15px;
     outline: none;
     border: 2px solid ${(props) => props.theme.colors.main500};
   }

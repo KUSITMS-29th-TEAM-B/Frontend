@@ -31,7 +31,7 @@ const Navbar = () => {
       </ItemContainer>
       <ItemContainer>
         <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
-        <UserInfo onClick={() => navigate(`/mypage`)}>사용자님</UserInfo>
+        <UserInfo onClick={() => navigate(`/profile`)}>사용자님</UserInfo>
       </ItemContainer>
     </NavContainer>
   );
