@@ -15,8 +15,16 @@ import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import KeyWordCheckbox from "./KeywordCheck";
 
-const ExperienceList = () => {
-  const [selectedTab, setSelectedTab] = useState<string>("경험검색");
+interface ExperienceListProps {
+  showBookmarksOnly: boolean;
+}
+
+const ExperienceList: React.FC<ExperienceListProps> = ({
+  showBookmarksOnly,
+}) => {
+  const [selectedTab, setSelectedTab] = useState<string>(
+    showBookmarksOnly ? "북마크" : "경험검색"
+  );
   const [showDetail, setshowDetail] = useState(false); //경험 상세 보여주기
   const [showTagPopup, setShowTagPopup] = useState(false); // 태그 필터링
   const [searchText, setSearchText] = useState(""); //검색 입력
@@ -70,12 +78,14 @@ const ExperienceList = () => {
       {!showDetail ? (
         <>
           <TabContainer>
-            <Tab
-              isSelected={selectedTab === "경험검색"}
-              onClick={() => setSelectedTab("경험검색")}
-            >
-              경험 검색
-            </Tab>
+            {!showBookmarksOnly && (
+              <Tab
+                isSelected={selectedTab === "경험검색"}
+                onClick={() => setSelectedTab("경험검색")}
+              >
+                경험 검색
+              </Tab>
+            )}
             <Tab
               isSelected={selectedTab === "북마크"}
               onClick={() => setSelectedTab("북마크")}

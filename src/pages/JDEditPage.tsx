@@ -300,7 +300,7 @@ const JDEditPage: React.FC = () => {
                   </ExpDetailWrapper>
                 ) : (
                   <ExpContainer>
-                    <ExperienceList />
+                    <ExperienceList showBookmarksOnly={true} />
                   </ExpContainer>
                 )}
               </>
