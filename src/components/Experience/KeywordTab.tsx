@@ -43,6 +43,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
   const [selectedQ, setSelectedQ] = React.useState(0);
+  const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
 
@@ -102,9 +103,6 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-
-  // 질문 아코디언 관리
-  const [expanded, setExpanded] = React.useState(false);
 
   const handleBackButton = () => {
     setIsDelete(false);
@@ -336,7 +334,6 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                 maintag={post.mainTag}
                 subtag={post.subTag}
                 period={post.period}
-                bookmark={post.bookmark}
                 question={selectedQ}
                 detail={post.detail}
                 checkedKeywords={checkedKeywords}
