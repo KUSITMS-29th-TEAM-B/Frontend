@@ -50,7 +50,6 @@ const ExperienceDetailPage = () => {
           maintag={ExpData[0].mainTag}
           subtag={ExpData[0].subTag}
           period={ExpData[0].period}
-          bookmark={ExpData[0].bookmark}
         />
         <hr style={{ width: "100%", color: theme.colors.neutral300 }} />
         <AnswerList>

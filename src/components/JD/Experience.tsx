@@ -14,7 +14,7 @@ interface ExpProps {
   maintag: string;
   subtag: string;
   period: string;
-  bookmark: boolean;
+  bookmark?: boolean;
   question?: number;
   detail?: Question[];
   checkedKeywords?: string[];
@@ -74,13 +74,15 @@ const Experience: React.FC<ExpProps> = ({
             </Tag>
           ))}
         </TagContainer>
-        <div onClick={handleBookmarkClick}>
-          {localbookmark ? (
-            <img src={bookmarkFillIcon} alt="bookmarkfill" />
-          ) : (
-            <img src={bookmarkBlankIcon} alt="bookmarkblank" />
-          )}
-        </div>
+        {bookmark !== undefined && (
+          <div onClick={handleBookmarkClick}>
+            {localbookmark ? (
+              <img src={bookmarkFillIcon} alt="bookmarkfill" />
+            ) : (
+              <img src={bookmarkBlankIcon} alt="bookmarkblank" />
+            )}
+          </div>
+        )}
       </Topbar>
       <TopContainer>
         <Title className={isSection ? "section" : ""}>{title}</Title>

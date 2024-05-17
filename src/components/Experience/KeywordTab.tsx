@@ -334,7 +334,6 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                 maintag={post.mainTag}
                 subtag={post.subTag}
                 period={post.period}
-                bookmark={post.bookmark}
                 question={selectedQ}
                 detail={post.detail}
                 checkedKeywords={checkedKeywords}
