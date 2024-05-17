@@ -71,6 +71,7 @@ const InputBox = styled.textarea`
   &:hover,
   &:focus {
     border: 2px solid ${(props) => props.theme.colors.main500};
+    padding: 15px;
   }
 `;
 

@@ -6,6 +6,166 @@ import TimeSelector from "../components/common/TimePicker";
 import OneDatePick from "../components/common/DatePicker";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
+import ClockIcon from "../assets/icons/icon_clock_net600.svg";
+
+const JDPlusPage: React.FC = () => {
+  const [content, setContent] = useState("");
+  const [selectedTime, setSelectedTime] = useState<string>("10:00");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
+
+  // endTime 계산
+  const getEndTime = () => {
+    if (!endDate) return null; // endDate가 null이면 null 반환
+
+    const hours = parseInt(selectedTime.split(":")[0]);
+    const minutes = parseInt(selectedTime.split(":")[1]);
+
+    const endTime = new Date(endDate); // endDate를 기반으로 새 Date 객체 생성
+    endTime.setHours(hours, minutes, 0); // 시간과 분 설정
+    console.log("최종시간은", endTime);
+    return endTime;
+  };
+  const endTime = getEndTime();
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    document.body.style.overflow = "auto";
+  };
+
+  const handleTimeChange = (time: string) => {
+    setSelectedTime(time);
+  };
+
+  const handleSDateChange = (date: Date) => {
+    if (!startDate && !endDate) {
+      setStartDate(date);
+    } else if (endDate && date < endDate) {
+      setStartDate(date);
+    } else {
+      alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
+      setStartDate(endDate);
+    }
+  };
+
+  const handleEDateChange = (date: Date) => {
+    if (!endDate && !startDate) {
+      setEndDate(date);
+    } else if (startDate && date > startDate) {
+      setEndDate(date);
+    } else {
+      alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
+      setEndDate(startDate);
+    }
+  };
+
+  //저장시에도 따로 기간 확인 진행하기.
+
+  const handleEditorChange = (newContent: string) => {
+    console.log("Content was updated:", newContent);
+    setContent(newContent);
+  };
+
+  //   useEffect(() => {
+  //     console.log("Dates updated:", startDate, endDate);
+  //     console.log("Time was updated:", selectedTime);
+  //     console.log(endTime);
+  //   }, [selectedTime, startDate, endDate]);
+
+  return (
+    <StyledDivContainer className="page">
+      <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
+      <ToggleContainer>
+        <AirplaneToggle step={1} />
+      </ToggleContainer>
+      <TopTitleBar>
+        <Title>새로운 공고 등록</Title>
+        <ButtonContainer>
+          <CancelButton onClick={openModal}>취소</CancelButton>
+          <SaveButton onClick={() => nav("/jd")}>저장</SaveButton>
+        </ButtonContainer>
+      </TopTitleBar>
+      <MainContainer>
+        <TopContainer>
+          <LeftTitleContainer>
+            <InputContainer>
+              <InputTitle>기업명</InputTitle>
+              <InputBox />
+            </InputContainer>
+            <InputContainer>
+              <InputTitle>제목</InputTitle>
+              <InputBox />
+            </InputContainer>
+          </LeftTitleContainer>
+          <RightTitleContainer>
+            <InputContainer>
+              <InputTitle>지원기간</InputTitle>
+              <PeriodBox>
+                {startDate ? (
+                  <div className="datepicker">
+                    <OneDatePick date={startDate} setDate={handleSDateChange} />
+                  </div>
+                ) : (
+                  <div className="datepicker">
+                    <OneDatePick
+                      date={new Date()}
+                      setDate={handleSDateChange}
+                    />
+                  </div>
+                )}
+                <div style={{ marginLeft: 20 }}>~</div>
+                {endDate ? (
+                  <div className="datepicker">
+                    <OneDatePick date={endDate} setDate={handleEDateChange} />
+                  </div>
+                ) : (
+                  <div className="datepicker">
+                    <OneDatePick
+                      date={new Date()}
+                      setDate={handleEDateChange}
+                    />
+                  </div>
+                )}
+                <img src={ClockIcon} alt="clock" style={{ marginLeft: 20 }} />
+                <div className="datepicker">
+                  <TimeSelector
+                    time={selectedTime}
+                    setTime={handleTimeChange}
+                  />
+                </div>
+              </PeriodBox>
+            </InputContainer>
+            <InputContainer>
+              <InputTitle>링크</InputTitle>
+              <InputBox />
+            </InputContainer>
+          </RightTitleContainer>
+        </TopContainer>
+        <ContentContainer>
+          <BundleEditor
+            content={content}
+            onContentChange={handleEditorChange}
+          ></BundleEditor>
+        </ContentContainer>
+      </MainContainer>
+    </StyledDivContainer>
+  );
+};
+
+export default JDPlusPage;
 
 const StyledDivContainer = styled.div`
   width: 100%;
@@ -137,7 +297,11 @@ const InputBox = styled.input`
 const PeriodBox = styled.div`
     display: flex;
     justify-content: center;
+    flex-direction: row;
+    align-items: center;
     flex: 8;
+    .datepicker{
+    }
 `;
 
 const ContentContainer = styled.div`
@@ -145,127 +309,3 @@ const ContentContainer = styled.div`
     justify-content: center;
     z-index: 1;
 `;
-
-const JDPlusPage: React.FC = () => {
-  const [content, setContent] = useState("");
-  const [selectedTime, setSelectedTime] = useState<string>("10:00");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const nav = useNavigate();
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-  }, []);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    document.body.style.overflow = "auto";
-  };
-
-  const handleTimeChange = (time: string) => {
-    setSelectedTime(time);
-  };
-
-  const handleSDateChange = (date: Date) => {
-    if (!startDate && !endDate) {
-      setStartDate(date);
-    } else if (endDate && date < endDate) {
-      setStartDate(date);
-    } else {
-      alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
-      setStartDate(endDate);
-    }
-  };
-
-  const handleEDateChange = (date: Date) => {
-    if (!endDate && !startDate) {
-      setEndDate(date);
-    } else if (startDate && date > startDate) {
-      setEndDate(date);
-    } else {
-      alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
-      setEndDate(startDate);
-    }
-  };
-
-  //저장시에도 따로 기간 확인 진행하기.
-
-  const handleEditorChange = (newContent: string) => {
-    console.log("Content was updated:", newContent);
-    setContent(newContent);
-  };
-
-  useEffect(() => {
-    console.log("Dates updated:", startDate, endDate);
-    console.log("Time was updated:", selectedTime);
-  }, [selectedTime, startDate, endDate]);
-
-  return (
-    <StyledDivContainer className="page">
-      <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
-      <ToggleContainer>
-        <AirplaneToggle step={1} />
-      </ToggleContainer>
-      <TopTitleBar>
-        <Title>새로운 공고 등록</Title>
-        <ButtonContainer>
-          <CancelButton onClick={openModal}>취소</CancelButton>
-          <SaveButton onClick={() => nav("/jd")}>저장</SaveButton>
-        </ButtonContainer>
-      </TopTitleBar>
-      <MainContainer>
-        <TopContainer>
-          <LeftTitleContainer>
-            <InputContainer>
-              <InputTitle>기업명</InputTitle>
-              <InputBox />
-            </InputContainer>
-            <InputContainer>
-              <InputTitle>제목</InputTitle>
-              <InputBox />
-            </InputContainer>
-          </LeftTitleContainer>
-          <RightTitleContainer>
-            <InputContainer>
-              <InputTitle>지원기간</InputTitle>
-              <PeriodBox>
-                {startDate ? (
-                  <OneDatePick date={startDate} setDate={handleSDateChange} />
-                ) : (
-                  <OneDatePick date={new Date()} setDate={handleSDateChange} />
-                )}
-                {endDate ? (
-                  <OneDatePick date={endDate} setDate={handleEDateChange} />
-                ) : (
-                  <OneDatePick date={new Date()} setDate={handleEDateChange} />
-                )}
-                <TimeSelector time={selectedTime} setTime={handleTimeChange} />
-              </PeriodBox>
-            </InputContainer>
-            <InputContainer>
-              <InputTitle>링크</InputTitle>
-              <InputBox />
-            </InputContainer>
-          </RightTitleContainer>
-        </TopContainer>
-        <ContentContainer>
-          <BundleEditor
-            content={content}
-            onContentChange={handleEditorChange}
-          ></BundleEditor>
-        </ContentContainer>
-      </MainContainer>
-    </StyledDivContainer>
-  );
-};
-
-export default JDPlusPage;

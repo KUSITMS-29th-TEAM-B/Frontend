@@ -1,7 +1,11 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import styled, { useTheme } from "styled-components";
-import { keywordState, yearState } from "../../store/selectedStore";
+import {
+  deleteState,
+  keywordState,
+  yearState,
+} from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
 import {
@@ -10,6 +14,7 @@ import {
   ArrowRight,
   ArrowUpThin,
   CircleArrow,
+  DeleteIcon,
   Options,
 } from "../../assets";
 import YearSelect from "./YearSelect";
@@ -24,22 +29,68 @@ import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
+import editIcon from "../../assets/images/editIcon.png";
+import { myKeywords } from "../../services/Experience/myKeywords";
+import { useNavigate } from "react-router-dom";
 
-const KeywordTab = () => {
+type TabType = "basic" | "my";
+interface KeywordTabProp {
+  openDeleteModal: () => void;
+}
+
+const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
-  const [selectedQ, setSelectedQ] = React.useState(0);
+  const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
+  const [selectedQ, setSelectedQ] = React.useState(0);
+  const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
+  const [keywordTabOption, setKeywordTabOption] =
+    React.useState<TabType>("basic");
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
 
-  // 역량 키워드 페이지네이션
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const postsPerPage = 9;
-  const firstPostIndex = (currentPage - 1) * postsPerPage;
-  const lastPostIndex = firstPostIndex + postsPerPage;
-  const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+  // 기본 역량 키워드 페이지네이션
+  const keywordsPerPage = 9;
+  const [currentBasicKeywordPage, setCurrentBasicKeywordPage] =
+    React.useState(1);
+  const firstBasicKeywordIndex =
+    (currentBasicKeywordPage - 1) * keywordsPerPage;
+  const lastBasicKeywordIndex = firstBasicKeywordIndex + keywordsPerPage;
+  const currentBasicKeywords = basicKeywords.slice(
+    firstBasicKeywordIndex,
+    lastBasicKeywordIndex
+  );
+  // My 역량 키워드 페이지네이션
+  const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
+  const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
+  const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
+  const currentMyKeywords = myKeywords.slice(
+    firstMyKeywordIndex,
+    lastMyKeywordIndex
+  );
+
+  // 체크된 역량 키워드 리스트
+  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
+
+  // 키워드 체크박스 관리 함수
+  const handleCheckedKeywords = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target) {
+      e.target.checked
+        ? setCheckedKeywords([...checkedKeywords, e.target.value])
+        : setCheckedKeywords(
+            checkedKeywords.filter((choice) => choice !== e.target.value)
+          );
+    }
+  };
+
+  // 역량 키워드 필터된 경험 데이터
+  const filteredExpData = ExpData.filter((item) =>
+    item.tags.some((tag) => checkedKeywords.includes(tag))
+  );
 
   // 임시 데이터
   const years = [2000, 2005, 2010, 2015, 2020];
@@ -55,14 +106,18 @@ const KeywordTab = () => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  // 질문 아코디언 관리
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleChange = () => {
+  const handleBackButton = () => {
+    setIsDelete(false);
+    setKeyword(null);
+  };
+  const handleQuestionChange = () => {
     if (expanded) {
       setSelectedQ(0);
     }
     setExpanded(!expanded);
+  };
+  const handleDelete = () => {
+    setIsDelete(!isDelete);
   };
 
   /**
@@ -70,33 +125,59 @@ const KeywordTab = () => {
    */
   const renderLeftContainer = () => {
     return (
-      <LeftContainer>
-        <button
-          style={{
-            textAlign: "center",
-            width: "50px",
-            background: "transparent",
-            border: "none",
-          }}
-          onClick={() => setKeyword(null)}
-        >
-          <ArrowRight />
-        </button>
-        <KeywordText>{keyword}</KeywordText>
-        <YearSelect
-          value={selectedYear}
-          options={years}
-          onChange={setSelectedYear}
-        />
-        <MenuList>
-          {menus.map((item) => (
-            <MenuItem>
-              <div className="text">{item.title}</div>
-              <div className="text">{item.num}</div>
-            </MenuItem>
-          ))}
-        </MenuList>
-      </LeftContainer>
+      <>
+        <LeftContainer>
+          <button
+            style={{
+              textAlign: "center",
+              width: "50px",
+              background: "transparent",
+              border: "none",
+            }}
+            onClick={handleBackButton}
+          >
+            <ArrowRight />
+          </button>
+          <KeywordText>{keyword}</KeywordText>
+          <YearSelect
+            value={selectedYear}
+            options={years}
+            onChange={setSelectedYear}
+          />
+          <MenuList>
+            {menus.map((item, index) => (
+              <MenuItem>
+                <div className="text">{item.title}</div>
+                <div className="text">{item.num}</div>
+                {isDelete && index !== 0 ? (
+                  <DeleteIcon
+                    width={"20px"}
+                    style={{ position: "absolute", left: -10 }}
+                    onClick={openDeleteModal}
+                  />
+                ) : null}
+              </MenuItem>
+            ))}
+          </MenuList>
+          {keyword && isDelete ? (
+            <div
+              className="edit-end"
+              style={{ marginTop: "40px", marginLeft: "auto", padding: "5px" }}
+              onClick={handleDelete}
+            >
+              완료
+            </div>
+          ) : (
+            <img
+              src={editIcon}
+              alt="edit-icon"
+              width={"32px"}
+              style={{ marginTop: "40px", marginLeft: "auto" }}
+              onClick={handleDelete}
+            />
+          )}
+        </LeftContainer>
+      </>
     );
   };
 
@@ -109,7 +190,7 @@ const KeywordTab = () => {
         {/* 질문과 함께보기 컨테이너 */}
         <Accordion
           expanded={expanded}
-          onChange={handleChange}
+          onChange={handleQuestionChange}
           sx={{
             background: theme.colors.main50,
             borderRadius: "12px",
@@ -159,6 +240,9 @@ const KeywordTab = () => {
         {/* 역량 키워드 선택 컨테이너 */}
         <KeywordSelect>
           <Options /> 역량 키워드
+          <div className="keyword-count">
+            {checkedKeywords.length > 0 && `(${checkedKeywords.length})`}
+          </div>
           <button aria-describedby={id} onClick={handleTagPopper}>
             {open ? <ArrowUpThin /> : <ArrowDownThin />}
           </button>
@@ -166,15 +250,40 @@ const KeywordTab = () => {
             <TagPopperBox>
               <div className="top-container">
                 <div className="tab-list">
-                  <div className="tab-item">기본</div>
-                  <div className="tab-item">MY</div>
+                  <div
+                    className={
+                      keywordTabOption === "basic"
+                        ? "tab-item active"
+                        : "tab-item"
+                    }
+                    onClick={() => setKeywordTabOption("basic")}
+                  >
+                    기본
+                  </div>
+                  <div
+                    className={
+                      keywordTabOption === "my" ? "tab-item active" : "tab-item"
+                    }
+                    onClick={() => setKeywordTabOption("my")}
+                  >
+                    MY
+                  </div>
                 </div>
-                <PopperPagination
-                  postsNum={basicKeywords.length}
-                  postsPerPage={postsPerPage}
-                  setCurrentPage={setCurrentPage}
-                  currentPage={currentPage}
-                />
+                {keywordTabOption === "basic" ? (
+                  <PopperPagination
+                    postsNum={basicKeywords.length}
+                    postsPerPage={keywordsPerPage}
+                    setCurrentPage={setCurrentBasicKeywordPage}
+                    currentPage={currentBasicKeywordPage}
+                  />
+                ) : (
+                  <PopperPagination
+                    postsNum={myKeywords.length}
+                    postsPerPage={keywordsPerPage}
+                    setCurrentPage={setCurrentMyKeywordPage}
+                    currentPage={currentMyKeywordPage}
+                  />
+                )}
               </div>
               <div
                 className="checkbox-list"
@@ -184,33 +293,56 @@ const KeywordTab = () => {
                   gridTemplateColumns: "repeat(3, 1fr)",
                 }}
               >
-                {currentPosts.map((item) => (
-                  <Checkbox label={item} />
-                ))}
+                {keywordTabOption === "basic"
+                  ? currentBasicKeywords.map((item) => (
+                      <Checkbox
+                        value={item}
+                        label={item}
+                        checked={checkedKeywords.includes(item)}
+                        onChange={handleCheckedKeywords}
+                      />
+                    ))
+                  : currentMyKeywords.map((item) => (
+                      <Checkbox
+                        value={item}
+                        label={item}
+                        checked={checkedKeywords.includes(item)}
+                        onChange={handleCheckedKeywords}
+                      />
+                    ))}
               </div>
               <div className="checkbox-num">
-                총&nbsp;<div className="accent">{basicKeywords.length}개</div>의
-                결과가 표시돼요
+                총&nbsp;
+                <div className="accent">
+                  {checkedKeywords.length === 0
+                    ? ExpData.length
+                    : filteredExpData.length}
+                  개
+                </div>
+                의 결과가 표시돼요
               </div>
             </TagPopperBox>
           </Popper>
         </KeywordSelect>
         {/* 경험 카드 리스트 */}
         <ExperienceList>
-          {ExpData.map((post, index: number) => (
-            <Experience
-              id={post.id}
-              key={index}
-              title={post.title}
-              tags={post.tags}
-              maintag={post.mainTag}
-              subtag={post.subTag}
-              period={post.period}
-              bookmark={post.bookmark}
-              question={selectedQ}
-              detail={post.detail}
-            />
-          ))}
+          {(checkedKeywords.length === 0 ? ExpData : filteredExpData).map(
+            (post, index: number) => (
+              <Experience
+                id={post.id}
+                key={index}
+                title={post.title}
+                tags={post.tags}
+                maintag={post.mainTag}
+                subtag={post.subTag}
+                period={post.period}
+                question={selectedQ}
+                detail={post.detail}
+                checkedKeywords={checkedKeywords}
+                onClick={() => navigate(`/experience/detail/${post.id}`)}
+              />
+            )
+          )}
         </ExperienceList>
       </ContentContainer>
     );
@@ -262,6 +394,7 @@ const MenuList = styled.div`
 `;
 
 const MenuItem = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   padding: 16px 29px;
@@ -323,6 +456,9 @@ const KeywordSelect = styled.div`
     border: none;
     background: none;
   }
+  .keyword-count {
+    color: ${(props) => props.theme.colors.main500};
+  }
 `;
 
 const TagPopperBox = styled.div`
@@ -360,7 +496,8 @@ const TagPopperBox = styled.div`
     width: 72px;
     height: 27px;
     flex-shrink: 0;
-    &:hover {
+    &:hover,
+    &.active {
       ${(props) => props.theme.fonts.subtitle5};
       color: ${(props) => props.theme.colors.neutral600};
       border-radius: 4px;

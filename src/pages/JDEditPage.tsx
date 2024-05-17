@@ -54,19 +54,19 @@ const JDEditPage: React.FC = () => {
   //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
     setdiscardModal(true);
-    document.body.style.overflow = "hidden";
   };
 
   const closeDiscardModal = () => {
     setdiscardModal(false);
-    document.body.style.overflow = "auto";
   };
 
   //자기소개서 문항 삭제하기
   const openModal = (index: number) => {
-    setDeleteIdx(index);
-    setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
+    if (questionContent.question.length > 1) {
+      setDeleteIdx(index);
+      setIsModalOpen(true);
+      document.body.style.overflow = "hidden";
+    }
   };
 
   const closeModal = () => {
@@ -293,10 +293,12 @@ const JDEditPage: React.FC = () => {
             {activebutton === "Exp" ? (
               <>
                 {detailId !== 0 ? (
-                  <ExperienceBox expId={detailId} />
+                  <ExpDetailWrapper>
+                    <ExperienceBox expId={detailId} />
+                  </ExpDetailWrapper>
                 ) : (
                   <ExpContainer>
-                    <ExperienceList />
+                    <ExperienceList showBookmarksOnly={true} />
                   </ExpContainer>
                 )}
               </>
@@ -332,7 +334,7 @@ const ToggleContainer = styled.div`
 
 const ExpContainer = styled.div`
   width: 100%;
-  height: 35rem;
+  height: 38rem;
   display: flex;
   flex-direction: column;
   /* overflow-y: scroll;
@@ -341,7 +343,16 @@ const ExpContainer = styled.div`
 
 const JobContainer = styled.div`
   width: 100%;
-  height: 35rem;
+  height: 38rem;
+  display: flex;
+  flex-direction: column;
+  /* overflow-y: scroll;
+  overflow-x: hidden; */
+`;
+
+const ExpDetailWrapper = styled.div`
+  width: 100%;
+  height: 38rem;
   display: flex;
   flex-direction: column;
   /* overflow-y: scroll;

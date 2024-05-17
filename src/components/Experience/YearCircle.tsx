@@ -3,19 +3,22 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
-import { yearState } from "../../store/selectedStore";
+import { deleteState, yearState } from "../../store/selectedStore";
 import { keywordState } from "../../store/selectedStore";
+import { DeleteIcon } from "../../assets";
 
 interface YearCircleProps {
   year: number;
   keywordList: string[];
   hoveredYear: number | null;
+  openDeleteModal: () => void;
 }
 
 const YearCircle: React.FC<YearCircleProps> = ({
   year,
   keywordList,
   hoveredYear,
+  openDeleteModal,
 }) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
@@ -23,6 +26,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
   const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
     keywordState
   );
+  const [isDelete, setIsDelete] = useRecoilState(deleteState);
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
@@ -75,36 +79,44 @@ const YearCircle: React.FC<YearCircleProps> = ({
   //
   //
   return (
-    <YearCircleContainer isActive={isSelectedYear || isHoveredYear}>
-      <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
-      {(isSelectedYear || isHoveredYear) &&
-        keywordList.map((keyword, index) => {
-          // if (index < angles.length) {
-          const position = calculatePosition(index);
-          return (
-            <KeywordMotionDiv
-              key={index}
-              x={position.x}
-              y={position.y}
-              custom={index}
-              variants={containerVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              onClick={(e) => handleTagClick(e, year, keyword)}
-            >
-              <KeywordCircle
-                animate={{ scale: selectedKeyword === keyword ? 0.25 : 0.2 }}
-                whileHover={{ scale: 0.25 }}
+    <>
+      <YearCircleContainer isActive={isSelectedYear || isHoveredYear}>
+        <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
+        {(isSelectedYear || isHoveredYear) &&
+          keywordList.map((keyword, index) => {
+            // if (index < angles.length) {
+            const position = calculatePosition(index);
+            return (
+              <KeywordMotionDiv
+                key={index}
+                x={position.x}
+                y={position.y}
+                custom={index}
+                variants={containerVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                onClick={(e) => handleTagClick(e, year, keyword)}
               >
-                {keyword}
-              </KeywordCircle>
-            </KeywordMotionDiv>
-          );
-          // }
-          // return null;
-        })}
-    </YearCircleContainer>
+                <KeywordCircle
+                  animate={{ scale: selectedKeyword === keyword ? 0.25 : 0.2 }}
+                  whileHover={{ scale: 0.25 }}
+                >
+                  {keyword}
+                  {selectedKeyword && isDelete && index !== 5 ? (
+                    <DeleteIcon
+                      style={{ position: "absolute", top: -10, right: -5 }}
+                      onClick={openDeleteModal}
+                    />
+                  ) : null}
+                </KeywordCircle>
+              </KeywordMotionDiv>
+            );
+            // }
+            // return null;
+          })}
+      </YearCircleContainer>
+    </>
   );
 };
 

@@ -12,6 +12,8 @@ import SignupPage from "./pages/SignupPage";
 import ExperienceWritePage from "./pages/ExperienceWritePage";
 import ExperienceDetailPage from "./pages/ExperienceDetailPage";
 import SignInPage from "./pages/SignInPage";
+import ProfilePage from "./pages/ProfilePage";
+import ProfileEditPage from "./pages/ProfileEditPage";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +33,8 @@ const App: React.FC = () => {
         />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/edit" element={<ProfileEditPage />} />
       </Routes>
     </>
   );

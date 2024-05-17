@@ -10,6 +10,9 @@ import { Plus } from "../assets";
 import KeywordTab from "../components/Experience/KeywordTab";
 import { useNavigate } from "react-router-dom";
 import MoreTab from "../components/Experience/MoreTab";
+import Modal from "../components/common/Modal";
+import React from "react";
+import warningImg from "../assets/images/warningIcon.png";
 
 const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
@@ -17,7 +20,22 @@ const ExperiencePage = () => {
   const [selectedKeyword, setSelectedKeyword] = useRecoilState(keywordState);
   const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
   const name = "사용자";
+
+  // 모달 관리
+  const openDeleteModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDelete = () => {
+    console.log("삭제 api");
+    closeDeleteModal();
+  };
 
   /**
    * 연도별 리스트 컨테이너
@@ -36,7 +54,10 @@ const ExperiencePage = () => {
           when: "beforeChildren",
         }}
       >
-        <YearListContainer width={size.width} />
+        <YearListContainer
+          width={size.width}
+          openDeleteModal={openDeleteModal}
+        />
       </CenteredContainer>
     );
   };
@@ -55,7 +76,11 @@ const ExperiencePage = () => {
         transition={{ type: "spring", stiffness: 40 }}
       >
         {selectedKeyword &&
-          (selectedKeyword === "더보기" ? <MoreTab /> : <KeywordTab />)}
+          (selectedKeyword === "더보기" ? (
+            <MoreTab />
+          ) : (
+            <KeywordTab openDeleteModal={openDeleteModal} />
+          ))}
       </ActiveContainer>
     );
   };
@@ -64,29 +89,46 @@ const ExperiencePage = () => {
   //
   //
   return (
-    <MainContainer>
-      {/* <NoExperience /> */}
-      {selectedKeyword ? null : (
-        <Description>
-          <span className="user">{name}</span>
-          님의 여정을
-          <br />
-          시작해볼까요?
-        </Description>
-      )}
-      {renderCenterContainer()}
-      <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-      <MainButton
-        style={{
-          position: "absolute",
-          right: selectedKeyword ? "62%" : 30,
-          bottom: 30,
-        }}
-        onClick={() => navigate(`/experience/write`)}
-      >
-        <Plus /> 경험 추가하기
-      </MainButton>
-    </MainContainer>
+    <>
+      <MainContainer>
+        {/* <NoExperience /> */}
+        {selectedKeyword ? null : (
+          <Description>
+            <span className="user">{name}</span>
+            님의 여정을
+            <br />
+            시작해볼까요?
+          </Description>
+        )}
+        {renderCenterContainer()}
+        <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
+        <MainButton
+          style={{
+            position: "absolute",
+            right: selectedKeyword ? "62%" : 30,
+            bottom: 30,
+          }}
+          onClick={() => navigate(`/experience/write`)}
+        >
+          <Plus /> 경험 추가하기
+        </MainButton>
+      </MainContainer>
+      <Modal
+        image={<img src={warningImg} alt="warning" />}
+        title={"해당 태그를 삭제하시겠어요?"}
+        description={
+          <>
+            태그를 삭제하면 해당 태그에 속해 있는
+            <br />
+            경험들이 모두 삭제돼요.
+          </>
+        }
+        buttons={["취소", "네, 삭제할게요"]}
+        onConfirm={handleDelete}
+        isOpen={isModalOpen}
+        onClose={closeDeleteModal}
+      />
+    </>
   );
 };
 

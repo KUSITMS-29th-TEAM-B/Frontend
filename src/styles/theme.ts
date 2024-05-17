@@ -25,7 +25,7 @@ const colors = {
   neutral100: "#F2F3F9",
   neutral200: "#EEEFF7",
   neutral300: "#EAEBF3",
-  neutral400: "#A6AAC0",
+  neutral400: "#D9DBE6",
   neutral500: "#A6AAC0",
   neutral600: "#63698D",
   neutral700: "#343A5D",
@@ -47,6 +47,8 @@ const colors = {
   subYellow200: "#FFF5D1",
   subYellow300: "#FFEDAA",
   subYellow400: "#FFE483",
+  subSecondary500: "#9AAAFF",
+  mainbg: "#FAFAFF",
 };
 
 const fonts = {
