@@ -9,6 +9,11 @@ import { TagList } from "../../services/JD/TagData";
 import ArrowIcon_net from "../../assets/icons/icon_arrow_right_net500.svg";
 import ArrowIcon_main from "../../assets/icons/icon_arrow_right_main500.svg";
 import FilterRemoveIcon from "../../assets/icons/icon_filter_remove.svg";
+import { ArrowDownThin, ArrowUpThin, Options } from "../../assets";
+import { Popper } from "@mui/material";
+import PopperPagination from "../Experience/PopperPagination";
+import { basicKeywords } from "../../assets/data/keywords";
+import Checkbox from "../common/Checkbox";
 
 const ExperienceList = () => {
   const [selectedTab, setSelectedTab] = useState<string>("경험검색");
@@ -17,7 +22,22 @@ const ExperienceList = () => {
   const [searchText, setSearchText] = useState(""); //검색 입력
   const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
   const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
+  const [filterCount, setfilterCount] = useState<number>(-1); //검색된 경험의 숫자, 검색 안된 상태에서는 -1
   const filteredData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
+
+  // 역량 키워드
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "tag-popper" : undefined;
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const postsPerPage = 9;
+  const firstPostIndex = (currentPage - 1) * postsPerPage;
+  const lastPostIndex = firstPostIndex + postsPerPage;
+  const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+  // 역량 키워드 클릭 함수
+  const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
 
   const handleTagSelection = (
     selectedmainTag: string,
@@ -86,9 +106,55 @@ const ExperienceList = () => {
                   setSubTag("");
                 }}
               />
-              <img src={SearchIcon} alt="filter" />
+              <img src={SearchIcon} alt="filter" /> {/* 클릭시 검색 api 호출 */}
             </IconContainer>
             {showTagPopup && <TagPopup onSelect={handleTagSelection} />}
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              {filterCount >= 0 && (
+                <FilteredTextWrapper>
+                  총 <p>{filterCount}</p>개의 검색 결과가 있습니다
+                </FilteredTextWrapper>
+              )}
+              <KeywordSelect>
+                <Options /> 역량 키워드
+                <button aria-describedby={id} onClick={handleTagPopper}>
+                  {open ? <ArrowUpThin /> : <ArrowDownThin />}
+                </button>
+                <Popper id={id} open={open} anchorEl={anchorEl}>
+                  <TagPopperBox>
+                    <div className="top-container">
+                      <div className="tab-list">
+                        <div className="tab-item">기본</div>
+                        <div className="tab-item">MY</div>
+                      </div>
+                      <PopperPagination
+                        postsNum={basicKeywords.length}
+                        postsPerPage={postsPerPage}
+                        setCurrentPage={setCurrentPage}
+                        currentPage={currentPage}
+                      />
+                    </div>
+                    <div
+                      className="checkbox-list"
+                      style={{
+                        width: "100%",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, 1fr)",
+                      }}
+                    >
+                      {currentPosts.map((item) => (
+                        <Checkbox label={item} />
+                      ))}
+                    </div>
+                    <div className="checkbox-num">
+                      총&nbsp;
+                      <div className="accent">{basicKeywords.length}개</div>의
+                      결과가 표시돼요
+                    </div>
+                  </TagPopperBox>
+                </Popper>
+              </KeywordSelect>
+            </div>
           </SearchContainer>
           {selectedTab === "경험검색" ? (
             <>
@@ -251,7 +317,7 @@ const FilterContainer = styled.div`
   position: absolute;
   align-items: center;
   left: 1rem;
-  top: 40%;
+  top: 30%;
   transform: translateY(-50%);
   display: flex;
   ${(props) => props.theme.fonts.body4};
@@ -261,11 +327,24 @@ const FilterContainer = styled.div`
   }
 `;
 
+const FilteredTextWrapper = styled.div`
+    display: flex;
+    width: 100%;
+    margin-left: 1rem;
+    align-items: center;
+    ${(props) => props.theme.fonts.body4};
+    color:  ${(props) => props.theme.colors.neutral600};
+    p{
+        margin: 0.25rem;
+        color:  ${(props) => props.theme.colors.main500};
+    }
+`;
+
 const IconContainer = styled.div`
   position: absolute;
   align-items: center;
   right: 1rem;
-  top: 40%;
+  top: 30%;
   transform: translateY(-50%);
   display: flex;
   gap: 0.5rem;
@@ -287,5 +366,76 @@ const ScrollDiv = styled.div`
     background: #ccc;
   }
   ::-webkit-scrollbar-track {
+  }
+`;
+
+const KeywordSelect = styled.div`
+  ${(props) => props.theme.fonts.cap1};
+  color: ${(props) => props.theme.colors.neutral600};
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  button {
+    border: none;
+    background: none;
+  }
+`;
+
+const TagPopperBox = styled.div`
+  display: flex;
+  width: 355px;
+  margin-right: 2rem;
+  flex-direction: column;
+  padding: 21px 22px 21px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--main-200, #e5e6ff);
+  background: #fff;
+  gap: 25px;
+  .top-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tab-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: var(--neutral-50, #f7f7fb);
+  }
+  .tab-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${(props) => props.theme.fonts.body4};
+    color: ${(props) => props.theme.colors.neutral500};
+    width: 72px;
+    height: 27px;
+    flex-shrink: 0;
+    &:hover {
+      ${(props) => props.theme.fonts.subtitle5};
+      color: ${(props) => props.theme.colors.neutral600};
+      border-radius: 4px;
+      background: var(--neutral-0, #fff);
+    }
+  }
+  .checkbox-num {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    ${(props) => props.theme.fonts.cap2};
+    color: ${(props) => props.theme.colors.neutral500};
+    .accent {
+      color: ${(props) => props.theme.colors.main500};
+    }
   }
 `;
