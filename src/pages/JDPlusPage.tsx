@@ -14,8 +14,6 @@ import { JobAPI } from "../types/type";
 
 const JDPlusPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
   const [user, setUser] = useRecoilState<UserDataType>(userInfo);
@@ -38,12 +36,12 @@ const JDPlusPage: React.FC = () => {
 
   // endTime 계산
   const getEndTime = () => {
-    if (!endDate) return null; // endDate가 null이면 null 반환
+    if (!jobData.endedAt) return null; // endDate가 null이면 null 반환
 
     const hours = parseInt(selectedTime.split(":")[0]);
     const minutes = parseInt(selectedTime.split(":")[1]);
 
-    const endTime = new Date(endDate); // endDate를 기반으로 새 Date 객체 생성
+    const endTime = new Date(jobData.endedAt); // endDate를 기반으로 새 Date 객체 생성
     endTime.setHours(hours, minutes, 0); // 시간과 분 설정
     console.log("최종시간은", endTime);
     return endTime;
@@ -65,30 +63,25 @@ const JDPlusPage: React.FC = () => {
   };
 
   const handleSDateChange = (date: Date) => {
-    if (!startDate && !endDate) {
-      setStartDate(date);
+    if (!jobData.startAt && !jobData.endedAt) {
       setJobData({ ...jobData, startAt: date });
-    } else if (endDate && date < endDate) {
-      setStartDate(date);
+    } else if (jobData.endedAt && date < jobData.endedAt) {
       setJobData({ ...jobData, startAt: date });
     } else {
       alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
-      setStartDate(endDate);
-      setJobData({ ...jobData, startAt: endDate });
+      setJobData({ ...jobData, startAt: jobData.endedAt });
     }
   };
 
   const handleEDateChange = (date: Date) => {
-    if (!endDate && !startDate) {
-      setEndDate(date);
+    if (!jobData.endedAt && !jobData.startAt) {
       setJobData({ ...jobData, endedAt: date });
-    } else if (startDate && date > startDate) {
-      setEndDate(date);
+    } else if (jobData.startAt && jobData.startAt) {
       setJobData({ ...jobData, endedAt: date });
     } else {
       alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
-      setEndDate(startDate);
-      setJobData({ ...jobData, endedAt: startDate });
+
+      setJobData({ ...jobData, endedAt: jobData.startAt });
     }
   };
 
@@ -136,7 +129,7 @@ const JDPlusPage: React.FC = () => {
           <CancelButton onClick={openModal}>취소</CancelButton>
           <SaveButton
             onClick={() => {
-              if (startDate && endDate) {
+              if (jobData.startAt && jobData.endedAt) {
                 handleJDPost(jobData, user.token);
               } else {
                 alert("Start date and end date must be provided.");
@@ -179,9 +172,12 @@ const JDPlusPage: React.FC = () => {
             <InputContainer>
               <InputTitle>지원기간</InputTitle>
               <PeriodBox>
-                {startDate ? (
+                {jobData.startAt ? (
                   <div className="datepicker">
-                    <OneDatePick date={startDate} setDate={handleSDateChange} />
+                    <OneDatePick
+                      date={jobData.startAt}
+                      setDate={handleSDateChange}
+                    />
                   </div>
                 ) : (
                   <div className="datepicker">
@@ -192,9 +188,12 @@ const JDPlusPage: React.FC = () => {
                   </div>
                 )}
                 <div style={{ marginLeft: 20 }}>~</div>
-                {endDate ? (
+                {jobData.endedAt ? (
                   <div className="datepicker">
-                    <OneDatePick date={endDate} setDate={handleEDateChange} />
+                    <OneDatePick
+                      date={jobData.endedAt}
+                      setDate={handleEDateChange}
+                    />
                   </div>
                 ) : (
                   <div className="datepicker">
