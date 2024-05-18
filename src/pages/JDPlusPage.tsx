@@ -7,9 +7,13 @@ import OneDatePick from "../components/common/DatePicker";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
+import { jobpost } from "../services/jd";
 
 const JDPlusPage: React.FC = () => {
+  const [title, setTitle] = useState("");
+  const [enterpriseName, setEnterpriseName] = useState("");
   const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -85,6 +89,31 @@ const JDPlusPage: React.FC = () => {
   //     console.log(endTime);
   //   }, [selectedTime, startDate, endDate]);
 
+  //api
+  const handleJDPost = async (
+    enterpriseName: string,
+    title: string,
+    content: string,
+    link: string,
+    startDate: Date,
+    endDate: Date
+  ) => {
+    try {
+      const response = await jobpost(
+        enterpriseName,
+        title,
+        content,
+        link,
+        startDate,
+        endDate
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   return (
     <StyledDivContainer className="page">
       <Modal isOpen={isModalOpen} onClose={closeModal}></Modal>
@@ -95,7 +124,24 @@ const JDPlusPage: React.FC = () => {
         <Title>새로운 공고 등록</Title>
         <ButtonContainer>
           <CancelButton onClick={openModal}>취소</CancelButton>
-          <SaveButton onClick={() => nav("/jd")}>저장</SaveButton>
+          <SaveButton
+            onClick={() => {
+              if (startDate && endDate) {
+                handleJDPost(
+                  enterpriseName,
+                  title,
+                  content,
+                  link,
+                  startDate,
+                  endDate
+                );
+              } else {
+                alert("Start date and end date must be provided.");
+              }
+            }}
+          >
+            저장
+          </SaveButton>
         </ButtonContainer>
       </TopTitleBar>
       <MainContainer>
@@ -103,11 +149,17 @@ const JDPlusPage: React.FC = () => {
           <LeftTitleContainer>
             <InputContainer>
               <InputTitle>기업명</InputTitle>
-              <InputBox />
+              <InputBox
+                value={enterpriseName}
+                onChange={(e) => setEnterpriseName(e.target.value)}
+              />
             </InputContainer>
             <InputContainer>
               <InputTitle>제목</InputTitle>
-              <InputBox />
+              <InputBox
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </InputContainer>
           </LeftTitleContainer>
           <RightTitleContainer>
@@ -150,7 +202,10 @@ const JDPlusPage: React.FC = () => {
             </InputContainer>
             <InputContainer>
               <InputTitle>링크</InputTitle>
-              <InputBox />
+              <InputBox
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+              />
             </InputContainer>
           </RightTitleContainer>
         </TopContainer>
