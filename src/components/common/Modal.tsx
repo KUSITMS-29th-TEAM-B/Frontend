@@ -30,7 +30,7 @@ const Modal: FC<ModalProps> = ({
         <MainWrapper>
           {image}
           <div className="maintext">{title}</div>
-          <div className="subtext">{description}</div>
+          {description && <div className="subtext">{description}</div>}
         </MainWrapper>
         <ButtonWrapper>
           {buttons &&
@@ -73,41 +73,31 @@ const Overlay = styled.div`
 const ModalWrapper = styled.div`
   position: relative;
   max-width: 30rem;
-  height: 21rem;
   border-radius: 1.25rem;
   background: #fff;
   width: 100%;
 `;
 
 const MainWrapper = styled.div`
+  padding: 40px 0px;
   width: 30rem;
-  height: 21rem;
   display: flex;
   justify-content: center;
-  padding-bottom: 3rem;
   align-items: center;
   flex-direction: column;
   .maintext {
-    color: var(--neutral-700, #343a5d);
+    ${(props) => props.theme.fonts.title3};
+    color: ${(props) => props.theme.colors.neutral700};
     text-align: center;
-    font-size: 1.375rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 1.625rem;
-    letter-spacing: -0.055rem;
-    margin-top: 1.25rem;
+    margin-top: 2rem;
   }
   .subtext {
-    color: var(--neutral-500, #a6aac0);
+    ${(props) => props.theme.fonts.body3};
+    color: ${(props) => props.theme.colors.neutral700};
     text-align: center;
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 1.25rem;
-    letter-spacing: -0.02rem;
     margin-top: 1.25rem;
     span {
-      color: var(--main-500, #7d82ff);
+      color: ${(props) => props.theme.colors.main500};
       font-size: 1.2rem;
       font-weight: 600;
     }
@@ -115,8 +105,6 @@ const MainWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  position: absolute;
-  bottom: 0;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -127,20 +115,17 @@ const ConfirmButton = styled.div`
   height: 4.5rem;
   flex-shrink: 0;
   border-radius: 0rem 0rem 1.25rem 0rem;
-  background: var(--main-500, #7d82ff);
+  background: ${(props) => props.theme.colors.main500};
   display: flex;
   justify-content: center;
   div {
+    ${(props) => props.theme.fonts.title3};
     display: flex;
     align-items: center;
-    color: var(--neutral-0, #fff);
-    font-size: 1.25rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 140%;
-    letter-spacing: -0.0375rem;
+    color: ${(props) => props.theme.colors.neutral0};
   }
   &.single {
+    width: 100%;
     border-radius: 0rem 0rem 1.25rem 1.25rem;
   }
 `;
@@ -150,19 +135,14 @@ const CloseButton = styled.div`
   height: 4.5rem;
   flex-shrink: 0;
   border-radius: 0rem 0rem 0rem 1.25rem;
-  background: var(--neutral-400, #d9dbe6);
+  background: ${(props) => props.theme.colors.neutral400};
   display: flex;
   justify-content: center;
   div {
+    ${(props) => props.theme.fonts.title3};
+    color: ${(props) => props.theme.colors.neutral600};
     display: flex;
     align-items: center;
-    color: var(--neutral-600, #63698d);
     text-align: center;
-    font-family: Pretendard;
-    font-size: 1.25rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 140%;
-    letter-spacing: -0.0375rem;
   }
 `;

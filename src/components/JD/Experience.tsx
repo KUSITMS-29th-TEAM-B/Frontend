@@ -14,9 +14,10 @@ interface ExpProps {
   maintag: string;
   subtag: string;
   period: string;
-  bookmark: boolean;
+  bookmark?: boolean;
   question?: number;
   detail?: Question[];
+  checkedKeywords?: string[];
   onClick?: () => void;
 }
 
@@ -31,6 +32,7 @@ const Experience: React.FC<ExpProps> = ({
   period,
   question,
   detail,
+  checkedKeywords,
   onClick,
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
@@ -62,16 +64,25 @@ const Experience: React.FC<ExpProps> = ({
       <Topbar>
         <TagContainer>
           {tags.map((tag, index) => (
-            <Tag key={index}>{tag}</Tag>
+            <Tag
+              key={index}
+              className={
+                checkedKeywords && checkedKeywords.includes(tag) ? "active" : ""
+              }
+            >
+              {tag}
+            </Tag>
           ))}
         </TagContainer>
-        <div onClick={handleBookmarkClick}>
-          {localbookmark ? (
-            <img src={bookmarkFillIcon} alt="bookmarkfill" />
-          ) : (
-            <img src={bookmarkBlankIcon} alt="bookmarkblank" />
-          )}
-        </div>
+        {bookmark !== undefined && (
+          <div onClick={handleBookmarkClick}>
+            {localbookmark ? (
+              <img src={bookmarkFillIcon} alt="bookmarkfill" />
+            ) : (
+              <img src={bookmarkBlankIcon} alt="bookmarkblank" />
+            )}
+          </div>
+        )}
       </Topbar>
       <TopContainer>
         <Title className={isSection ? "section" : ""}>{title}</Title>
@@ -157,6 +168,10 @@ const Tag = styled.div`
   background: ${(props) => props.theme.colors.main50};
   color: var(--main-500, #7d82ff);
   ${(props) => props.theme.fonts.cap2};
+  &.active {
+    background: ${(props) => props.theme.colors.main500};
+    color: ${(props) => props.theme.colors.main50};
+  }
 `;
 
 const AnswerContainer = styled.div`

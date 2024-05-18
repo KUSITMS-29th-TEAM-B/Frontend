@@ -144,11 +144,9 @@ const ExperienceWritePage = () => {
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   // 질문 아코디언 관리
@@ -456,7 +454,7 @@ const ExperienceWritePage = () => {
             </button>
             경험 작성
           </div>
-          <CustomButton onClick={() => openModal()}>저장</CustomButton>
+          <CustomButton onClick={openModal}>저장</CustomButton>
         </TopContainer>
         <ContentContainer>
           <TitleInput placeholder="경험의 제목을 입력해주세요"></TitleInput>

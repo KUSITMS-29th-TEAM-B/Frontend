@@ -5,7 +5,6 @@ import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
 import { deleteState, yearState } from "../../store/selectedStore";
 import { keywordState } from "../../store/selectedStore";
-import deleteIcon from "../../assets/images/deleteIcon.png";
 import { DeleteIcon } from "../../assets";
 
 interface YearCircleProps {

@@ -27,11 +27,9 @@ const ExperiencePage = () => {
   // 모달 관리
   const openDeleteModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
   const closeDeleteModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   const handleDelete = () => {
