@@ -8,15 +8,14 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
 import { jobpost } from "../services/jd";
-import { useRecoilState } from "recoil";
-import { UserDataType, userInfo } from "../store/userInfo";
 import { JobAPI } from "../types/type";
+import { getCookie } from "../services/cookie";
 
 const JDPlusPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
-  const [user, setUser] = useRecoilState<UserDataType>(userInfo);
+  const user = getCookie("user");
   const [jobData, setJobData] = useState<JobAPI>({
     title: "",
     enterpriseName: "",
@@ -31,7 +30,6 @@ const JDPlusPage: React.FC = () => {
       top: 0,
       behavior: "auto",
     });
-    console.log(user.token);
   }, []);
 
   // endTime 계산

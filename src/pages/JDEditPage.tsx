@@ -6,7 +6,7 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
 import Toggle from "../components/JD/Toggle";
-import { selector, useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { detailStore } from "../store/jdStore";
 import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import plusBtn from "../assets/icons/icon_plus_btn_question.svg";
@@ -17,7 +17,6 @@ import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
 import { applypost } from "../services/jd";
-import { userInfo } from "../store/userInfo";
 import { getCookie } from "../services/cookie";
 
 const JDEditPage: React.FC = () => {
@@ -228,7 +227,18 @@ const JDEditPage: React.FC = () => {
                 />
               </ToggleWrapper>
               {editing ? (
-                <SaveButton isNotNull={isAllFilled} onClick={handleSaveButton}>
+                <SaveButton
+                  isNotNull={isAllFilled}
+                  onClick={() => {
+                    if (isAllFilled) {
+                      //   handleApplyPost(
+                      //     applyData,
+                      //     user.token,
+                      //     jdId
+                      //   );
+                    }
+                  }}
+                >
                   저장
                 </SaveButton>
               ) : (

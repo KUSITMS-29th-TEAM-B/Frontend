@@ -28,7 +28,7 @@ export const applypost = async (
   return await client.post(
     `/api/job-description/apply/${jobId}`,
     {
-      content: applyData,
+      contents: applyData,
     },
     {
       headers: {
