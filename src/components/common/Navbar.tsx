@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getCookie, removeCookie } from "../../services/cookie";
+import { getCookie } from "../../services/cookie";
 
 const Navbar = () => {
   const navigate = useNavigate();

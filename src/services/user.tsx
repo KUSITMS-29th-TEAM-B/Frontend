@@ -1,14 +1,5 @@
-import { UserDataType } from "../store/userInfo";
 import { RegisterDataType } from "../types/user";
 import client from "./client";
-import { getCookie } from "./cookie";
-
-const config = {
-  headers: {
-    Authorization: `Bearer ${getCookie("user")}`,
-    withCredentials: true,
-  },
-};
 
 // 로그인
 export const login = async (loginType: string, accessToken: string) => {
