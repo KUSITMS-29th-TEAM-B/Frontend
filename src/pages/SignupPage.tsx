@@ -8,16 +8,15 @@ import profile2 from "../assets/images/profile2.png";
 import profile3 from "../assets/images/profile3.png";
 import profile4 from "../assets/images/profile4.png";
 import profile5 from "../assets/images/profile5.png";
-import React, { useEffect } from "react";
+import React from "react";
 import { jobStateOptions } from "../assets/data/form";
 import { Popper } from "@mui/material";
 import Modal from "../components/common/Modal";
 import logoImg from "../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
-import { UserDataType, userInfo } from "../store/userInfo";
-import { useRecoilState } from "recoil";
-import { register } from "../services/user";
+import { getUserInfo, register } from "../services/user";
 import { RegisterDataType } from "../types/user";
+import { getCookie, setCookie } from "../services/cookie";
 
 const profileImgUrl = [
   "../assets/images/profile1.png",
@@ -29,12 +28,12 @@ const profileImgUrl = [
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState<UserDataType>(userInfo);
-  console.log(user.token);
+  const user = getCookie("user");
+
   const [registerData, setRegisterData] = React.useState<RegisterDataType>({
-    registrationToken: user.token,
+    registrationToken: user?.token,
     profileImgUrl: "",
-    provider: user.provider,
+    provider: user?.provider,
     nickName: "",
     jobSearchStatus: "",
     desiredJob: "",
@@ -52,11 +51,9 @@ const SignupPage = () => {
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -71,11 +68,17 @@ const SignupPage = () => {
 
   const handleRegister = () => {
     register(registerData).then((res) => {
-      setUser({
-        ...user,
-        token: res.data.accessToken,
-      });
-      openModal();
+      const token = res.data.accessToken;
+      getUserInfo(token)
+        .then((res) => {
+          setCookie("user", {
+            ...user,
+            nickName: res.data.nickName,
+            provider: res.data.provider,
+            token: token,
+          });
+        })
+        .then(() => openModal());
     });
   };
 

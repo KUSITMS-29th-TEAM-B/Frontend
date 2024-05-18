@@ -14,6 +14,7 @@ import ExperienceDetailPage from "./pages/ExperienceDetailPage";
 import SignInPage from "./pages/SignInPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
+import PrivateRoute from "./services/router/PrivateRoute";
 
 const App: React.FC = () => {
   return (
@@ -21,20 +22,40 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/jd" element={<JDListPage />} />
-        <Route path="/jd/detail/:id" element={<JDDetailPage />} />
-        <Route path="/jd/edit/:jdId" element={<JDEditPage />} />
-        <Route path="/jd/post" element={<JDPlusPage />} />
-        <Route path="/experience" element={<ExperiencePage />} />
-        <Route path="/experience/write" element={<ExperienceWritePage />} />
-        <Route
-          path="/experience/detail/:id"
-          element={<ExperienceDetailPage />}
-        />
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd" element={<JDListPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd/detail/:id" element={<JDDetailPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd/edit/:jdId" element={<JDEditPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd/post" element={<JDPlusPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/experience" element={<ExperiencePage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/experience/write" element={<ExperienceWritePage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route
+            path="/experience/detail/:id"
+            element={<ExperienceDetailPage />}
+          />
+        </Route>
         <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/sign-up" element={<SignupPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/edit" element={<ProfileEditPage />} />
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/sign-up" element={<SignupPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
+        </Route>
       </Routes>
     </>
   );
