@@ -1,19 +1,39 @@
+import { ApplyAPI, JobAPI } from "../types/type";
 import client from "./client";
 
-export const jobpost = async (
-  enterpriseName: string,
-  title: string,
-  content: string,
-  link: string,
-  startAt: Date,
-  endedAt: Date
+export const jobpost = async (job: JobAPI, token: string) => {
+  return await client.post(
+    `/api/job-description`,
+    {
+      enterpriseName: job.enterpriseName,
+      title: job.title,
+      content: job.content,
+      link: job.link,
+      startedAt: job.startAt,
+      endedAt: job.endedAt,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const applypost = async (
+  applyData: ApplyAPI[],
+  token: string,
+  jobId: string
 ) => {
-  return await client.post(`/api/job-description`, {
-    enterpriseName: enterpriseName,
-    title: title,
-    content: content,
-    link: link,
-    startedAt: startAt,
-    endedAt: endedAt,
-  });
+  return await client.post(
+    `/api/job-description/apply/${jobId}`,
+    {
+      contents: applyData,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

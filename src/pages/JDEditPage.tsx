@@ -14,20 +14,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import QuestionModal from "../components/JD/QuestionModal";
 import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
-import { jobDetails } from "../services/JD/jdData";
 import ExperienceBox from "../components/JD/ExpContainer";
+import { ApplyAPI } from "../types/type";
+import { applypost } from "../services/jd";
+import { getCookie } from "../services/cookie";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
   const [activebutton, setActivebutton] = useState(""); // 경험 분석 or 공고 보기
-  const [questionContent, setQuestionContent] = useState<{
-    question: { header: string; content: string }[];
-  }>({
-    question: [
-      { header: "", content: "" },
-      { header: "", content: "" },
-    ],
-  }); //문항 데이터
+  const [applyData, setApplyData] = useState<ApplyAPI[]>([
+    { question: "", answer: "" },
+    { question: "", answer: "" },
+  ]); //문항 데이터
   const [editing, setEditing] = useState(true); //수정중 여부
   const [completed, setCompleted] = useState(false); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
@@ -37,19 +35,25 @@ const JDEditPage: React.FC = () => {
   const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
-  const jdId: number = parseInt(useParams().jdId!); //공고 id
+  const jdId: string = useParams().jdId!; //공고 id
+  const user = getCookie("user"); //토큰 받아오기용
 
   useEffect(() => {
-    console.log(jdId);
-  }, [jdId]);
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+    // console.log("token", user.token);
+  }, []);
 
+  //모든 질문이 다 채워졌는지 검사
   useEffect(() => {
-    const isAnyQuestionEmpty = questionContent.question.some(
-      (question) => question.header === "" || question.content === ""
+    const isAnyQuestionEmpty = applyData.some(
+      (question) => question.question === "" || question.answer === ""
     );
 
     setIsAllFilled(!isAnyQuestionEmpty);
-  }, [questionContent]);
+  }, [applyData]);
 
   //자기소개서 작성 내용 버리기
   const openDiscardModal = () => {
@@ -62,13 +66,14 @@ const JDEditPage: React.FC = () => {
 
   //자기소개서 문항 삭제하기
   const openModal = (index: number) => {
-    if (questionContent.question.length > 1) {
+    if (applyData.length > 1) {
       setDeleteIdx(index);
       setIsModalOpen(true);
       document.body.style.overflow = "hidden";
     }
   };
 
+  //자기소개서 문항 삭제시
   const closeModal = () => {
     setIsModalOpen(false);
     if (deleteIdx >= 0) {
@@ -78,37 +83,35 @@ const JDEditPage: React.FC = () => {
     document.body.style.overflow = "auto";
   };
 
+  //자기소개서 문항 삭제하지 않을 시
   const cancelModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = "auto";
   };
 
   const handleHeaderChange = (index: number, value: string) => {
-    setQuestionContent((prev) => ({
-      question: prev.question.map((item, i) =>
-        i === index ? { ...item, header: value } : item
-      ),
-    }));
+    const newData = [...applyData];
+    newData[index].question = value;
+    setApplyData(newData);
   };
 
   const handleContentChange = (index: number, value: string) => {
-    setQuestionContent((prev) => ({
-      question: prev.question.map((item, i) =>
-        i === index ? { ...item, content: value } : item
-      ),
-    }));
+    const newData = [...applyData];
+    newData[index].answer = value;
+    setApplyData(newData);
   };
 
   const handleAddQuestions = () => {
-    setQuestionContent((prev) => ({
-      question: [...prev.question, { header: "", content: "" }],
-    }));
+    const newData = {
+      question: "",
+      answer: "",
+    };
+    setApplyData([...applyData, newData]);
   };
 
   const handleRemoveQuestion = (index: number) => {
-    setQuestionContent((prev) => ({
-      question: prev.question.filter((_, i) => i !== index),
-    }));
+    const filteredData = applyData.filter((item, idx) => idx !== index);
+    setApplyData(filteredData);
   };
 
   const handleEditButton = () => {
@@ -127,12 +130,26 @@ const JDEditPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-  }, []);
+  //자기소개서 post api 요청
+  const handleApplyPost = async (
+    applyData: ApplyAPI[],
+    token: string,
+    jobId: string
+  ) => {
+    if (isAllFilled) {
+      setEditing(false);
+      try {
+        const response = await applypost(applyData, token, jobId);
+        console.log(response);
+        nav(`jd/${jdId}`);
+      } catch (error) {
+        console.error(error);
+        alert(JSON.stringify(error));
+      }
+    } else {
+      alert("모든 항목을 다 입력하세요.");
+    }
+  };
 
   //activecontainer 변경사항 있을 시 detailId 초기화
   useEffect(() => {
@@ -210,7 +227,18 @@ const JDEditPage: React.FC = () => {
                 />
               </ToggleWrapper>
               {editing ? (
-                <SaveButton isNotNull={isAllFilled} onClick={handleSaveButton}>
+                <SaveButton
+                  isNotNull={isAllFilled}
+                  onClick={() => {
+                    if (isAllFilled) {
+                      //   handleApplyPost(
+                      //     applyData,
+                      //     user.token,
+                      //     jdId
+                      //   );
+                    }
+                  }}
+                >
                   저장
                 </SaveButton>
               ) : (
@@ -222,20 +250,20 @@ const JDEditPage: React.FC = () => {
             <ScrollDiv>
               {editing ? (
                 <QuestionsWrapper>
-                  {questionContent.question.map((item, index) => (
+                  {applyData.map((item, index) => (
                     <div key={index}>
                       <HeaderInput
-                        content={item.header}
+                        content={item.question}
                         onChange={(value) => handleHeaderChange(index, value)}
                         onRemove={() => openModal(index)}
                       />
                       <ContentInput
-                        content={item.content}
+                        content={item.answer}
                         isEdit={editing}
                         onChange={(value) => handleContentChange(index, value)}
                       />
                       <TextCountWrapper>
-                        <div>{item.content.length + "자(공백 포함)"}</div>
+                        <div>{item.answer.length + "자(공백 포함)"}</div>
                       </TextCountWrapper>
                     </div>
                   ))}
@@ -251,14 +279,14 @@ const JDEditPage: React.FC = () => {
                 </QuestionsWrapper>
               ) : (
                 <AnswersWrapper>
-                  {questionContent.question.map((item, index) => (
+                  {applyData.map((item, index) => (
                     <Answer key={index}>
                       <AnswerHeader>
-                        {`${index + 1}` + ". " + item.header}
+                        {`${index + 1}. ${item.question}`}
                       </AnswerHeader>
-                      <AnswerContent>{item.content}</AnswerContent>
+                      <AnswerContent>{item.answer}</AnswerContent>
                       <TextCountWrapper>
-                        <div>{item.content.length + "자(공백 포함)"}</div>
+                        <div>{item.answer.length + "자(공백 포함)"}</div>
                       </TextCountWrapper>
                     </Answer>
                   ))}
@@ -304,7 +332,7 @@ const JDEditPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId!} /> : null}
+                {jdId ? <JDContainer jdId={jdId} /> : null}
               </JobContainer>
             )}
           </ActiveContainer>
