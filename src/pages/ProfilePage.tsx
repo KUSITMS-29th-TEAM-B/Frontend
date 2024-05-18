@@ -4,7 +4,7 @@ import TicketContainer from "../assets/images/ticketContainer.svg";
 import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
-import { removeCookie } from "../services/cookie";
+import { getCookie, removeCookie } from "../services/cookie";
 
 interface UserDetail {
   question: string;
@@ -13,9 +13,10 @@ interface UserDetail {
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const username = "이효원";
+  const user = getCookie("user");
+  const username = user.nickName;
   const useremail = "email@gmail.com";
-  const userAccount: string = "kakao"; //or google
+  const userAccount: string = user.provider; //or google
   const userDetailList: UserDetail[] = [
     {
       question: "구직활동 여부",
@@ -59,7 +60,7 @@ const ProfilePage = () => {
         <ProfileWrapper>
           <div className="profile_username">{username}</div>
           <div className="profile_email">
-            {userAccount === "google" ? <GoogleIcon /> : <KakaoIcon />}
+            {userAccount === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
             {useremail}
           </div>
           <div

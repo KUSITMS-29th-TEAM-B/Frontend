@@ -18,6 +18,7 @@ import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
 import { applypost } from "../services/jd";
 import { userInfo } from "../store/userInfo";
+import { getCookie } from "../services/cookie";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -36,12 +37,14 @@ const JDEditPage: React.FC = () => {
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
   const jdId: string = useParams().jdId!; //공고 id
+  const user = getCookie("user"); //토큰 받아오기용
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "auto",
     });
+    // console.log("token", user.token);
   }, []);
 
   //모든 질문이 다 채워졌는지 검사
