@@ -43,6 +43,8 @@ export type TagType = {
   subTag: string[];
 };
 
+//api 용
+
 export type JobAPI = {
   enterpriseName: string;
   title: string;
@@ -50,4 +52,9 @@ export type JobAPI = {
   link: string;
   startAt: Date | null;
   endedAt: Date | null;
+};
+
+export type ApplyAPI = {
+  question: string;
+  answer: string;
 };
