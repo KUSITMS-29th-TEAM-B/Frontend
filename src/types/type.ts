@@ -48,6 +48,6 @@ export type JobAPI = {
   title: string;
   content: string;
   link: string;
-  startAt: Date;
-  endedAt: Date;
+  startAt: Date | null;
+  endedAt: Date | null;
 };

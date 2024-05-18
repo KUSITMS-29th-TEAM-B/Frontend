@@ -24,16 +24,16 @@ const JDPlusPage: React.FC = () => {
     enterpriseName: "",
     content: "",
     link: "",
-    startAt: new Date(),
-    endedAt: new Date(),
+    startAt: null,
+    endedAt: null,
   });
-  console.log(user.token);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "auto",
     });
+    console.log(user.token);
   }, []);
 
   // endTime 계산
@@ -49,6 +49,7 @@ const JDPlusPage: React.FC = () => {
     return endTime;
   };
   const endTime = getEndTime();
+
   const openModal = () => {
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -66,22 +67,28 @@ const JDPlusPage: React.FC = () => {
   const handleSDateChange = (date: Date) => {
     if (!startDate && !endDate) {
       setStartDate(date);
+      setJobData({ ...jobData, startAt: date });
     } else if (endDate && date < endDate) {
       setStartDate(date);
+      setJobData({ ...jobData, startAt: date });
     } else {
       alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
       setStartDate(endDate);
+      setJobData({ ...jobData, startAt: endDate });
     }
   };
 
   const handleEDateChange = (date: Date) => {
     if (!endDate && !startDate) {
       setEndDate(date);
+      setJobData({ ...jobData, endedAt: date });
     } else if (startDate && date > startDate) {
       setEndDate(date);
+      setJobData({ ...jobData, endedAt: date });
     } else {
       alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
       setEndDate(startDate);
+      setJobData({ ...jobData, endedAt: startDate });
     }
   };
 
@@ -105,7 +112,7 @@ const JDPlusPage: React.FC = () => {
           content: job.content,
           link: job.link,
           startAt: job.startAt,
-          endedAt: job.startAt,
+          endedAt: job.endedAt,
         },
         user.token
       );
@@ -130,11 +137,6 @@ const JDPlusPage: React.FC = () => {
           <SaveButton
             onClick={() => {
               if (startDate && endDate) {
-                setJobData({
-                  ...jobData,
-                  startAt: startDate,
-                  endedAt: endDate,
-                });
                 handleJDPost(jobData, user.token);
               } else {
                 alert("Start date and end date must be provided.");
