@@ -1,12 +1,13 @@
 import React from "react";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import MainButton from "./MainButton";
+import { getCookie, removeCookie } from "../../services/cookie";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = getCookie("user");
 
   return (
     <NavContainer>
@@ -30,8 +31,13 @@ const Navbar = () => {
         </MenuList>
       </ItemContainer>
       <ItemContainer>
-        <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
-        <UserInfo onClick={() => navigate(`/profile`)}>사용자님</UserInfo>
+        {user?.token ? (
+          <UserInfo onClick={() => navigate(`/profile`)}>
+            {user?.nickName}님
+          </UserInfo>
+        ) : (
+          <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
+        )}
       </ItemContainer>
     </NavContainer>
   );

@@ -1,14 +1,12 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import React from "react";
 import styled from "styled-components";
 import backgroundImg from "../assets/images/background2.png";
 import { AirplaneWindow, Bubble, GoogleIcon, KakaoIcon } from "../assets";
 import logoImg from "../assets/images/logo.png";
-import { login } from "../services/user";
-import { useRecoilState } from "recoil";
-import { UserDataType, userInfo } from "../store/userInfo";
+import { getUserInfo, login } from "../services/user";
 import { useNavigate } from "react-router-dom";
+import { setCookie } from "../services/cookie";
 declare global {
   interface Window {
     Kakao: any;
@@ -18,7 +16,6 @@ declare global {
 const { Kakao } = window;
 
 const SignInPage = () => {
-  const [user, setUser] = useRecoilState<UserDataType>(userInfo);
   const navigate = useNavigate();
 
   const handleKakoLogin = () => {
@@ -28,22 +25,25 @@ const SignInPage = () => {
         login("KAKAO", accessToken)
           .then((res) => {
             console.log("카카오", res);
-            if (res.data?.registrationToken) {
-              setUser({
-                ...userInfo,
-                name: res.data.nickName,
+            // 새 계정 (회원가입)
+            if (res.data.registrationToken) {
+              setCookie("user", {
                 provider: "KAKAO",
                 token: res.data.registrationToken,
-              });
-              navigate("/sign-up");
-            } else {
-              setUser({
-                ...userInfo,
-                name: res.data.nickName,
-                provider: "KAKAO",
-                token: res.data.accessToken,
-              });
-              navigate("/experience");
+              }).then(() => navigate("/sign-up"));
+            }
+            // 기존 계정 (로그인)
+            else {
+              const token = res.data.accessToken;
+              getUserInfo(token)
+                .then((res) =>
+                  setCookie("user", {
+                    nickName: res.data.nickName,
+                    provider: "KAKAO",
+                    token: token,
+                  })
+                )
+                .then(() => navigate("/experience"));
             }
           })
           .catch((err) => console.log(err));
@@ -73,22 +73,25 @@ const SignInPage = () => {
             login("GOOGLE", accessToken)
               .then((res) => {
                 console.log("구글", res);
-                if (res.data?.registrationToken) {
-                  setUser({
-                    ...userInfo,
-                    name: res.data.nickName,
+                // 새 계정 (회원가입)
+                if (res.data.registrationToken) {
+                  setCookie("user", {
                     provider: "GOOGLE",
                     token: res.data.registrationToken,
-                  });
-                  navigate("/sign-up");
-                } else {
-                  setUser({
-                    ...userInfo,
-                    name: res.data.nickName,
-                    provider: "GOOGLE",
-                    token: res.data.accessToken,
-                  });
-                  navigate("/experience");
+                  }).then(() => navigate("/sign-up"));
+                }
+                // 기존 계정 (로그인)
+                else {
+                  const token = res.data.accessToken;
+                  getUserInfo(token)
+                    .then((res) =>
+                      setCookie("user", {
+                        nickName: res.data.nickName,
+                        provider: "GOOGLE",
+                        token: token,
+                      })
+                    )
+                    .then(() => navigate("/experience"));
                 }
               })
               .catch((err) => console.log(err));

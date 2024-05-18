@@ -1,5 +1,14 @@
+import { UserDataType } from "../store/userInfo";
 import { RegisterDataType } from "../types/user";
 import client from "./client";
+import { getCookie } from "./cookie";
+
+const config = {
+  headers: {
+    Authorization: `Bearer ${getCookie("user")}`,
+    withCredentials: true,
+  },
+};
 
 // 로그인
 export const login = async (loginType: string, accessToken: string) => {
@@ -28,5 +37,15 @@ export const register = async ({
     desiredJob: desiredJob,
     goal: goal,
     dream: dream,
+  });
+};
+
+// 사용자 정보 조회
+export const getUserInfo = async (token: string) => {
+  return await client.get(`/api/user/user-info`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      withCredentials: true,
+    },
   });
 };

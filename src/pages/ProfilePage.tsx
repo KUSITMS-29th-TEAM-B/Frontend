@@ -4,6 +4,7 @@ import TicketContainer from "../assets/images/ticketContainer.svg";
 import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
+import { removeCookie } from "../services/cookie";
 
 interface UserDetail {
   question: string;
@@ -11,6 +12,7 @@ interface UserDetail {
 }
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const username = "이효원";
   const useremail = "email@gmail.com";
   const userAccount: string = "kakao"; //or google
@@ -38,8 +40,8 @@ const ProfilePage = () => {
   const nav = useNavigate();
 
   const handlelogout = () => {
-    console.log("/logout");
-    nav("/");
+    removeCookie("user");
+    navigate(`/sign-in`);
   };
   useEffect(() => {
     window.scrollTo({
@@ -116,51 +118,51 @@ const SubContent = styled.div`
 `;
 
 const TicketWrapper = styled.div`
-    position: relative;
+  position: relative;
 `;
 
 const LogoutWrapper = styled.div`
-    position: absolute;
-    top: 2.5rem;
-    right: 2rem;
-    color: ${(props) => props.theme.colors.neutral500};
-    ${(props) => props.theme.fonts.cap3};
-    border-bottom: 1px solid ${(props) => props.theme.colors.neutral500};
+  position: absolute;
+  top: 2.5rem;
+  right: 2rem;
+  color: ${(props) => props.theme.colors.neutral500};
+  ${(props) => props.theme.fonts.cap3};
+  border-bottom: 1px solid ${(props) => props.theme.colors.neutral500};
 `;
 
 const ProfileWrapper = styled.div`
-    position: absolute;
-    top: 35%; 
-    right: 20%;
-    flex-direction: column;
-    display: flex; 
-    color: ${(props) => props.theme.colors.neutral600};
-    justify-content: center;
+  position: absolute;
+  top: 35%;
+  right: 20%;
+  flex-direction: column;
+  display: flex;
+  color: ${(props) => props.theme.colors.neutral600};
+  justify-content: center;
+  align-items: center;
+  .profile_username {
+    ${(props) => props.theme.fonts.title3};
+  }
+  .profile_email {
+    display: flex;
+    gap: 0.3rem;
+    ${(props) => props.theme.fonts.cap3};
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
     align-items: center;
-    .profile_username{
-        ${(props) => props.theme.fonts.title3}; 
-    }
-    .profile_email{
-        display: flex;
-        gap: 0.3rem;
-        ${(props) => props.theme.fonts.cap3}; 
-        margin-bottom: 1rem;
-        margin-top: 0.5rem;
-        align-items: center;
-    }
-    .profile_edit_btn{
-        display: inline-flex;
-        padding: 0.375rem 0.75rem;
-        gap: 0.625rem;
-        border-radius: 0.5rem;
-        color: ${(props) => props.theme.colors.neutral500};
-        border: 1px solid ${(props) => props.theme.colors.neutral500};
-    }
+  }
+  .profile_edit_btn {
+    display: inline-flex;
+    padding: 0.375rem 0.75rem;
+    gap: 0.625rem;
+    border-radius: 0.5rem;
+    color: ${(props) => props.theme.colors.neutral500};
+    border: 1px solid ${(props) => props.theme.colors.neutral500};
+  }
 `;
 const ContentWrapper = styled.div`
-    position: absolute;
-    top: 10%;
-    left: 8%;
-    flex-direction: column;
-    display: flex; 
+  position: absolute;
+  top: 10%;
+  left: 8%;
+  flex-direction: column;
+  display: flex;
 `;
