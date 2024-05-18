@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import TicketContainer from "../assets/images/ticketContainer.svg";
 import TicketContent from "../assets/images/ticketContent.svg";
@@ -36,11 +36,24 @@ const ProfilePage = () => {
     },
   ];
   const nav = useNavigate();
+
+  const handlelogout = () => {
+    console.log("/logout");
+    nav("/");
+  };
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
+
   return (
     <StyledContainer className="page">
       <Title>마이페이지</Title>
       <TicketWrapper>
         <img src={TicketContainer} alt="ticketContainer" />
+        <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
         <ProfileWrapper>
           <div className="profile_username">{username}</div>
           <div className="profile_email">
@@ -78,6 +91,7 @@ const StyledContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   width: 100%;
+  overflow-y: scroll;
 `;
 
 const Title = styled.div`
@@ -103,6 +117,15 @@ const SubContent = styled.div`
 
 const TicketWrapper = styled.div`
     position: relative;
+`;
+
+const LogoutWrapper = styled.div`
+    position: absolute;
+    top: 2.5rem;
+    right: 2rem;
+    color: ${(props) => props.theme.colors.neutral500};
+    ${(props) => props.theme.fonts.cap3};
+    border-bottom: 1px solid ${(props) => props.theme.colors.neutral500};
 `;
 
 const ProfileWrapper = styled.div`
