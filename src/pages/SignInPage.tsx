@@ -6,6 +6,9 @@ import backgroundImg from "../assets/images/background2.png";
 import { AirplaneWindow, Bubble, GoogleIcon, KakaoIcon } from "../assets";
 import logoImg from "../assets/images/logo.png";
 import { login } from "../services/user";
+import { useRecoilState } from "recoil";
+import { userInfo } from "../store/userInfo";
+import { useNavigate } from "react-router-dom";
 declare global {
   interface Window {
     Kakao: any;
@@ -15,12 +18,32 @@ declare global {
 const { Kakao } = window;
 
 const SignInPage = () => {
+  const [user, setUser] = useRecoilState(userInfo);
+  const navigate = useNavigate();
+
   const handleKakoLogin = () => {
     Kakao.Auth.login({
       success: (auth: any) => {
         let accessToken = auth.access_token;
         login("KAKAO", accessToken)
-          .then((res) => console.log(res))
+          .then((res) => {
+            console.log(res);
+            if (res.data?.registrationToken) {
+              setUser({
+                ...userInfo,
+                name: res.data.nickName,
+                token: res.data.registrationToken,
+              });
+              navigate("/sign-up");
+            } else {
+              setUser({
+                ...userInfo,
+                name: res.data.nickName,
+                token: res.data.accessToken,
+              });
+              navigate("/experience");
+            }
+          })
           .catch((err) => console.log(err));
       },
       fail: (error: any) => {
@@ -46,7 +69,24 @@ const SignInPage = () => {
           .then((res) => {
             let accessToken = res.data.access_token;
             login("GOOGLE", accessToken)
-              .then((res) => console.log("성공", res))
+              .then((res) => {
+                console.log(res);
+                if (res.data?.registrationToken) {
+                  setUser({
+                    ...userInfo,
+                    name: res.data.nickName,
+                    token: res.data.registrationToken,
+                  });
+                  navigate("/sign-up");
+                } else {
+                  setUser({
+                    ...userInfo,
+                    name: res.data.nickName,
+                    token: res.data.accessToken,
+                  });
+                  navigate("/experience");
+                }
+              })
               .catch((err) => console.log(err));
           })
           .catch((err) => {
