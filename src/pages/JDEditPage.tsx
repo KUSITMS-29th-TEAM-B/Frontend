@@ -6,7 +6,7 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import ContentInput from "../components/JD/ContentInput";
 import Toggle from "../components/JD/Toggle";
-import { useRecoilState } from "recoil";
+import { selector, useRecoilState, useRecoilValue } from "recoil";
 import { detailStore } from "../store/jdStore";
 import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 import plusBtn from "../assets/icons/icon_plus_btn_question.svg";
@@ -14,9 +14,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import QuestionModal from "../components/JD/QuestionModal";
 import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
-import { jobDetails } from "../services/JD/jdData";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
+import { applypost } from "../services/jd";
+import { userInfo } from "../store/userInfo";
 
 const JDEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
@@ -34,11 +35,14 @@ const JDEditPage: React.FC = () => {
   const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
-  const jdId: number = parseInt(useParams().jdId!); //공고 id
+  const jdId: string = useParams().jdId!; //공고 id
 
   useEffect(() => {
-    console.log(jdId);
-  }, [jdId]);
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, []);
 
   //모든 질문이 다 채워졌는지 검사
   useEffect(() => {
@@ -67,6 +71,7 @@ const JDEditPage: React.FC = () => {
     }
   };
 
+  //자기소개서 문항 삭제시
   const closeModal = () => {
     setIsModalOpen(false);
     if (deleteIdx >= 0) {
@@ -76,6 +81,7 @@ const JDEditPage: React.FC = () => {
     document.body.style.overflow = "auto";
   };
 
+  //자기소개서 문항 삭제하지 않을 시
   const cancelModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = "auto";
@@ -122,12 +128,26 @@ const JDEditPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-  }, []);
+  //자기소개서 post api 요청
+  const handleApplyPost = async (
+    applyData: ApplyAPI[],
+    token: string,
+    jobId: string
+  ) => {
+    if (isAllFilled) {
+      setEditing(false);
+      try {
+        const response = await applypost(applyData, token, jobId);
+        console.log(response);
+        nav(`jd/${jdId}`);
+      } catch (error) {
+        console.error(error);
+        alert(JSON.stringify(error));
+      }
+    } else {
+      alert("모든 항목을 다 입력하세요.");
+    }
+  };
 
   //activecontainer 변경사항 있을 시 detailId 초기화
   useEffect(() => {
@@ -249,7 +269,7 @@ const JDEditPage: React.FC = () => {
                   {applyData.map((item, index) => (
                     <Answer key={index}>
                       <AnswerHeader>
-                        {`${index + 1}` + ". " + item.question}
+                        {`${index + 1}. ${item.question}`}
                       </AnswerHeader>
                       <AnswerContent>{item.answer}</AnswerContent>
                       <TextCountWrapper>
@@ -299,7 +319,7 @@ const JDEditPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId!} /> : null}
+                {jdId ? <JDContainer jdId={jdId} /> : null}
               </JobContainer>
             )}
           </ActiveContainer>
