@@ -7,7 +7,7 @@ import { AirplaneWindow, Bubble, GoogleIcon, KakaoIcon } from "../assets";
 import logoImg from "../assets/images/logo.png";
 import { login } from "../services/user";
 import { useRecoilState } from "recoil";
-import { userInfo } from "../store/userInfo";
+import { UserDataType, userInfo } from "../store/userInfo";
 import { useNavigate } from "react-router-dom";
 declare global {
   interface Window {
@@ -18,7 +18,7 @@ declare global {
 const { Kakao } = window;
 
 const SignInPage = () => {
-  const [user, setUser] = useRecoilState(userInfo);
+  const [user, setUser] = useRecoilState<UserDataType>(userInfo);
   const navigate = useNavigate();
 
   const handleKakoLogin = () => {
@@ -32,6 +32,7 @@ const SignInPage = () => {
               setUser({
                 ...userInfo,
                 name: res.data.nickName,
+                provider: "KAKAO",
                 token: res.data.registrationToken,
               });
               navigate("/sign-up");
@@ -39,6 +40,7 @@ const SignInPage = () => {
               setUser({
                 ...userInfo,
                 name: res.data.nickName,
+                provider: "KAKAO",
                 token: res.data.accessToken,
               });
               navigate("/experience");
@@ -75,6 +77,7 @@ const SignInPage = () => {
                   setUser({
                     ...userInfo,
                     name: res.data.nickName,
+                    provider: "GOOGLE",
                     token: res.data.registrationToken,
                   });
                   navigate("/sign-up");
@@ -82,6 +85,7 @@ const SignInPage = () => {
                   setUser({
                     ...userInfo,
                     name: res.data.nickName,
+                    provider: "GOOGLE",
                     token: res.data.accessToken,
                   });
                   navigate("/experience");

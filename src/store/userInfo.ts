@@ -5,7 +5,17 @@ import { atom } from "recoil";
 //     token: "",
 // }
 
-export const userInfo = atom<object>({
+export interface UserDataType {
+  name: string;
+  provider: string;
+  token: string;
+}
+
+export const userInfo = atom<UserDataType>({
   key: "userInfo",
-  default: {},
+  default: {
+    name: "",
+    provider: "",
+    token: "",
+  },
 });
