@@ -42,3 +42,12 @@ export type TagType = {
   mainTag: string;
   subTag: string[];
 };
+
+export type JobAPI = {
+  enterpriseName: string;
+  title: string;
+  content: string;
+  link: string;
+  startAt: Date;
+  endedAt: Date;
+};

@@ -90,29 +90,29 @@ const JDPlusPage: React.FC = () => {
   //   }, [selectedTime, startDate, endDate]);
 
   //api
-  const handleJDPost = async (
-    enterpriseName: string,
-    title: string,
-    content: string,
-    link: string,
-    startDate: Date,
-    endDate: Date
-  ) => {
-    try {
-      const response = await jobpost(
-        enterpriseName,
-        title,
-        content,
-        link,
-        startDate,
-        endDate
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
-  };
+  //   const handleJDPost = async (
+  //     enterpriseName: string,
+  //     title: string,
+  //     content: string,
+  //     link: string,
+  //     startDate: Date,
+  //     endDate: Date
+  //   ) => {
+  //     try {
+  //       const response = await jobpost(
+  //         enterpriseName,
+  //         title,
+  //         content,
+  //         link,
+  //         startDate,
+  //         endDate
+  //       );
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error(error);
+  //       alert(JSON.stringify(error));
+  //     }
+  //   };
 
   return (
     <StyledDivContainer className="page">
@@ -127,14 +127,14 @@ const JDPlusPage: React.FC = () => {
           <SaveButton
             onClick={() => {
               if (startDate && endDate) {
-                handleJDPost(
-                  enterpriseName,
-                  title,
-                  content,
-                  link,
-                  startDate,
-                  endDate
-                );
+                // handleJDPost(
+                //   enterpriseName,
+                //   title,
+                //   content,
+                //   link,
+                //   startDate,
+                //   endDate
+                // );
               } else {
                 alert("Start date and end date must be provided.");
               }
