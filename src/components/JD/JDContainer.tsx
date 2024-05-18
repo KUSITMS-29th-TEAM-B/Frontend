@@ -6,11 +6,11 @@ import calendarIcon from "../../assets/icons/icon_calendar.svg";
 import linkIcon from "../../assets/icons/icon_link.svg";
 
 interface JobContainerProps {
-  jdId: number;
+  jdId: string;
 }
 
 const JDContainer: React.FC<JobContainerProps> = ({ jdId }) => {
-  const jdData = jobDetails[jdId - 1]; // api data로 변경
+  const jdData = jobDetails[1]; // api data로 변경 , id를 통해 api 호출
 
   return (
     <JobContainer>

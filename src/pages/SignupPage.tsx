@@ -14,15 +14,33 @@ import { Popper } from "@mui/material";
 import Modal from "../components/common/Modal";
 import logoImg from "../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
+import { getUserInfo, register } from "../services/user";
+import { RegisterDataType } from "../types/user";
+import { getCookie, setCookie } from "../services/cookie";
+
+const profileImgUrl = [
+  "../assets/images/profile1.png",
+  "../assets/images/profile2.png",
+  "../assets/images/profile3.png",
+  "../assets/images/profile4.png",
+  "../assets/images/profile5.png",
+];
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = React.useState<number | null>(null);
-  const [nickname, setNickname] = React.useState("");
-  const [jobState, setJobState] = React.useState("");
-  const [jobs, setJobs] = React.useState("");
-  const [abilities, setAbilities] = React.useState("");
-  const [dreams, setDreams] = React.useState("");
+  const user = getCookie("user");
+
+  const [registerData, setRegisterData] = React.useState<RegisterDataType>({
+    registrationToken: user?.token,
+    profileImgUrl: "",
+    provider: user?.provider,
+    nickName: "",
+    jobSearchStatus: "",
+    desiredJob: "",
+    goal: "",
+    dream: "",
+  });
+
   const [isModalOpen, setIsModalOpen] = React.useState(false); // 저장 모달
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null); // 팝업 위치 관리
@@ -33,11 +51,9 @@ const SignupPage = () => {
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden";
   };
   const closeModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto";
   };
 
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,8 +62,24 @@ const SignupPage = () => {
   };
 
   const handleOptionClick = (item: string) => {
-    setJobState(item);
+    setRegisterData({ ...registerData, jobSearchStatus: item });
     setAnchorEl(null);
+  };
+
+  const handleRegister = () => {
+    register(registerData).then((res) => {
+      const token = res.data.accessToken;
+      getUserInfo(token)
+        .then((res) => {
+          setCookie("user", {
+            ...user,
+            nickName: res.data.nickName,
+            provider: res.data.provider,
+            token: token,
+          });
+        })
+        .then(() => openModal());
+    });
   };
 
   return (
@@ -61,53 +93,105 @@ const SignupPage = () => {
             </div>
             <div className="profile-list">
               <div
-                className={profile === 1 ? "active" : ""}
-                onClick={() => setProfile(1)}
+                className={
+                  registerData.profileImgUrl === profileImgUrl[0]
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setRegisterData({
+                    ...registerData,
+                    profileImgUrl: profileImgUrl[0],
+                  })
+                }
               >
                 <img src={profile1} alt="profile1" />
               </div>
               <div
-                className={profile === 2 ? "active" : ""}
-                onClick={() => setProfile(2)}
+                className={
+                  registerData.profileImgUrl === profileImgUrl[1]
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setRegisterData({
+                    ...registerData,
+                    profileImgUrl: profileImgUrl[1],
+                  })
+                }
               >
                 <img src={profile2} alt="profile2" />
               </div>
               <div
-                className={profile === 3 ? "active" : ""}
-                onClick={() => setProfile(3)}
+                className={
+                  registerData.profileImgUrl === profileImgUrl[2]
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setRegisterData({
+                    ...registerData,
+                    profileImgUrl: profileImgUrl[2],
+                  })
+                }
               >
                 <img src={profile3} alt="profile3" />
               </div>
               <div
-                className={profile === 4 ? "active" : ""}
-                onClick={() => setProfile(4)}
+                className={
+                  registerData.profileImgUrl === profileImgUrl[3]
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setRegisterData({
+                    ...registerData,
+                    profileImgUrl: profileImgUrl[3],
+                  })
+                }
               >
                 <img src={profile4} alt="profile4" />
               </div>
               <div
-                className={profile === 5 ? "active" : ""}
-                onClick={() => setProfile(5)}
+                className={
+                  registerData.profileImgUrl === profileImgUrl[4]
+                    ? "active"
+                    : ""
+                }
+                onClick={() =>
+                  setRegisterData({
+                    ...registerData,
+                    profileImgUrl: profileImgUrl[4],
+                  })
+                }
               >
                 <img src={profile5} alt="profile5" />
               </div>
             </div>
           </ProfileFormContainer>
           <Input
-            value={nickname}
+            value={registerData.nickName}
             label="닉네임을 입력하세요."
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={true}
             placeholder="닉네임 (한글, 영문 10자까지)"
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, nickName: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <Input
-            value={jobState}
+            value={registerData.jobSearchStatus}
             label="현재 구직 활동 중이신가요?"
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             placeholder="선택해주세요"
             required={false}
-            onChange={(e) => setJobState(e.target.value)}
+            onChange={(e) =>
+              setRegisterData({
+                ...registerData,
+                jobSearchStatus: e.target.value,
+              })
+            }
             onClick={handleTagPopper}
             readOnly
             style={{ background: theme.colors.neutral100 }}
@@ -135,32 +219,38 @@ const SignupPage = () => {
           </Popper>
 
           <Input
-            value={jobs}
+            value={registerData.desiredJob}
             label="희망하고 있는 직무를 입력해주세요."
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
             placeholder="직무 (50자까지)"
-            onChange={(e) => setJobs(e.target.value)}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, desiredJob: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <Textarea
-            value={abilities}
+            value={registerData.goal}
             label="어떤 역량을 더 발전시키고 싶은가요?"
             helperText="자신의 강점, 약점을 적고 어떤 역량을 더 발전시키고 싶은지 작성해보세요."
             rows={10}
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
-            onChange={(e) => setAbilities(e.target.value)}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, goal: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <Textarea
-            value={dreams}
+            value={registerData.dream}
             label="어떤 꿈을 가지고 있으신가요?"
             helperText="평소에 가지고 있던 ‘꿈'에 대한 생각을 자유롭게 작성해주셔도 좋아요."
             rows={10}
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
-            onChange={(e) => setDreams(e.target.value)}
+            onChange={(e) =>
+              setRegisterData({ ...registerData, dream: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <MainButton
@@ -168,7 +258,7 @@ const SignupPage = () => {
               borderRadius: "8px",
               background: theme.colors.neutral500,
             }}
-            onClick={openModal}
+            onClick={handleRegister}
           >
             플라잇 시작하기
           </MainButton>

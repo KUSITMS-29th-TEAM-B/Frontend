@@ -13,7 +13,10 @@ import { ArrowDownThin, ArrowUpThin, Options } from "../../assets";
 import { Popper } from "@mui/material";
 import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
-import KeyWordCheckbox from "./KeywordCheck";
+import { myKeywords } from "../../services/Experience/myKeywords";
+import Checkbox from "../common/Checkbox";
+
+type TabType = "basic" | "my";
 
 interface ExperienceListProps {
   showBookmarksOnly: boolean;
@@ -31,34 +34,62 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
   const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
   const [filterCount, setfilterCount] = useState<number>(-1); //검색된 경험의 숫자, 검색 안된 상태에서는 -1
-  const filteredData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
+  const bookmarkData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
+  const [keywordTabOption, setKeywordTabOption] =
+    React.useState<TabType>("basic");
 
-  // 역량 키워드
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [strongKeyword, setStrongKeyword] = useState<string[]>([]); // 선택된 keyword 목록
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const postsPerPage = 9;
-  const firstPostIndex = (currentPage - 1) * postsPerPage;
-  const lastPostIndex = firstPostIndex + postsPerPage;
-  const currentPosts = basicKeywords.slice(firstPostIndex, lastPostIndex);
+
+  // 기본 역량 키워드 페이지네이션
+  const keywordsPerPage = 9;
+  const [currentBasicKeywordPage, setCurrentBasicKeywordPage] =
+    React.useState(1);
+  const firstBasicKeywordIndex =
+    (currentBasicKeywordPage - 1) * keywordsPerPage;
+  const lastBasicKeywordIndex = firstBasicKeywordIndex + keywordsPerPage;
+  const currentBasicKeywords = basicKeywords.slice(
+    firstBasicKeywordIndex,
+    lastBasicKeywordIndex
+  );
+  // My 역량 키워드 페이지네이션
+  const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
+  const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
+  const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
+  const currentMyKeywords = myKeywords.slice(
+    firstMyKeywordIndex,
+    lastMyKeywordIndex
+  );
+
+  // 체크된 역량 키워드 리스트
+  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
+
+  // 키워드 체크박스 관리 함수
+  const handleCheckedKeywords = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target) {
+      e.target.checked
+        ? setCheckedKeywords([...checkedKeywords, e.target.value])
+        : setCheckedKeywords(
+            checkedKeywords.filter((choice) => choice !== e.target.value)
+          );
+    }
+  };
+
   // 역량 키워드 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  // 체크박스 변경 핸들러
-  const handleCheckboxChange = (item: string) => {
-    if (strongKeyword.includes(item)) {
-      setStrongKeyword(strongKeyword.filter((keyword) => keyword !== item));
-    } else {
-      setStrongKeyword([...strongKeyword, item]);
-    }
-  };
+  // 역량 키워드 필터된 경험 데이터, 북마크
+  const filteredExpData = ExpData.filter((item) =>
+    item.tags.some((tag) => checkedKeywords.includes(tag))
+  );
+  const filteredbookedData = bookmarkData.filter((item) =>
+    item.tags.some((tag) => checkedKeywords.includes(tag))
+  );
 
-  const isChecked = (item: string) => strongKeyword.includes(item);
-
+  //상위태그 하위태그 필터링
   const handleTagSelection = (
     selectedmainTag: string,
     selectedsubTag?: string
@@ -137,9 +168,12 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   총 <p>{filterCount}</p>개의 검색 결과가 있습니다
                 </FilteredTextWrapper>
               )}
-              <KeywordSelect isSelected={strongKeyword.length > 0}>
+              {/* 역량 키워드 선택 컨테이너 */}
+              <KeywordSelect>
                 <Options /> 역량 키워드
-                {strongKeyword.length > 0 && `(${strongKeyword.length})`}
+                <div className="keyword-count">
+                  {checkedKeywords.length > 0 && `(${checkedKeywords.length})`}
+                </div>
                 <button aria-describedby={id} onClick={handleTagPopper}>
                   {open ? <ArrowUpThin /> : <ArrowDownThin />}
                 </button>
@@ -147,15 +181,42 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   <TagPopperBox>
                     <div className="top-container">
                       <div className="tab-list">
-                        <div className="tab-item">기본</div>
-                        <div className="tab-item">MY</div>
+                        <div
+                          className={
+                            keywordTabOption === "basic"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("basic")}
+                        >
+                          기본
+                        </div>
+                        <div
+                          className={
+                            keywordTabOption === "my"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("my")}
+                        >
+                          MY
+                        </div>
                       </div>
-                      <PopperPagination
-                        postsNum={basicKeywords.length}
-                        postsPerPage={postsPerPage}
-                        setCurrentPage={setCurrentPage}
-                        currentPage={currentPage}
-                      />
+                      {keywordTabOption === "basic" ? (
+                        <PopperPagination
+                          postsNum={basicKeywords.length}
+                          postsPerPage={keywordsPerPage}
+                          setCurrentPage={setCurrentBasicKeywordPage}
+                          currentPage={currentBasicKeywordPage}
+                        />
+                      ) : (
+                        <PopperPagination
+                          postsNum={myKeywords.length}
+                          postsPerPage={keywordsPerPage}
+                          setCurrentPage={setCurrentMyKeywordPage}
+                          currentPage={currentMyKeywordPage}
+                        />
+                      )}
                     </div>
                     <div
                       className="checkbox-list"
@@ -165,18 +226,33 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                         gridTemplateColumns: "repeat(3, 1fr)",
                       }}
                     >
-                      {currentPosts.map((item) => (
-                        <KeyWordCheckbox
-                          label={item}
-                          checked={isChecked(item)}
-                          onChange={handleCheckboxChange}
-                        />
-                      ))}
+                      {keywordTabOption === "basic"
+                        ? currentBasicKeywords.map((item) => (
+                            <Checkbox
+                              value={item}
+                              label={item}
+                              checked={checkedKeywords.includes(item)}
+                              onChange={handleCheckedKeywords}
+                            />
+                          ))
+                        : currentMyKeywords.map((item) => (
+                            <Checkbox
+                              value={item}
+                              label={item}
+                              checked={checkedKeywords.includes(item)}
+                              onChange={handleCheckedKeywords}
+                            />
+                          ))}
                     </div>
                     <div className="checkbox-num">
                       총&nbsp;
-                      <div className="accent">{basicKeywords.length}개</div>의
-                      결과가 표시돼요
+                      <div className="accent">
+                        {checkedKeywords.length === 0
+                          ? ExpData.length
+                          : filteredExpData.length}
+                        개
+                      </div>
+                      의 결과가 표시돼요
                     </div>
                   </TagPopperBox>
                 </Popper>
@@ -186,24 +262,30 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
           {selectedTab === "경험검색" ? (
             <>
               <ScrollDiv>
-                {ExpData.map((post, index: number) => (
-                  <Experience
-                    id={post.id}
-                    key={index}
-                    title={post.title}
-                    tags={post.tags}
-                    maintag={post.mainTag}
-                    subtag={post.subTag}
-                    period={post.period}
-                    bookmark={post.bookmark}
-                    onClick={() => setshowDetail(true)}
-                  />
-                ))}
+                {(checkedKeywords.length === 0 ? ExpData : filteredExpData).map(
+                  (post, index: number) => (
+                    <Experience
+                      id={post.id}
+                      key={index}
+                      title={post.title}
+                      maintag={post.mainTag}
+                      subtag={post.subTag}
+                      tags={post.tags}
+                      period={post.period}
+                      bookmark={post.bookmark}
+                      checkedKeywords={checkedKeywords}
+                      onClick={() => setshowDetail(true)}
+                    />
+                  )
+                )}
               </ScrollDiv>
             </>
           ) : (
             <ScrollDiv>
-              {filteredData.map((post, index: number) => (
+              {(checkedKeywords.length === 0
+                ? bookmarkData
+                : filteredbookedData
+              ).map((post, index: number) => (
                 <Experience
                   id={post.id}
                   key={index}
@@ -213,6 +295,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   tags={post.tags}
                   period={post.period}
                   bookmark={post.bookmark}
+                  checkedKeywords={checkedKeywords}
                   onClick={() => setshowDetail(true)}
                 />
               ))}
@@ -396,7 +479,7 @@ const ScrollDiv = styled.div`
   }
 `;
 
-const KeywordSelect = styled.div<{ isSelected: boolean }>`
+const KeywordSelect = styled.div`
   ${(props) => props.theme.fonts.cap1};
   color: ${(props) => props.theme.colors.neutral600};
   width: 100%;
@@ -407,6 +490,9 @@ const KeywordSelect = styled.div<{ isSelected: boolean }>`
   button {
     border: none;
     background: none;
+  }
+  .keyword-count {
+    color: ${(props) => props.theme.colors.main500};
   }
 `;
 
