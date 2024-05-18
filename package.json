@@ -63,5 +63,6 @@
     "@types/d3": "^7.4.3",
     "@types/react-datepicker": "^6.2.0",
     "eslint": "^8.57.0"
-  }
+  },
+  "proxy": "https://isprogrammingfun.site"
 }
