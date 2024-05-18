@@ -27,7 +27,7 @@ const SignInPage = () => {
         let accessToken = auth.access_token;
         login("KAKAO", accessToken)
           .then((res) => {
-            console.log(res);
+            console.log("카카오", res);
             if (res.data?.registrationToken) {
               setUser({
                 ...userInfo,
@@ -70,7 +70,7 @@ const SignInPage = () => {
             let accessToken = res.data.access_token;
             login("GOOGLE", accessToken)
               .then((res) => {
-                console.log(res);
+                console.log("구글", res);
                 if (res.data?.registrationToken) {
                   setUser({
                     ...userInfo,

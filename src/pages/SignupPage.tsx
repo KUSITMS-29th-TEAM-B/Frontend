@@ -14,9 +14,12 @@ import { Popper } from "@mui/material";
 import Modal from "../components/common/Modal";
 import logoImg from "../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
+import { userInfo } from "../store/userInfo";
+import { useRecoilState } from "recoil";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useRecoilState(userInfo);
   const [profile, setProfile] = React.useState<number | null>(null);
   const [nickname, setNickname] = React.useState("");
   const [jobState, setJobState] = React.useState("");
