@@ -8,17 +8,26 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
 import { jobpost } from "../services/jd";
+import { useRecoilState } from "recoil";
+import { UserDataType, userInfo } from "../store/userInfo";
+import { JobAPI } from "../types/type";
 
 const JDPlusPage: React.FC = () => {
-  const [title, setTitle] = useState("");
-  const [enterpriseName, setEnterpriseName] = useState("");
-  const [content, setContent] = useState("");
-  const [link, setLink] = useState("");
   const [selectedTime, setSelectedTime] = useState<string>("10:00");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
+  const [user, setUser] = useRecoilState<UserDataType>(userInfo);
+  const [jobData, setJobData] = useState<JobAPI>({
+    title: "",
+    enterpriseName: "",
+    content: "",
+    link: "",
+    startAt: new Date(),
+    endedAt: new Date(),
+  });
+  console.log(user.token);
 
   useEffect(() => {
     window.scrollTo({
@@ -76,11 +85,8 @@ const JDPlusPage: React.FC = () => {
     }
   };
 
-  //저장시에도 따로 기간 확인 진행하기.
-
   const handleEditorChange = (newContent: string) => {
-    console.log("Content was updated:", newContent);
-    setContent(newContent);
+    setJobData({ ...jobData, content: newContent });
   };
 
   //   useEffect(() => {
@@ -90,29 +96,26 @@ const JDPlusPage: React.FC = () => {
   //   }, [selectedTime, startDate, endDate]);
 
   //api
-  //   const handleJDPost = async (
-  //     enterpriseName: string,
-  //     title: string,
-  //     content: string,
-  //     link: string,
-  //     startDate: Date,
-  //     endDate: Date
-  //   ) => {
-  //     try {
-  //       const response = await jobpost(
-  //         enterpriseName,
-  //         title,
-  //         content,
-  //         link,
-  //         startDate,
-  //         endDate
-  //       );
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.error(error);
-  //       alert(JSON.stringify(error));
-  //     }
-  //   };
+  const handleJDPost = async (job: JobAPI, token: string) => {
+    try {
+      const response = await jobpost(
+        {
+          enterpriseName: job.enterpriseName,
+          title: job.title,
+          content: job.content,
+          link: job.link,
+          startAt: job.startAt,
+          endedAt: job.startAt,
+        },
+        user.token
+      );
+      console.log(response);
+      nav("/jd");
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
 
   return (
     <StyledDivContainer className="page">
@@ -127,14 +130,12 @@ const JDPlusPage: React.FC = () => {
           <SaveButton
             onClick={() => {
               if (startDate && endDate) {
-                // handleJDPost(
-                //   enterpriseName,
-                //   title,
-                //   content,
-                //   link,
-                //   startDate,
-                //   endDate
-                // );
+                setJobData({
+                  ...jobData,
+                  startAt: startDate,
+                  endedAt: endDate,
+                });
+                handleJDPost(jobData, user.token);
               } else {
                 alert("Start date and end date must be provided.");
               }
@@ -150,15 +151,25 @@ const JDPlusPage: React.FC = () => {
             <InputContainer>
               <InputTitle>기업명</InputTitle>
               <InputBox
-                value={enterpriseName}
-                onChange={(e) => setEnterpriseName(e.target.value)}
+                value={jobData.enterpriseName}
+                onChange={(e) =>
+                  setJobData({
+                    ...jobData,
+                    enterpriseName: e.target.value,
+                  })
+                }
               />
             </InputContainer>
             <InputContainer>
               <InputTitle>제목</InputTitle>
               <InputBox
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={jobData.title}
+                onChange={(e) =>
+                  setJobData({
+                    ...jobData,
+                    title: e.target.value,
+                  })
+                }
               />
             </InputContainer>
           </LeftTitleContainer>
@@ -203,15 +214,20 @@ const JDPlusPage: React.FC = () => {
             <InputContainer>
               <InputTitle>링크</InputTitle>
               <InputBox
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
+                value={jobData.link}
+                onChange={(e) =>
+                  setJobData({
+                    ...jobData,
+                    link: e.target.value,
+                  })
+                }
               />
             </InputContainer>
           </RightTitleContainer>
         </TopContainer>
         <ContentContainer>
           <BundleEditor
-            content={content}
+            content={jobData.content}
             onContentChange={handleEditorChange}
           ></BundleEditor>
         </ContentContainer>
