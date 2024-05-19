@@ -5,6 +5,7 @@ import overview from "../assets/images/image_info_overview.png";
 import banner from "../assets/images/image_flight_banner.png";
 import info_bg from "../assets/images/image_info_bg.png";
 import Footer from "../components/common/Footer";
+import StyledSubContainer from "../components/Info/SubContainer";
 
 const InfoPage = () => {
   return (
@@ -16,12 +17,7 @@ const InfoPage = () => {
       </MainContainer>
       <MainContainer>
         <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
-        <SubContainer>
-          <div className="subbox_exp">ss</div>
-        </SubContainer>
-        <SubContainer>
-          <div className="subbox_jd">ss</div>
-        </SubContainer>
+        <StyledSubContainer />
       </MainContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
@@ -78,27 +74,13 @@ const MainContainer = styled.div`
     }
 `;
 
-const SubContainer = styled.div`
-    width: 100%;
-    .subbox_exp{
-        position: absolute;
-        top: 24%;
-        left: 12%;
-        width: 35%;
-        height: 60%;
-        border-radius: 1.5rem;
-        background: var(--icon-color, #FFF);
-    }
-    .subbox_jd{
-        position: absolute;
-        top: 24%;
-        right: 12%;
-        width: 35%;
-        height: 60%;
-        border-radius: 1.5rem;
-        background: var(--icon-color, #FFF);
-    }
+const StepContainer = styled.div`
 `;
 
-const StepContainer = styled.div`
+const MotionContainer = styled.div`
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    top: 0;
 `;
