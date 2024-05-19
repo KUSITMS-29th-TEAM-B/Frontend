@@ -4,6 +4,7 @@ import filghtImage_2 from "../assets/images/image_flight_main_banner.png";
 import overview from "../assets/images/image_info_overview.png";
 import banner from "../assets/images/image_flight_banner.png";
 import info_bg from "../assets/images/image_info_bg.png";
+import info_bg2 from "../assets/images/image_info_bg.png";
 import Footer from "../components/common/Footer";
 import StyledSubContainer from "../components/Info/SubContainer";
 import Filghtbackground from "../assets/images/image_flight_main_info.png";
@@ -24,8 +25,8 @@ const InfoPage = () => {
         <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
         <StyledSubContainer />
       </MainContainer>
-      {/* <TextContainer direction="right">슬라이드될 내용이 들어감</TextContainer>
-      <TextContainer direction="left">슬라이드될 내용이 들어감</TextContainer> */}
+      <TextContainer direction="right">슬라이드될 내용이 들어감</TextContainer>
+      <TextContainer direction="left">슬라이드될 내용이 들어감</TextContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
       </div>

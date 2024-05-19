@@ -19,10 +19,7 @@ const TextContainer: React.FC<SlideTextProps> = ({
   const initialX = direction === "right" ? 100 : -100;
 
   return (
-    <div
-      className="container"
-      style={{ display: "flex", alignItems: "center" }}
-    >
+    <div className="container" style={{ display: "flex" }}>
       <motion.div
         ref={ref}
         initial={{ x: initialX, opacity: 0 }}
