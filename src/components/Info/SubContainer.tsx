@@ -76,9 +76,10 @@ const SubContainer = styled.div`
         display: flex;
         flex-direction: column;
         padding: 4rem 4.5rem;
-        top: 24%;
+        top: 25%;
         left: 12%;
         width: 35%;     
+        height: 65%;
         border-radius: 1.5rem;
         background: var(--icon-color, #FFF);
         img {
@@ -91,9 +92,10 @@ const SubContainer = styled.div`
         display: flex;
         flex-direction: column;
         padding: 4rem 4.5rem;
-        top: 24%;
+        top: 25%;
         right: 12%;
         width: 35%;
+        height: 65%;
         border-radius: 1.5rem;
         background: var(--icon-color, #FFF);
         img {

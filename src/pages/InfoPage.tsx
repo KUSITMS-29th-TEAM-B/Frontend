@@ -27,6 +27,8 @@ const InfoPage = () => {
       </MainContainer>
       <TextContainer direction="right">슬라이드될 내용이 들어감</TextContainer>
       <TextContainer direction="left">슬라이드될 내용이 들어감</TextContainer>
+      <TextContainer direction="up">슬라이드될 내용이 들어감</TextContainer>
+      <TextContainer direction="down">슬라이드될 내용이 들어감</TextContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
       </div>
