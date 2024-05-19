@@ -458,14 +458,16 @@ const ExperienceEditPage = () => {
                             options={currentPrimeTags}
                             onChange={handlePrimeRadioChange}
                           />
-                          <div className="pagination">
-                            <PopperPagination
-                              postsNum={primeTagList.length}
-                              postsPerPage={tagsPerPage}
-                              setCurrentPage={setCurrentPrimeTagPage}
-                              currentPage={currentPrimeTagPage}
-                            />
-                          </div>
+                          {primeTagList.length !== 0 && (
+                            <div className="pagination">
+                              <PopperPagination
+                                postsNum={primeTagList.length}
+                                postsPerPage={tagsPerPage}
+                                setCurrentPage={setCurrentPrimeTagPage}
+                                currentPage={currentPrimeTagPage}
+                              />
+                            </div>
+                          )}
                         </>
                       ) : (
                         <>
@@ -475,14 +477,16 @@ const ExperienceEditPage = () => {
                             options={currentSubTags}
                             onChange={handleSubRadioChange}
                           />
-                          <div className="pagination">
-                            <PopperPagination
-                              postsNum={subTagList.length}
-                              postsPerPage={tagsPerPage}
-                              setCurrentPage={setCurrentSubTagPage}
-                              currentPage={currentSubTagPage}
-                            />
-                          </div>
+                          {subTagList.length !== 0 && (
+                            <div className="pagination">
+                              <PopperPagination
+                                postsNum={subTagList.length}
+                                postsPerPage={tagsPerPage}
+                                setCurrentPage={setCurrentSubTagPage}
+                                currentPage={currentSubTagPage}
+                              />
+                            </div>
+                          )}
                         </>
                       )}
                     </TagPopperBox>
@@ -578,12 +582,14 @@ const ExperienceEditPage = () => {
                         currentPage={currentBasicKeywordPage}
                       />
                     ) : (
-                      <PopperPagination
-                        postsNum={myKeywords.length}
-                        postsPerPage={keywordsPerPage}
-                        setCurrentPage={setCurrentMyKeywordPage}
-                        currentPage={currentMyKeywordPage}
-                      />
+                      myKeywordList.length !== 0 && (
+                        <PopperPagination
+                          postsNum={myKeywordList.length}
+                          postsPerPage={keywordsPerPage}
+                          setCurrentPage={setCurrentMyKeywordPage}
+                          currentPage={currentMyKeywordPage}
+                        />
+                      )
                     )}
                   </div>
                   {keywordTabOption === "basic" ? (
