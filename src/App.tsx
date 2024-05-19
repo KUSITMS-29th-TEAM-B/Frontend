@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import PrivateRoute from "./services/router/PrivateRoute";
 import InfoPage from "./pages/InfoPage";
+import JDWritePage from "./pages/JDWritePage";
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,9 @@ const App: React.FC = () => {
         </Route>
         <Route element={<PrivateRoute />} path="/">
           <Route path="/jd/edit/:jdId" element={<JDEditPage />} />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd/:jdId" element={<JDWritePage />} />
         </Route>
         <Route element={<PrivateRoute />} path="/">
           <Route path="/jd/post" element={<JDPlusPage />} />

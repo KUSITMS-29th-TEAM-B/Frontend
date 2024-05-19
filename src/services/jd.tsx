@@ -69,3 +69,11 @@ export const applypost = async (
     }
   );
 };
+
+export const applyget = async (jobId: string, token: string) => {
+  return await client.get(`/api/job-description/apply/${jobId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

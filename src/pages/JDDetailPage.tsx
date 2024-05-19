@@ -49,6 +49,14 @@ const JDDetailPage: React.FC = () => {
     }
   };
 
+  const handleNavigate = () => {
+    if (firstTime) {
+      nav(`/jd/${jdId}`);
+    } else {
+      nav(`/jd/edit/${jdId}`);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -112,7 +120,7 @@ const JDDetailPage: React.FC = () => {
                 <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
                 공고 상세
               </Title>
-              <TopButton onClick={() => nav(`/jd/edit/${jdId}`)}>
+              <TopButton onClick={handleNavigate}>
                 <TopButtonText>
                   {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
                   <img src={arrowIcon} alt="icon" />
