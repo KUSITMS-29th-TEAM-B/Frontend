@@ -21,16 +21,46 @@ import Modal from "../components/common/Modal";
 import airplaneImg from "../assets/images/airplane.png";
 import Tag from "../components/common/Tag";
 import RadioGroup from "../components/common/RadioGroup";
-import { primeTags } from "../services/Experience/tagsData";
+import { myKeywords } from "../services/Experience/myKeywords";
+import { postExperience } from "../services/Experience/experienceApi";
+import { ExperienceType, KeywordType, TagType } from "../types/experience";
+import { getKeywords, postKeyword } from "../services/Experience/keywordApi";
+import { getCookie } from "../services/cookie";
+import {
+  getPrimeTags,
+  getSubTags,
+  postPrimeTag,
+  postSubTag,
+} from "../services/Experience/tagApi";
 
 type TabType = "basic" | "my";
 type TagPopperType = "prime" | "sub" | null;
 
 const ExperienceWritePage = () => {
+  const user = getCookie("user");
   const theme = useTheme();
   const navigate = useNavigate();
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [endDate, setEndDate] = React.useState(new Date());
+  const [expId, setExpId] = React.useState("");
+  const [expData, setExpData] = React.useState<ExperienceType>({
+    title: "",
+    parentTagId: "",
+    childTagId: "",
+    strongPointIds: [],
+    contents: questions.map((item) => ({
+      question: item.question,
+      answer: "",
+    })),
+    startedAt: new Date().toISOString(),
+    endedAt: new Date().toISOString(),
+  });
+  const [primeTagItem, setPrimeTagItem] = React.useState<TagType>({
+    id: "",
+    name: "",
+  });
+  const [subTagItem, setSubTagItem] = React.useState<TagType>({
+    id: "",
+    name: "",
+  });
   // 저장 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -41,12 +71,16 @@ const ExperienceWritePage = () => {
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const [newTag, setNewTag] = React.useState("");
-  const [primeTagList, setPrimeTagList] = React.useState(primeTags);
-  const [primeTag, setPrimeTag] = React.useState("");
-  const [subTagList, setSubTagList] = React.useState(primeTags);
-  const [subTag, setSubTag] = React.useState("");
-  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
-  const [newKeywords, setNewKeywords] = React.useState("");
+  const [primeTagList, setPrimeTagList] = React.useState<TagType[]>([]);
+  const [subTagList, setSubTagList] = React.useState<TagType[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = React.useState<KeywordType[]>(
+    []
+  );
+  const [newKeyword, setNewKeyword] = React.useState("");
+  const [myKeywordList, setMyKeywordList] = React.useState<KeywordType[]>([]);
+  // 키워드 아코디언 관리
+  const [expanded, setExpanded] = React.useState(false);
+  const [resultKeywords, setResultKeywords] = React.useState<KeywordType[]>([]);
 
   // 상위 태그 페이지네이션
   const tagsPerPage = 9;
@@ -57,31 +91,138 @@ const ExperienceWritePage = () => {
     firstPrimeTagIndex,
     lastPrimeTagIndex
   );
+
   // 하위 태그 페이지네이션
   const [currentSubTagPage, setCurrentSubTagPage] = React.useState(1);
   const firstSubTagIndex = (currentSubTagPage - 1) * tagsPerPage;
   const lastSubTagIndex = firstSubTagIndex + tagsPerPage;
   const currentSubTags = subTagList.slice(firstSubTagIndex, lastSubTagIndex);
 
-  // 키워드 선택 페이지네이션
-  const [currentKeywordPage, setCurrentKeywordPage] = React.useState(1);
+  // 기본 키워드 선택 페이지네이션
   const keywordsPerPage = 12;
-  const firstKeywordIndex = (currentKeywordPage - 1) * keywordsPerPage;
-  const lastKeywordIndex = firstKeywordIndex + keywordsPerPage;
-  const currentKeywords = basicKeywords.slice(
-    firstKeywordIndex,
-    lastKeywordIndex
+  const [currentBasicKeywordPage, setCurrentBasicKeywordPage] =
+    React.useState(1);
+  const firstBasicKeywordIndex =
+    (currentBasicKeywordPage - 1) * keywordsPerPage;
+  const lastBasicKeywordIndex = firstBasicKeywordIndex + keywordsPerPage;
+  const currentBasicKeywords = basicKeywords.slice(
+    firstBasicKeywordIndex,
+    lastBasicKeywordIndex
+  );
+  // My 키워드 선택 페이지네이션
+  const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
+  const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
+  const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
+  const currentMyKeywords = myKeywordList.slice(
+    firstMyKeywordIndex,
+    lastMyKeywordIndex
   );
 
+  const handleSaveExperience = async () => {
+    let experienceData = { ...expData };
+    // 상위 태그 생성 후 하위 태그 생성한 경우
+    if (primeTagItem.id === primeTagItem.name) {
+      const primeTagRes = await postPrimeTag(primeTagItem.name, user?.token);
+      const primeTagId = primeTagRes.data.id;
+
+      const subTagRes = await postSubTag(
+        primeTagId,
+        subTagItem.name,
+        user?.token
+      );
+      const subTagId = subTagRes.data.id;
+
+      experienceData = {
+        ...expData,
+        parentTagId: primeTagId,
+        childTagId: subTagId,
+      };
+    }
+    // 하위 태그만 생성한 경우
+    else if (subTagItem.id === subTagItem.name) {
+      const subTagRes = await postSubTag(
+        primeTagItem.id,
+        subTagItem.name,
+        user?.token
+      );
+      const subTagId = subTagRes.data.id;
+      experienceData = {
+        ...expData,
+        childTagId: subTagId,
+      };
+    }
+    // 새로운 역량 키워드 있을 경우
+    const newKeywordsNames = checkedKeywords
+      .filter((item) => item.id === item.name)
+      .map((item) => ({ name: item.name }));
+    if (newKeywordsNames.length !== 0) {
+      const originStrongPointIds = checkedKeywords
+        .filter((item) => item.id !== item.name)
+        .map((item) => item.id);
+
+      const newStrongPointsRes = await postKeyword(
+        newKeywordsNames,
+        user?.token
+      );
+      const newStrongPointIds = newStrongPointsRes.data.map(
+        (item: KeywordType) => item.id
+      );
+      const totalStrongPointIds = [
+        ...originStrongPointIds,
+        ...newStrongPointIds,
+      ];
+      experienceData = {
+        ...expData,
+        strongPointIds: totalStrongPointIds,
+      };
+    }
+    // 질문 저장
+    postExperience(experienceData, user?.token)
+      .then((res) => {
+        setExpId(res.data.id);
+        openModal();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // 질문 답변 핸들러
+  const handleAnswerChange = (index: number, value: string) => {
+    const newContents = [...expData.contents];
+    newContents[index] = { ...newContents[index], answer: value };
+    setExpData({ ...expData, contents: newContents });
+  };
+
   // 상위 태그 라디오 버튼 클릭 함수
-  const handlePrimeRadioChange = (item: string) => {
-    setPrimeTag(item);
+  const handlePrimeRadioChange = (item: TagType) => {
+    // 기존 상위 태그 선택한 경우
+    if (item.id !== item.name) {
+      setPrimeTagItem(item);
+      setExpData({ ...expData, parentTagId: item.id });
+      getSubTags(item.id, user?.token).then((res) => {
+        setSubTagList(res.data.tags);
+      });
+    }
+    // 새로 생성한 상위 태그 선택한 경우
+    else {
+      setPrimeTagItem(item);
+      setExpData({ ...expData, parentTagId: "" });
+      setSubTagList([]);
+    }
     setPopperInfo(null);
   };
 
   // 하위 태그 라디오 버튼 클릭 함수
-  const handleSubRadioChange = (item: string) => {
-    setSubTag(item);
+  const handleSubRadioChange = (item: TagType) => {
+    // 기존 하위 태그 선택한 경우
+    if (item.id !== item.name) {
+      setSubTagItem(item);
+      setExpData({ ...expData, childTagId: item.id });
+    }
+    // 새로 생성한 하위 태그 선택한 경우
+    else {
+      setSubTagItem(item);
+      setExpData({ ...expData, childTagId: "" });
+    }
     setPopperInfo(null);
   };
 
@@ -89,25 +230,27 @@ const ExperienceWritePage = () => {
   const handleTagSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       if (popperInfo === "prime") {
-        if (primeTagList.includes(newTag)) {
-          const tagIndex = primeTagList.indexOf(newTag);
+        const primeTagNames = primeTagList.map((item) => item.name);
+        if (primeTagNames.includes(newTag)) {
+          const tagIndex = primeTagNames.indexOf(newTag);
           const primeTagPage =
             Math.floor((tagIndex + 1) / (tagsPerPage + 1)) + 1;
           setCurrentPrimeTagPage(primeTagPage);
         } else {
-          setPrimeTagList([...primeTagList, newTag]);
+          setPrimeTagList([...primeTagList, { id: newTag, name: newTag }]);
           const lastPrimePage =
             Math.floor((primeTagList.length + 1) / (tagsPerPage + 1)) + 1;
           setCurrentPrimeTagPage(lastPrimePage);
         }
       }
       if (popperInfo === "sub") {
-        if (primeTagList.includes(newTag)) {
-          const tagIndex = subTagList.indexOf(newTag);
+        const subTagNames = subTagList.map((item) => item.name);
+        if (subTagNames.includes(newTag)) {
+          const tagIndex = subTagNames.indexOf(newTag);
           const subTagPage = Math.floor((tagIndex + 1) / (tagsPerPage + 1)) + 1;
           setCurrentSubTagPage(subTagPage);
         } else {
-          setSubTagList([...subTagList, newTag]);
+          setSubTagList([...subTagList, { id: newTag, name: newTag }]);
           const lastSubPage =
             Math.floor((subTagList.length + 1) / tagsPerPage) + 1;
           setCurrentSubTagPage(lastSubPage);
@@ -117,28 +260,68 @@ const ExperienceWritePage = () => {
     }
   };
 
-  // 기본 키워드 체크박스 관리 함수
-  const handleBasicKeyword = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 키워드 체크박스 체크 여부
+  const isKeywordChecked = (item: KeywordType) => {
+    return checkedKeywords.some(
+      (keyword) => keyword.id === item.id && keyword.name === item.name
+    );
+  };
+
+  // 키워드 체크박스 핸들러
+  const handleKeywordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: TabType
+  ) => {
     if (e.target) {
-      e.target.checked
-        ? setCheckedKeywords([...checkedKeywords, e.target.value])
-        : setCheckedKeywords(
-            checkedKeywords.filter((choice) => choice !== e.target.value)
-          );
+      if (e.target.checked) {
+        const keywordId = e.target.value;
+        const selectedKeyword = (
+          type === "basic" ? basicKeywords : myKeywordList
+        ).find((item) => item.id === keywordId);
+        setCheckedKeywords([
+          ...checkedKeywords,
+          { id: keywordId, name: selectedKeyword?.name || "" },
+        ]);
+      } else {
+        setCheckedKeywords(
+          checkedKeywords.filter((item) => item.id !== e.target.value)
+        );
+      }
     }
   };
 
-  // 키워드 생성
+  // 키워드 생성 로직 (1. my에 이미 있는 키워드, 2. basic에 이미 있는 키워드, 3. 새로운 키워드)
   const handleMyKeywords = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      setCheckedKeywords([...checkedKeywords, newKeywords]);
-      setNewKeywords("");
+      const myKeywordNames = myKeywordList.map((item) => item.name);
+      const basicKeywordNames = basicKeywords.map((item) => item.name);
+      if (myKeywordNames.includes(newKeyword)) {
+        const keywordIndex = myKeywordNames.indexOf(newKeyword);
+        const keywordPage =
+          Math.floor((keywordIndex + 1) / (keywordsPerPage + 1)) + 1;
+        setCurrentMyKeywordPage(keywordPage);
+      } else if (basicKeywordNames.includes(newKeyword)) {
+        const keywordIndex = basicKeywordNames.indexOf(newKeyword);
+        const keywordPage =
+          Math.floor((keywordIndex + 1) / (keywordsPerPage + 1)) + 1;
+        setKeywordTabOption("basic");
+        setCurrentBasicKeywordPage(keywordPage);
+      } else {
+        setMyKeywordList([
+          ...myKeywordList,
+          { id: newKeyword, name: newKeyword },
+        ]);
+        const lastKeywordPage =
+          Math.floor((myKeywordList.length + 1) / (keywordsPerPage + 1)) + 1;
+        setCurrentMyKeywordPage(lastKeywordPage);
+      }
+      setNewKeyword("");
     }
   };
 
   // 키워드 삭제
   const handleDeleteTag = (item: string) => {
-    setCheckedKeywords(checkedKeywords.filter((choice) => choice !== item));
+    setCheckedKeywords(checkedKeywords.filter((choice) => choice.id !== item));
   };
 
   // 모달 관리
@@ -148,10 +331,6 @@ const ExperienceWritePage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  // 질문 아코디언 관리
-  const [expanded, setExpanded] = React.useState(false);
-  const [resultKeywords, setResultKeywords] = React.useState<string[]>([]);
 
   const handleChange = () => {
     if (expanded) {
@@ -170,6 +349,23 @@ const ExperienceWritePage = () => {
     }
   };
 
+  //
+  //
+  //
+  React.useEffect(() => {
+    // 상위 태그 조회
+    getPrimeTags(user?.token)
+      .then((res) => {
+        setPrimeTagList(res.data.tags);
+      })
+      .catch((err) => console.log(err));
+
+    // My 역량 키워드 조회
+    getKeywords(user?.token)
+      .then((res) => setMyKeywordList(res.data.strongPoints))
+      .catch((err) => console.log(err));
+  }, [user?.token]);
+
   /**
    * 경험 기본 정보
    */
@@ -183,14 +379,18 @@ const ExperienceWritePage = () => {
               <div className="label">경험 기간</div>
               <div className="input">
                 <OneDatePick
-                  date={startDate}
-                  setDate={(date: Date) => setStartDate(date)}
+                  date={new Date(expData.startedAt)}
+                  setDate={(date: Date) =>
+                    setExpData({ ...expData, startedAt: date.toISOString() })
+                  }
                   style={customDatePickerCss}
                 />
                 &nbsp;-&nbsp;
                 <OneDatePick
-                  date={endDate}
-                  setDate={(date: Date) => setEndDate(date)}
+                  date={new Date(expData.endedAt)}
+                  setDate={(date: Date) =>
+                    setExpData({ ...expData, endedAt: date.toISOString() })
+                  }
                   style={customDatePickerCss}
                 />
               </div>
@@ -201,7 +401,7 @@ const ExperienceWritePage = () => {
                 <Input
                   readOnly
                   id="prime"
-                  value={primeTag}
+                  value={primeTagItem.name}
                   style={customInputCss}
                   onClick={handleTagPopper}
                   placeholder="상위 경험 분류"
@@ -210,7 +410,7 @@ const ExperienceWritePage = () => {
                 <Input
                   readOnly
                   id="sub"
-                  value={subTag}
+                  value={subTagItem.name}
                   style={customInputCss}
                   onClick={handleTagPopper}
                   placeholder="하위 경험 분류"
@@ -233,7 +433,7 @@ const ExperienceWritePage = () => {
                       {popperInfo === "prime" ? (
                         <>
                           <RadioGroup
-                            value={primeTag}
+                            value={primeTagItem.id}
                             name="prime-tag"
                             options={currentPrimeTags}
                             onChange={handlePrimeRadioChange}
@@ -250,7 +450,7 @@ const ExperienceWritePage = () => {
                       ) : (
                         <>
                           <RadioGroup
-                            value={subTag}
+                            value={subTagItem.id}
                             name="sub-tag"
                             options={currentSubTags}
                             onChange={handleSubRadioChange}
@@ -317,7 +517,7 @@ const ExperienceWritePage = () => {
                   {resultKeywords.length > 0 ? (
                     <div className="tag-list">
                       {resultKeywords.map((item) => (
-                        <Tag text={item} />
+                        <Tag text={item.name} />
                       ))}
                     </div>
                   ) : (
@@ -354,19 +554,26 @@ const ExperienceWritePage = () => {
                       <PopperPagination
                         postsNum={basicKeywords.length}
                         postsPerPage={keywordsPerPage}
-                        setCurrentPage={setCurrentKeywordPage}
-                        currentPage={currentKeywordPage}
+                        setCurrentPage={setCurrentBasicKeywordPage}
+                        currentPage={currentBasicKeywordPage}
                       />
-                    ) : null}
+                    ) : (
+                      <PopperPagination
+                        postsNum={myKeywords.length}
+                        postsPerPage={keywordsPerPage}
+                        setCurrentPage={setCurrentMyKeywordPage}
+                        currentPage={currentMyKeywordPage}
+                      />
+                    )}
                   </div>
                   {keywordTabOption === "basic" ? (
                     <div className="checkbox-list">
-                      {currentKeywords.map((item) => (
+                      {currentBasicKeywords.map((item) => (
                         <Checkbox
-                          value={item}
-                          label={item}
-                          checked={checkedKeywords.includes(item)}
-                          onChange={handleBasicKeyword}
+                          value={item.id}
+                          label={item.name}
+                          checked={isKeywordChecked(item)}
+                          onChange={(e) => handleKeywordChange(e, "basic")}
                         />
                       ))}
                     </div>
@@ -375,20 +582,30 @@ const ExperienceWritePage = () => {
                       <MyKeywordInput>
                         <Plus2 />
                         <input
-                          value={newKeywords}
+                          value={newKeyword}
                           placeholder="직접 역량 태그를 생성할 수 있어요"
-                          onChange={(e) => setNewKeywords(e.target.value)}
+                          onChange={(e) => setNewKeyword(e.target.value)}
                           onKeyDown={(e) => handleMyKeywords(e)}
                         />
                       </MyKeywordInput>
+                      <div className="checkbox-list">
+                        {currentMyKeywords.map((item) => (
+                          <Checkbox
+                            value={item.id}
+                            label={item.name}
+                            checked={isKeywordChecked(item)}
+                            onChange={(e) => handleKeywordChange(e, "my")}
+                          />
+                        ))}
+                      </div>
                     </div>
                   )}
                   <div className="keyword-list">
                     {checkedKeywords.map((item) => (
                       <Tag
-                        text={item}
+                        text={item.name}
                         deleteOption={true}
-                        onDelete={() => handleDeleteTag(item)}
+                        onDelete={() => handleDeleteTag(item.id)}
                       />
                     ))}
                   </div>
@@ -402,7 +619,7 @@ const ExperienceWritePage = () => {
   };
 
   /**
-   *
+   * 질문과 답변폼
    */
   const renderQuestionForm = () => {
     return (
@@ -415,6 +632,7 @@ const ExperienceWritePage = () => {
                 <Chip text={item.type} />
               </div>
               <Textarea
+                value={expData.contents[index].answer}
                 label={`${index + 1}. ${item.question}`}
                 rows={8}
                 labelStyle={
@@ -426,6 +644,7 @@ const ExperienceWritePage = () => {
                   background: `${theme.colors.neutral0}`,
                   padding: "24px 30px",
                 }}
+                onChange={(e) => handleAnswerChange(index, e.target.value)}
               />
             </div>
           ))}
@@ -454,10 +673,14 @@ const ExperienceWritePage = () => {
             </button>
             경험 작성
           </div>
-          <CustomButton onClick={openModal}>저장</CustomButton>
+          <CustomButton onClick={handleSaveExperience}>저장</CustomButton>
         </TopContainer>
         <ContentContainer>
-          <TitleInput placeholder="경험의 제목을 입력해주세요"></TitleInput>
+          <TitleInput
+            value={expData.title}
+            placeholder="경험의 제목을 입력해주세요"
+            onChange={(e) => setExpData({ ...expData, title: e.target.value })}
+          ></TitleInput>
           {renderExperienceBasicInfo()}
           {renderQuestionForm()}
         </ContentContainer>
@@ -472,7 +695,7 @@ const ExperienceWritePage = () => {
           </>
         }
         buttons={["작성된 경험 확인하기"]}
-        onConfirm={() => navigate(`/experience/detail/1`)}
+        onConfirm={() => navigate(`/experience/detail/${expId}`)}
         isOpen={isModalOpen}
         onClose={closeModal}
       />
