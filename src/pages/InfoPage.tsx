@@ -3,6 +3,7 @@ import styled from "styled-components";
 import filghtImage_2 from "../assets/images/image_flight_main_banner.png";
 import overview from "../assets/images/image_info_overview.png";
 import banner from "../assets/images/image_flight_banner.png";
+import info_bg from "../assets/images/image_info_bg.png";
 import Footer from "../components/common/Footer";
 
 const InfoPage = () => {
@@ -12,6 +13,15 @@ const InfoPage = () => {
         <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
         <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
         <img src={filghtImage_2} alt="frame" className="image" />
+      </MainContainer>
+      <MainContainer>
+        <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
+        <SubContainer>
+          <div className="subbox_exp">ss</div>
+        </SubContainer>
+        <SubContainer>
+          <div className="subbox_jd">ss</div>
+        </SubContainer>
       </MainContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
@@ -45,6 +55,7 @@ const StyledContainer = styled.div`
 
 const MainContainer = styled.div`
     text-align: center;
+    position: relative;
     .subtext{
         font-size: 2rem;
         font-style: normal;
@@ -65,4 +76,29 @@ const MainContainer = styled.div`
         width: 80rem;
         margin-top: 7rem;
     }
+`;
+
+const SubContainer = styled.div`
+    width: 100%;
+    .subbox_exp{
+        position: absolute;
+        top: 24%;
+        left: 12%;
+        width: 35%;
+        height: 60%;
+        border-radius: 1.5rem;
+        background: var(--icon-color, #FFF);
+    }
+    .subbox_jd{
+        position: absolute;
+        top: 24%;
+        right: 12%;
+        width: 35%;
+        height: 60%;
+        border-radius: 1.5rem;
+        background: var(--icon-color, #FFF);
+    }
+`;
+
+const StepContainer = styled.div`
 `;
