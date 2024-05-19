@@ -16,10 +16,10 @@ import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
-import { applyget, applypost } from "../services/jd";
+import { applypost } from "../services/jd";
 import { getCookie } from "../services/cookie";
 
-const JDEditPage: React.FC = () => {
+const JDWritePage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
   const [activebutton, setActivebutton] = useState(""); // 경험 분석 or 공고 보기
   const [applyData, setApplyData] = useState<ApplyAPI[]>([
@@ -37,7 +37,6 @@ const JDEditPage: React.FC = () => {
   const nav = useNavigate();
   const jdId: string = useParams().jdId!; //공고 id
   const user = getCookie("user"); //토큰 받아오기용
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo({
@@ -45,9 +44,6 @@ const JDEditPage: React.FC = () => {
       behavior: "auto",
     });
     // console.log("token", user.token);
-    if (jdId) {
-      getApplyData(jdId, user.token);
-    }
   }, []);
 
   //모든 질문이 다 채워졌는지 검사
@@ -132,21 +128,6 @@ const JDEditPage: React.FC = () => {
       setEditing(false);
       //api post 요청
     }
-  };
-
-  const getApplyData = async (jdId: string, token: string) => {
-    try {
-      const response = await applyget(jdId, token);
-      const mappedData = response.data.applyContentList.map((apply: any) => ({
-        question: apply.question,
-        answer: apply.answer,
-      }));
-      setApplyData(mappedData);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
-    setIsLoading(false);
   };
 
   //자기소개서 post api 요청
@@ -357,7 +338,7 @@ const JDEditPage: React.FC = () => {
   );
 };
 
-export default JDEditPage;
+export default JDWritePage;
 
 const StyledDivContainer = styled.div`
   width: 100%;
