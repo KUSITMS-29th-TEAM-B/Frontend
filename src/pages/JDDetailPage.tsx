@@ -16,6 +16,7 @@ import ExperienceBox from "../components/JD/ExpContainer";
 import { formatDateRange } from "./JDListPage";
 import { jobdescriptionget } from "../services/jd";
 import { getCookie } from "../services/cookie";
+import PlaneLoading from "../components/common/Loading";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
@@ -89,119 +90,128 @@ const JDDetailPage: React.FC = () => {
 
   return (
     <StyledDivContainer className="page">
-      <MainContainer>
-        <CenteredContainer
-          initial={{ width: "100%" }}
-          animate={{
-            x: active ? "7%" : "25%",
-            width: active ? "50%" : "100%",
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 40,
-            when: "beforeChildren",
-          }}
-        >
-          <ToggleContainer>
-            <AirplaneToggle step={2} />
-          </ToggleContainer>
-          <TopTitleBar>
-            <Title>
-              <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
-              공고 상세
-            </Title>
-            <TopButton onClick={() => nav(`/jd/edit/${jdId}`)}>
-              <TopButtonText>
-                {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
-                <img src={arrowIcon} alt="icon" />
-              </TopButtonText>
-            </TopButton>
-          </TopTitleBar>
-          <JobContainer>
-            <JobStatusBar>
-              {jdData.writeStatus !== "NOT_APPLIED" && (
-                <StateBox className="job_status" status={jdData.writeStatus} />
-              )}
-              <div className="job_date">{jdData.createdAt?.toString()}</div>
-            </JobStatusBar>
-            <JobTopBox>
-              <JobTopTitleBox>
-                <div className="job_detail_dday">
-                  {"D-" + jdData.remainingDate}
-                </div>
-                <div className="job_detail_title">{jdData.title}</div>
-              </JobTopTitleBox>
-              <JobTopDescription>{jdData.enterpriseName}</JobTopDescription>
-              <JobSubBox>
-                <div className="period">
-                  <img
-                    src={calendarIcon}
-                    alt="calendar"
-                    width={16}
-                    height={16}
-                  />
-                  {jdData.startAt &&
-                    jdData.endedAt &&
-                    formatDateRange(
-                      jdData.startAt.toString(),
-                      jdData.endedAt.toString()
-                    )}
-                </div>
-                <div className="link">
-                  <img src={linkIcon} alt="link" width={16} height={16} />
-                  <a
-                    href={jdData.link}
-                    className="link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {jdData.link}
-                  </a>
-                </div>
-              </JobSubBox>
-            </JobTopBox>
-            <ScrollDiv>
-              <JobBottomBox>
-                <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
-              </JobBottomBox>
-            </ScrollDiv>
-          </JobContainer>
-        </CenteredContainer>
-        <AnimatePresence>
-          <ActiveContainer
-            isActive={detailId !== 0}
-            initial={{ x: "100%", width: "45%" }}
+      {!isLoading ? (
+        <MainContainer>
+          <CenteredContainer
+            initial={{ width: "100%" }}
             animate={{
-              x: !active ? "110%" : "5%",
-              width: "45%",
-            }}
-            exit={{
-              x: "0%",
-              transition: { stiffness: 50, damping: 20 },
+              x: active ? "7%" : "25%",
+              width: active ? "50%" : "100%",
             }}
             transition={{
               type: "spring",
               stiffness: 40,
+              when: "beforeChildren",
             }}
           >
-            <ExperienceButton
-              onClick={ExptoggleContainer}
-              active={activebutton === "Exp"}
-            >
-              <ButtonText active={activebutton === "Exp"}>경험연결</ButtonText>
-            </ExperienceButton>
-            {detailId !== 0 ? (
-              <ExperienceBox expId={detailId} />
-            ) : (
+            <ToggleContainer>
+              <AirplaneToggle step={2} />
+            </ToggleContainer>
+            <TopTitleBar>
+              <Title>
+                <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
+                공고 상세
+              </Title>
+              <TopButton onClick={() => nav(`/jd/edit/${jdId}`)}>
+                <TopButtonText>
+                  {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
+                  <img src={arrowIcon} alt="icon" />
+                </TopButtonText>
+              </TopButton>
+            </TopTitleBar>
+            <JobContainer>
+              <JobStatusBar>
+                {jdData.writeStatus !== "NOT_APPLIED" && (
+                  <StateBox
+                    className="job_status"
+                    status={jdData.writeStatus}
+                  />
+                )}
+                <div className="job_date">{jdData.createdAt?.toString()}</div>
+              </JobStatusBar>
+              <JobTopBox>
+                <JobTopTitleBox>
+                  <div className="job_detail_dday">
+                    {"D-" + jdData.remainingDate}
+                  </div>
+                  <div className="job_detail_title">{jdData.title}</div>
+                </JobTopTitleBox>
+                <JobTopDescription>{jdData.enterpriseName}</JobTopDescription>
+                <JobSubBox>
+                  <div className="period">
+                    <img
+                      src={calendarIcon}
+                      alt="calendar"
+                      width={16}
+                      height={16}
+                    />
+                    {jdData.startAt &&
+                      jdData.endedAt &&
+                      formatDateRange(
+                        jdData.startAt.toString(),
+                        jdData.endedAt.toString()
+                      )}
+                  </div>
+                  <div className="link">
+                    <img src={linkIcon} alt="link" width={16} height={16} />
+                    <a
+                      href={jdData.link}
+                      className="link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {jdData.link}
+                    </a>
+                  </div>
+                </JobSubBox>
+              </JobTopBox>
               <ScrollDiv>
-                <ExpContainer>
-                  <ExperienceList showBookmarksOnly={false} />
-                </ExpContainer>
+                <JobBottomBox>
+                  <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
+                </JobBottomBox>
               </ScrollDiv>
-            )}
-          </ActiveContainer>
-        </AnimatePresence>
-      </MainContainer>
+            </JobContainer>
+          </CenteredContainer>
+          <AnimatePresence>
+            <ActiveContainer
+              isActive={detailId !== 0}
+              initial={{ x: "100%", width: "45%" }}
+              animate={{
+                x: !active ? "110%" : "5%",
+                width: "45%",
+              }}
+              exit={{
+                x: "0%",
+                transition: { stiffness: 50, damping: 20 },
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 40,
+              }}
+            >
+              <ExperienceButton
+                onClick={ExptoggleContainer}
+                active={activebutton === "Exp"}
+              >
+                <ButtonText active={activebutton === "Exp"}>
+                  경험연결
+                </ButtonText>
+              </ExperienceButton>
+              {detailId !== 0 ? (
+                <ExperienceBox expId={detailId} />
+              ) : (
+                <ScrollDiv>
+                  <ExpContainer>
+                    <ExperienceList showBookmarksOnly={false} />
+                  </ExpContainer>
+                </ScrollDiv>
+              )}
+            </ActiveContainer>
+          </AnimatePresence>
+        </MainContainer>
+      ) : (
+        <PlaneLoading />
+      )}
     </StyledDivContainer>
   );
 };
