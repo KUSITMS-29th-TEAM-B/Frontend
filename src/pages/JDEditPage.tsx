@@ -231,11 +231,7 @@ const JDEditPage: React.FC = () => {
                   isNotNull={isAllFilled}
                   onClick={() => {
                     if (isAllFilled) {
-                      //   handleApplyPost(
-                      //     applyData,
-                      //     user.token,
-                      //     jdId
-                      //   );
+                      handleApplyPost(applyData, user.token, jdId);
                     }
                   }}
                 >
