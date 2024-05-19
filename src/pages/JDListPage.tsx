@@ -11,15 +11,18 @@ import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
 import PlusIcon from "../assets/icons/icon_plus_white.svg";
 import { JobAnnouncement } from "../types/type";
+import { jobget } from "../services/jd";
+import { getCookie } from "../services/cookie";
 
 const JDListPage: React.FC = () => {
   const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "마감"];
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
-  const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
+  const [selectedSort, setSelectedSort] = useState<string>("CREATED"); // CREATED, ENDED , 초기값은 등록순
   const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
   const [pageTotal, setpageTotal] = useState(20);
   const [pages, setPages] = useState<React.ReactNode[]>([]);
   const [jobsData, setJobsData] = useState<JobAnnouncement[]>([]);
+  const user = getCookie("user");
 
   const nav = useNavigate();
   const handleClick = (buttonName: string) => {
@@ -39,6 +42,8 @@ const JDListPage: React.FC = () => {
       top: 0,
       behavior: "auto",
     });
+    let currentpage = (currentPage - 1).toString();
+    getJobList(currentpage, null, selectedSort, user.token);
   }, []);
 
   //페이지네이션
@@ -134,6 +139,30 @@ const JDListPage: React.FC = () => {
     return `${startFormatted} ~ ${endFormatted} ${endTime}`;
   };
 
+  const getJobList = async (
+    page: string,
+    writeStatus: string | null,
+    sortType: string,
+    token: string
+  ) => {
+    try {
+      const response = await jobget(page, writeStatus, sortType, token);
+      const mappedData = response.data.content.map((job: any) => ({
+        id: job.jobDescriptionId,
+        title: job.title,
+        description: job.enterpriseName,
+        dday: job.remainingDate,
+        recruitmentPeriod: formatDateRange(job.startedAt, job.endedAt),
+        status: job.writeStatus,
+      }));
+      setJobsData(mappedData);
+      console.log(jobsData);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   return (
     <StyledDivContainer className="page">
       <TopTitleBar>
@@ -170,7 +199,7 @@ const JDListPage: React.FC = () => {
         </RightFilterBox>
       </MiddleContainer>
       {/* <PlaneLoading /> api 추가 되었을때 loading 처리해주기 */}
-      {jobAnnouncements.length === 0 ? (
+      {jobsData.length === 0 ? (
         <NullContainer>
           <div>아직 등록된 공고가 없어요.</div>
           <div>새 공고를 등록해주세요.</div>
@@ -180,7 +209,7 @@ const JDListPage: React.FC = () => {
         </NullContainer>
       ) : (
         <MainContainer>
-          {jobAnnouncements.map((announcement, index) => (
+          {jobsData.map((announcement, index) => (
             <JobAnnouncementCard key={index} announcement={announcement} />
           ))}
         </MainContainer>

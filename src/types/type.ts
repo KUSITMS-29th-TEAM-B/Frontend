@@ -5,10 +5,10 @@ export type TComment = {
 };
 
 export enum RecruitmentStatus {
-  NotStarted = "작성전",
-  InProgress = "작성중",
-  Completed = "작성완료",
-  End = "마감",
+  NotStarted = "NOT_APPLIED",
+  InProgress = "WRITING",
+  Completed = "WRITTEN",
+  End = "CLOSED",
 }
 
 export interface JobAnnouncement {

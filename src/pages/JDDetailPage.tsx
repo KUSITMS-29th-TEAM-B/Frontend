@@ -69,7 +69,7 @@ const jdData = {
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const firstTime = jdData.status === "작성전"; // 자기소개서 작성한 이력 여부
+  const firstTime = jdData.status === "NOT_APPLIED"; // 자기소개서 작성한 이력 여부
   const jdId = useParams().id;
   const nav = useNavigate();
   const [detailId, setDetailId] = useRecoilState<number>(detailStore);
@@ -130,7 +130,7 @@ const JDDetailPage: React.FC = () => {
           <JobContainer>
             <div className="job_box">
               <JobStatusBar>
-                {jdData.status !== "작성전" && (
+                {jdData.status !== "NOT_APPLIED" && (
                   <StateBox className="job_status" status={jdData.status} />
                 )}
                 <div className="job_date">{jdData.date}</div>
