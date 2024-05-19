@@ -5,16 +5,25 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useTheme } from "styled-components";
+import { TagType } from "../../types/experience";
 
 interface RadioGroupProp {
   name: string;
   value: string;
-  options: string[];
-  onChange: (item: string) => void;
+  options: TagType[];
+  onChange: (item: TagType) => void;
 }
 
 const RadioGroup = ({ name, value, options, onChange }: RadioGroupProp) => {
   const theme = useTheme();
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedId = event.target.value;
+    const selectedItem = options.find((item) => item.id === selectedId);
+    if (selectedItem) {
+      onChange({ id: selectedId, name: selectedItem.name });
+    }
+  };
 
   return (
     <MuiRadioGroup
@@ -24,11 +33,12 @@ const RadioGroup = ({ name, value, options, onChange }: RadioGroupProp) => {
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
       }}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={handleChange}
     >
       {options.map((item) => (
         <FormControlLabel
-          value={item}
+          key={item.name}
+          value={item.id}
           control={
             <Radio
               sx={{
@@ -39,7 +49,7 @@ const RadioGroup = ({ name, value, options, onChange }: RadioGroupProp) => {
               }}
             />
           }
-          label={item}
+          label={item.name}
           sx={{
             ".MuiFormControlLabel-label": {
               fontSize: "12px",
