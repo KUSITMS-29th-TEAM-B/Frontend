@@ -8,19 +8,27 @@ import ExpData from "../services/JD/ExpData";
 import { questions } from "../assets/data/questions";
 import Chip from "../components/common/Chip";
 import Textarea from "../components/common/Textarea";
+import { getExperience } from "../services/Experience/experienceApi";
+import { ExperienceDetailType } from "../types/experience";
+import { getCookie } from "../services/cookie";
 
 const ExperienceDetailPage = () => {
+  const user = getCookie("user");
   const navigate = useNavigate();
   const theme = useTheme();
+  const [expData, setExpData] = React.useState<ExperienceDetailType>();
+  const expKeywords = expData?.strongPointIds?.map((item) => item.name) || [];
 
   const { id } = useParams();
 
   React.useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-  }, []);
+    if (id) {
+      getExperience(id, user?.token).then((res) => {
+        console.log(res);
+        setExpData(res.data);
+      });
+    }
+  }, [id, user?.token]);
 
   return (
     <MainContainer className="page">
@@ -43,22 +51,23 @@ const ExperienceDetailPage = () => {
       <ContentContainer>
         <Experience
           type="section"
-          id={ExpData[0].id}
-          key={0}
-          title={ExpData[0].title}
-          tags={ExpData[0].tags}
+          id={expData?.id || ExpData[0].id}
+          title={expData?.title || ""}
+          tags={expKeywords}
           maintag={ExpData[0].mainTag}
           subtag={ExpData[0].subTag}
-          period={ExpData[0].period}
+          startedAt={expData?.startedAt}
+          endedAt={expData?.endedAt}
         />
         <hr style={{ width: "100%", color: theme.colors.neutral300 }} />
         <AnswerList>
-          {questions.map((item, index) => (
+          {expData?.contents?.map((item, index) => (
             <AnswerItem>
               <div style={{ display: "flex" }}>
-                <Chip text={item.type} />
+                <Chip text={questions[index].type} />
               </div>
               <Textarea
+                value={item.answer}
                 label={`${index + 1}. ${item.question}`}
                 rows={8}
                 labelStyle={

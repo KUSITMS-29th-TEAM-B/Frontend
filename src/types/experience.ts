@@ -13,6 +13,10 @@ export interface ExperienceType {
   endedAt: string;
 }
 
+export interface ExperienceDetailType extends ExperienceType {
+  id: string;
+}
+
 export interface KeywordType {
   id: string;
   name: string;

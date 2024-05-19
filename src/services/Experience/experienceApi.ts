@@ -13,6 +13,15 @@ export const postExperience = async (
   });
 };
 
+// 경험 상세 조회
+export const getExperience = async (expId: string, token: string) => {
+  return await client.get(`/api/experiences/${expId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 // 경험 수정
 export const patchExperience = async (
   expId: string,
