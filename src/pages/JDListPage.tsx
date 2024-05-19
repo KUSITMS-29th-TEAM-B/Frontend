@@ -22,6 +22,7 @@ const JDListPage: React.FC = () => {
   const [pageTotal, setpageTotal] = useState(20);
   const [pages, setPages] = useState<React.ReactNode[]>([]);
   const [jobsData, setJobsData] = useState<JobAnnouncement[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const user = getCookie("user");
 
   const nav = useNavigate();
@@ -44,6 +45,7 @@ const JDListPage: React.FC = () => {
     });
     let currentpage = (currentPage - 1).toString();
     getJobList(currentpage, null, selectedSort, user.token);
+    setIsLoading(false);
   }, []);
 
   //페이지네이션
@@ -165,77 +167,86 @@ const JDListPage: React.FC = () => {
 
   return (
     <StyledDivContainer className="page">
-      <TopTitleBar>
-        <Title>등록한 공고 목록</Title>
-      </TopTitleBar>
-      <MiddleContainer>
-        <LeftFilterBox>
-          {Filterbuttons.map((button) => (
-            <FilterButton
-              key={button}
-              active={activeButton === button}
-              onClick={() => handleClick(button)}
-            >
-              {button.toUpperCase()}
-            </FilterButton>
-          ))}
-        </LeftFilterBox>
-        <RightFilterBox>
-          <SortContainer>
-            <SelectableDiv
-              isSelected={selectedSort === "등록순"}
-              onClick={() => handleSortChange("등록순")}
-            >
-              등록순
-            </SelectableDiv>
-            <DivideLine>|</DivideLine>
-            <SelectableDiv
-              isSelected={selectedSort === "마감순"}
-              onClick={() => handleSortChange("마감순")}
-            >
-              마감순
-            </SelectableDiv>
-          </SortContainer>
-        </RightFilterBox>
-      </MiddleContainer>
-      {/* <PlaneLoading /> api 추가 되었을때 loading 처리해주기 */}
-      {jobsData.length === 0 ? (
-        <NullContainer>
-          <div>아직 등록된 공고가 없어요.</div>
-          <div>새 공고를 등록해주세요.</div>
-          <button onClick={navToJdPost}>
-            공고 등록하기 <img src={PlusIcon} alt="plus" />
-          </button>
-        </NullContainer>
+      {!isLoading ? (
+        <>
+          <TopTitleBar>
+            <Title>등록한 공고 목록</Title>
+          </TopTitleBar>
+          <MiddleContainer>
+            <LeftFilterBox>
+              {Filterbuttons.map((button) => (
+                <FilterButton
+                  key={button}
+                  active={activeButton === button}
+                  onClick={() => handleClick(button)}
+                >
+                  {button.toUpperCase()}
+                </FilterButton>
+              ))}
+            </LeftFilterBox>
+            <RightFilterBox>
+              <SortContainer>
+                <SelectableDiv
+                  isSelected={selectedSort === "CREATED"}
+                  onClick={() => handleSortChange("CREATED")}
+                >
+                  등록순
+                </SelectableDiv>
+                <DivideLine>|</DivideLine>
+                <SelectableDiv
+                  isSelected={selectedSort === "ENDED"}
+                  onClick={() => handleSortChange("ENDED")}
+                >
+                  마감순
+                </SelectableDiv>
+              </SortContainer>
+            </RightFilterBox>
+          </MiddleContainer>
+          {jobsData.length === 0 ? (
+            <NullContainer>
+              <div>아직 등록된 공고가 없어요.</div>
+              <div>새 공고를 등록해주세요.</div>
+              <button onClick={navToJdPost}>
+                공고 등록하기 <img src={PlusIcon} alt="plus" />
+              </button>
+            </NullContainer>
+          ) : (
+            <MainContainer>
+              {jobsData.map((announcement, index) => (
+                <JobAnnouncementCard key={index} announcement={announcement} />
+              ))}
+            </MainContainer>
+          )}
+          <PagenationContainer>
+            <PagenationButton
+              src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
+              alt="prevbtn"
+              onClick={() =>
+                setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)
+              }
+            />
+            <PageNumbers>{pages}</PageNumbers>
+            <PagenationButton
+              src={currentPage === pageTotal ? nextbtn_v2 : nextbtn}
+              alt="nextbtn"
+              onClick={() =>
+                setCurrentPage(
+                  currentPage < pageTotal ? currentPage + 1 : pageTotal
+                )
+              }
+            />
+          </PagenationContainer>
+          {jobAnnouncements.length !== 0 ? (
+            <PostButton>
+              <img src={btnbg} alt="공고등록" onClick={navToJdPost} />
+            </PostButton>
+          ) : null}
+        </>
       ) : (
-        <MainContainer>
-          {jobsData.map((announcement, index) => (
-            <JobAnnouncementCard key={index} announcement={announcement} />
-          ))}
-        </MainContainer>
+        <>
+          <PlaneLoading />
+        </>
       )}
-      <PagenationContainer>
-        <PagenationButton
-          src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
-          alt="prevbtn"
-          onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
-        />
-        <PageNumbers>{pages}</PageNumbers>
-        <PagenationButton
-          src={currentPage === pageTotal ? nextbtn_v2 : nextbtn}
-          alt="nextbtn"
-          onClick={() =>
-            setCurrentPage(
-              currentPage < pageTotal ? currentPage + 1 : pageTotal
-            )
-          }
-        />
-      </PagenationContainer>
-      {jobAnnouncements.length !== 0 ? (
-        <PostButton>
-          <img src={btnbg} alt="공고등록" onClick={navToJdPost} />
-        </PostButton>
-      ) : null}
     </StyledDivContainer>
   );
 };
