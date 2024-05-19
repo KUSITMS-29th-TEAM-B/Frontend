@@ -10,16 +10,18 @@ import prebtn_v2 from "../assets/icons/icon_prev_btn_v2.svg";
 import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
 import PlusIcon from "../assets/icons/icon_plus_white.svg";
+import { JobAnnouncement } from "../types/type";
 
 const JDListPage: React.FC = () => {
+  const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "마감"];
   const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
   const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
   const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
   const [pageTotal, setpageTotal] = useState(20);
   const [pages, setPages] = useState<React.ReactNode[]>([]);
-  const nav = useNavigate();
+  const [jobsData, setJobsData] = useState<JobAnnouncement[]>([]);
 
-  const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "마감"];
+  const nav = useNavigate();
   const handleClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
@@ -28,7 +30,7 @@ const JDListPage: React.FC = () => {
     setSelectedSort(sortType);
   };
 
-  const navToDetail = () => {
+  const navToJdPost = () => {
     nav("/jd/post");
   };
 
@@ -39,6 +41,7 @@ const JDListPage: React.FC = () => {
     });
   }, []);
 
+  //페이지네이션
   useEffect(() => {
     //...을 제외한 페이지 렌더 부분
     const renderPageNumber = (i: number) => (
@@ -95,6 +98,7 @@ const JDListPage: React.FC = () => {
     value: string;
   };
 
+  //Date 형식을 지원기간 형식으로 변경 (ex. 4/25 (목) ~ 5/3 (금) 17:00)
   const formatDateRange = (start: string, end: string): string => {
     const startDate = new Date(start);
     const endDate = new Date(end);
@@ -170,7 +174,7 @@ const JDListPage: React.FC = () => {
         <NullContainer>
           <div>아직 등록된 공고가 없어요.</div>
           <div>새 공고를 등록해주세요.</div>
-          <button onClick={navToDetail}>
+          <button onClick={navToJdPost}>
             공고 등록하기 <img src={PlusIcon} alt="plus" />
           </button>
         </NullContainer>
@@ -200,7 +204,7 @@ const JDListPage: React.FC = () => {
       </PagenationContainer>
       {jobAnnouncements.length !== 0 ? (
         <PostButton>
-          <img src={btnbg} alt="공고등록" onClick={navToDetail} />
+          <img src={btnbg} alt="공고등록" onClick={navToJdPost} />
         </PostButton>
       ) : null}
     </StyledDivContainer>
