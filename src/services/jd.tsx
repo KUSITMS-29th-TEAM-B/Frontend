@@ -20,6 +20,38 @@ export const jobpost = async (job: JobAPI, token: string) => {
   );
 };
 
+export const jobget = async (
+  page: string,
+  writeStatus: string | null,
+  sortType: string,
+  token: string
+) => {
+  if (writeStatus) {
+    return await client.get(
+      `/api/job-description?page=${page}&size=9&writeStatus=${writeStatus}&sortType=${sortType}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  } else {
+    return await client.get(`/api/job-description?page=${page}&size=9`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+};
+
+export const jobdescriptionget = async (jdId: string, token: string) => {
+  return await client.get(`/api/job-description/${jdId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const applypost = async (
   applyData: ApplyAPI[],
   token: string,
