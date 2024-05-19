@@ -44,6 +44,14 @@ export const jobget = async (
   }
 };
 
+export const jobdescriptionget = async (jdId: string, token: string) => {
+  return await client.get(`/api/job-description/${jdId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const applypost = async (
   applyData: ApplyAPI[],
   token: string,

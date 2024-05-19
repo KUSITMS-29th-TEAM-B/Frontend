@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AirplaneToggle from "../components/JD/AirplaneToggle";
 import ExperienceList from "../components/JD/ExperienceList";
 import { useNavigate, useParams } from "react-router-dom";
-import { RecruitmentStatus } from "../types/type";
+import { JobDescriptionAPI } from "../types/type";
 import arrowIcon from "../assets/icons/icon_arrow_right.svg";
 import StateBox from "../components/JD/StateBox";
 import { useRecoilState } from "recoil";
@@ -13,66 +13,30 @@ import { detailStore } from "../store/jdStore";
 import calendarIcon from "../assets/icons/icon_calendar.svg";
 import linkIcon from "../assets/icons/icon_link.svg";
 import ExperienceBox from "../components/JD/ExpContainer";
-
-const jdData = {
-  id: 3,
-  title: "백엔드 개발자 채용",
-  description: "Node.js 경험자",
-  recruitmentPeriod: "2024-05-10 ~ 2024-06-10",
-  status: RecruitmentStatus.InProgress,
-  dday: 30,
-  link: "https://www.naver.com/",
-  date: "2013.01.10",
-  content: `<div>
-        <h2>Job Description</h2>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-        <br/>
-        <h1>Job Description</h1>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-        <h2>Job Description</h2>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-        <br/>
-        <h1>Job Description</h1>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-        <h2>Job Description</h2>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-        <br/>
-        <h1>Job Description</h1>
-        <p>
-          We are looking for a talented frontend developer to join our team. The
-          ideal candidate should have experience with HTML, CSS, JavaScript, and
-          modern frontend frameworks such as React.
-        </p>
-         </div>`,
-};
+import { formatDateRange } from "./JDListPage";
+import { jobdescriptionget } from "../services/jd";
+import { getCookie } from "../services/cookie";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const firstTime = jdData.status === "NOT_APPLIED"; // 자기소개서 작성한 이력 여부
   const jdId = useParams().id;
   const nav = useNavigate();
   const [detailId, setDetailId] = useRecoilState<number>(detailStore);
+  const [jdData, setJdData] = useState<JobDescriptionAPI>({
+    enterpriseName: "",
+    title: "",
+    remainingDate: "",
+    content: "",
+    link: "",
+    writeStatus: "",
+    createdAt: null,
+    startAt: null,
+    endedAt: null,
+  });
+  const firstTime = jdData.writeStatus === "NOT_APPLIED"; // 자기소개서 작성한 이력 여부
+  const user = getCookie("user");
+  const [isLoading, setIsLoading] = useState(true);
 
   const ExptoggleContainer = () => {
     if (!active) {
@@ -89,6 +53,9 @@ const JDDetailPage: React.FC = () => {
       top: 0,
       behavior: "auto",
     });
+    if (jdId) {
+      getJobData(jdId, user.token);
+    }
   }, []);
 
   useEffect(() => {
@@ -96,6 +63,29 @@ const JDDetailPage: React.FC = () => {
       setDetailId(0);
     }
   }, [active]);
+
+  const getJobData = async (jdId: string, token: string) => {
+    try {
+      const response = await jobdescriptionget(jdId, token);
+      const jdApiData: JobDescriptionAPI = {
+        enterpriseName: response.data.enterpriseName,
+        title: response.data.title,
+        remainingDate: response.data.remainingDate,
+        content: response.data.link,
+        writeStatus: response.data.writeStatus,
+        link: response.data.link,
+        createdAt: response.data.createdAt,
+        startAt: response.data.startedAt,
+        endedAt: response.data.endedAt,
+      };
+      setJdData(jdApiData);
+      console.log(jdData);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+    setIsLoading(false);
+  };
 
   return (
     <StyledDivContainer className="page">
@@ -128,48 +118,53 @@ const JDDetailPage: React.FC = () => {
             </TopButton>
           </TopTitleBar>
           <JobContainer>
-            <div className="job_box">
-              <JobStatusBar>
-                {jdData.status !== "NOT_APPLIED" && (
-                  <StateBox className="job_status" status={jdData.status} />
-                )}
-                <div className="job_date">{jdData.date}</div>
-              </JobStatusBar>
-              <JobTopBox>
-                <JobTopTitleBox>
-                  <div className="job_detail_dday">{"D-" + jdData.dday}</div>
-                  <div className="job_detail_title">{jdData.title}</div>
-                </JobTopTitleBox>
-                <JobTopDescription>{jdData.description}</JobTopDescription>
-                <JobSubBox>
-                  <div className="period">
-                    <img
-                      src={calendarIcon}
-                      alt="calendar"
-                      width={16}
-                      height={16}
-                    />
-                    {jdData.recruitmentPeriod}
-                  </div>
-                  <div className="link">
-                    <img src={linkIcon} alt="link" width={16} height={16} />
-                    <a
-                      href={jdData.link}
-                      className="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {jdData.link}
-                    </a>
-                  </div>
-                </JobSubBox>
-              </JobTopBox>
-              <ScrollDiv>
-                <JobBottomBox>
-                  <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
-                </JobBottomBox>
-              </ScrollDiv>
-            </div>
+            <JobStatusBar>
+              {jdData.writeStatus !== "NOT_APPLIED" && (
+                <StateBox className="job_status" status={jdData.writeStatus} />
+              )}
+              <div className="job_date">{jdData.createdAt?.toString()}</div>
+            </JobStatusBar>
+            <JobTopBox>
+              <JobTopTitleBox>
+                <div className="job_detail_dday">
+                  {"D-" + jdData.remainingDate}
+                </div>
+                <div className="job_detail_title">{jdData.title}</div>
+              </JobTopTitleBox>
+              <JobTopDescription>{jdData.enterpriseName}</JobTopDescription>
+              <JobSubBox>
+                <div className="period">
+                  <img
+                    src={calendarIcon}
+                    alt="calendar"
+                    width={16}
+                    height={16}
+                  />
+                  {jdData.startAt &&
+                    jdData.endedAt &&
+                    formatDateRange(
+                      jdData.startAt.toString(),
+                      jdData.endedAt.toString()
+                    )}
+                </div>
+                <div className="link">
+                  <img src={linkIcon} alt="link" width={16} height={16} />
+                  <a
+                    href={jdData.link}
+                    className="link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {jdData.link}
+                  </a>
+                </div>
+              </JobSubBox>
+            </JobTopBox>
+            <ScrollDiv>
+              <JobBottomBox>
+                <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
+              </JobBottomBox>
+            </ScrollDiv>
           </JobContainer>
         </CenteredContainer>
         <AnimatePresence>
@@ -303,6 +298,7 @@ const JobContainer = styled.div`
 
 const ScrollDiv = styled.div`
     overflow-y: auto;
+    width: 100%;
     &::-webkit-scrollbar {
         width: 4px;
     }

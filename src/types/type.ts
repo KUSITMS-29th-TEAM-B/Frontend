@@ -58,3 +58,15 @@ export type ApplyAPI = {
   question: string;
   answer: string;
 };
+
+export type JobDescriptionAPI = {
+  enterpriseName: string;
+  title: string;
+  remainingDate: string;
+  content: string;
+  writeStatus: string;
+  link: string;
+  createdAt: Date | null;
+  startAt: Date | null;
+  endedAt: Date | null;
+};

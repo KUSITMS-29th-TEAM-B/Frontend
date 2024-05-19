@@ -100,47 +100,6 @@ const JDListPage: React.FC = () => {
     setPages(tempPages);
   }, [currentPage, pageTotal]);
 
-  type DateTimeFormatPart = {
-    type: "day" | "month" | "weekday" | "hour" | "minute";
-    value: string;
-  };
-
-  //Date 형식을 지원기간 형식으로 변경 (ex. 4/25 (목) ~ 5/3 (금) 17:00)
-  const formatDateRange = (start: string, end: string): string => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-
-    // 날짜 포맷터: 월, 일, 요일
-    const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
-      month: "numeric",
-      day: "2-digit",
-      weekday: "short",
-    });
-
-    // 시간 포맷터: 시간과 분
-    const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-
-    const formatManual = (date: Date): string => {
-      const parts: DateTimeFormatPart[] = dateFormatter.formatToParts(
-        date
-      ) as DateTimeFormatPart[];
-      const month = parts.find((part) => part.type === "month")!.value;
-      const day = parts.find((part) => part.type === "day")!.value;
-      const weekday = parts.find((part) => part.type === "weekday")!.value;
-      return `${parseInt(month)}/${day} (${weekday})`; // 월 값을 parseInt로 처리하여 필요시 한 자리 숫자로 조정
-    };
-
-    const startFormatted = formatManual(startDate);
-    const endFormatted = formatManual(endDate);
-    const endTime = timeFormatter.format(endDate);
-
-    return `${startFormatted} ~ ${endFormatted} ${endTime}`;
-  };
-
   const getJobList = async (
     page: string,
     writeStatus: string | null,
@@ -252,6 +211,47 @@ const JDListPage: React.FC = () => {
 };
 
 export default JDListPage;
+
+type DateTimeFormatPart = {
+  type: "day" | "month" | "weekday" | "hour" | "minute";
+  value: string;
+};
+
+//Date 형식을 지원기간 형식으로 변경 (ex. 4/25 (목) ~ 5/3 (금) 17:00)
+export const formatDateRange = (start: string, end: string): string => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // 날짜 포맷터: 월, 일, 요일
+  const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
+    month: "numeric",
+    day: "2-digit",
+    weekday: "short",
+  });
+
+  // 시간 포맷터: 시간과 분
+  const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const formatManual = (date: Date): string => {
+    const parts: DateTimeFormatPart[] = dateFormatter.formatToParts(
+      date
+    ) as DateTimeFormatPart[];
+    const month = parts.find((part) => part.type === "month")!.value;
+    const day = parts.find((part) => part.type === "day")!.value;
+    const weekday = parts.find((part) => part.type === "weekday")!.value;
+    return `${parseInt(month)}/${day} (${weekday})`; // 월 값을 parseInt로 처리하여 필요시 한 자리 숫자로 조정
+  };
+
+  const startFormatted = formatManual(startDate);
+  const endFormatted = formatManual(endDate);
+  const endTime = timeFormatter.format(endDate);
+
+  return `${startFormatted} ~ ${endFormatted} ${endTime}`;
+};
 
 const StyledDivContainer = styled.div`
   width: 100%;
