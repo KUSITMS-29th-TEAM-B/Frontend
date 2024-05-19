@@ -46,7 +46,7 @@ const TextContainer: React.FC<SlideTextProps> = ({
       };
       break;
     case "down":
-      initialPosition = 100;
+      initialPosition = 80;
       initialProps = { y: initialPosition, opacity: 0 };
       animateProps = {
         y: inView ? 0 : initialPosition,

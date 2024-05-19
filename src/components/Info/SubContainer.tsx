@@ -83,9 +83,10 @@ const SubContainer = styled.div`
         border-radius: 1.5rem;
         background: var(--icon-color, #FFF);
         img {
-        width: 18rem;
-        height: 13rem;
+        width: 80%;
+        height: 100%;
         }
+        overflow: hidden;
     }
     .subbox_jd{
         position: absolute;
@@ -99,9 +100,10 @@ const SubContainer = styled.div`
         border-radius: 1.5rem;
         background: var(--icon-color, #FFF);
         img {
-        width: 13rem;
-        height: 13rem;
+        width: 60%;
+        height: 100%;
         }
+        overflow: hidden;
     }
 `;
 
