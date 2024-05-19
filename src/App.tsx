@@ -15,13 +15,14 @@ import SignInPage from "./pages/SignInPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import PrivateRoute from "./services/router/PrivateRoute";
+import InfoPage from "./pages/InfoPage";
 
 const App: React.FC = () => {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<InfoPage />} />
         <Route element={<PrivateRoute />} path="/">
           <Route path="/jd" element={<JDListPage />} />
         </Route>
