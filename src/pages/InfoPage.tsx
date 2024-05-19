@@ -1,19 +1,21 @@
 import React from "react";
 import styled from "styled-components";
-import filghtImage_2 from "../assets/images/img_flight_info(2).png";
+import filghtImage_2 from "../assets/images/image_flight_main_banner.png";
 import overview from "../assets/images/image_info_overview.png";
-import banner from "../assets/images/image_info_banner.png";
+import banner from "../assets/images/image_flight_banner.png";
 import Footer from "../components/common/Footer";
 
 const InfoPage = () => {
   return (
     <StyledContainer className="page">
-      <div>service Info</div>
       <MainContainer>
         <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
         <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
         <img src={filghtImage_2} alt="frame" className="image" />
       </MainContainer>
+      <div>
+        <img src={banner} alt="banner" className="sub_banner" />
+      </div>
       <div>
         <img src={overview} alt="overview" className="overview" />
       </div>
@@ -32,6 +34,10 @@ const StyledContainer = styled.div`
   width: 100%;
   overflow-x: hidden;
   .overview{
+    width: 100vw;
+    height: auto;
+  }
+  .sub_banner{
     width: 100vw;
     height: auto;
   }
