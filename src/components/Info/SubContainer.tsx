@@ -21,7 +21,7 @@ const Box: React.FC<BoxProps> = ({ children, className }) => {
   }, [controls, inView]);
 
   const boxVariants: Variants = {
-    hidden: { opacity: 0, y: 200 },
+    hidden: { opacity: 0, y: 300 },
     visible: {
       opacity: 1,
       y: 0,

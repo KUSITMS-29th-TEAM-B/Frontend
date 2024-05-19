@@ -6,6 +6,8 @@ import banner from "../assets/images/image_flight_banner.png";
 import info_bg from "../assets/images/image_info_bg.png";
 import Footer from "../components/common/Footer";
 import StyledSubContainer from "../components/Info/SubContainer";
+import Filghtbackground from "../assets/images/image_flight_main_info.png";
+import TextContainer from "../components/Info/TextContainer";
 
 const InfoPage = () => {
   return (
@@ -15,10 +17,15 @@ const InfoPage = () => {
         <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
         <img src={filghtImage_2} alt="frame" className="image" />
       </MainContainer>
+      <div>
+        <img src={Filghtbackground} alt="flight" className="overview" />
+      </div>
       <MainContainer>
         <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
         <StyledSubContainer />
       </MainContainer>
+      {/* <TextContainer direction="right">슬라이드될 내용이 들어감</TextContainer>
+      <TextContainer direction="left">슬라이드될 내용이 들어감</TextContainer> */}
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
       </div>
@@ -58,6 +65,7 @@ const MainContainer = styled.div`
         font-weight: 400;
         opacity: 0.4;
         color: ${(props) => props.theme.colors.neutral700};
+        margin-bottom: 0.75rem;
     }
     .maintext{
         font-size: 3.75rem;
@@ -75,12 +83,4 @@ const MainContainer = styled.div`
 `;
 
 const StepContainer = styled.div`
-`;
-
-const MotionContainer = styled.div`
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    top: 0;
 `;
