@@ -141,7 +141,7 @@ const ApplyPage: React.FC = () => {
       try {
         const response = await applypost(applyData, token, jobId);
         console.log(response);
-        nav(`jd/${jdId}`);
+        nav(`/jd/apply/edit/${jdId}`);
       } catch (error) {
         console.error(error);
         alert(JSON.stringify(error));

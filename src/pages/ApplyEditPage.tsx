@@ -16,7 +16,7 @@ import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
-import { applyget, applypost } from "../services/jd";
+import { applyget, applypatch, statuspatch } from "../services/jd";
 import { getCookie } from "../services/cookie";
 
 const ApplyEditPage: React.FC = () => {
@@ -27,7 +27,7 @@ const ApplyEditPage: React.FC = () => {
     { question: "", answer: "" },
   ]); //문항 데이터
   const [editing, setEditing] = useState(false); //수정중 여부
-  const [completed, setCompleted] = useState(false); //작성 완료
+  const [completed, setCompleted] = useState(""); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
 
   const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
@@ -127,12 +127,31 @@ const ApplyEditPage: React.FC = () => {
     }
   };
 
+  const handleCompeletedButton = () => {
+    if (completed === "작성완료") {
+      setCompleted("작성중");
+    } else if (completed === "작성중") {
+      setCompleted("작성완료");
+    } else if (completed === "") {
+      setCompleted("작성완료");
+    }
+  };
+
   const handleSaveButton = () => {
     if (isAllFilled) {
       setEditing(false);
       //api post 요청
     }
   };
+
+  useEffect(() => {
+    if (completed !== "") {
+      console.log("completed 값이 변했습니다:", completed);
+      if (jdId) {
+        handleStatusPatch(jdId, user.token);
+      }
+    }
+  }, [completed]);
 
   const getApplyData = async (jdId: string, token: string) => {
     try {
@@ -150,7 +169,7 @@ const ApplyEditPage: React.FC = () => {
   };
 
   //자기소개서 post api 요청
-  const handleApplyPost = async (
+  const handleApplyPatch = async (
     applyData: ApplyAPI[],
     token: string,
     jobId: string
@@ -158,15 +177,28 @@ const ApplyEditPage: React.FC = () => {
     if (isAllFilled) {
       setEditing(false);
       try {
-        const response = await applypost(applyData, token, jobId);
+        const response = await applypatch(applyData, token, jobId);
         console.log(response);
-        nav(`jd/${jdId}`);
+        nav(`/jd/apply/edit/${jdId}`);
       } catch (error) {
         console.error(error);
         alert(JSON.stringify(error));
       }
     } else {
       alert("모든 항목을 다 입력하세요.");
+    }
+  };
+
+  const handleStatusPatch = async (jobId: string, token: string) => {
+    try {
+      const response = await statuspatch(jobId, token);
+      console.log(response);
+      if (jdId) {
+        getApplyData(jdId, user.token);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
     }
   };
 
@@ -231,7 +263,9 @@ const ApplyEditPage: React.FC = () => {
               <img
                 src={arrowLeft}
                 alt="arrowicon"
-                onClick={() => (editing ? openDiscardModal() : nav(-1))}
+                onClick={() =>
+                  editing ? openDiscardModal() : nav(`/jd/${jdId}`)
+                }
               />
               자기소개서 작성
             </Title>
@@ -241,8 +275,8 @@ const ApplyEditPage: React.FC = () => {
               <ToggleWrapper>
                 작성완료
                 <Toggle
-                  isActive={completed}
-                  onClick={() => (!editing ? setCompleted(!completed) : null)}
+                  isActive={completed === "작성완료"}
+                  onClick={() => (!editing ? handleCompeletedButton() : null)}
                 />
               </ToggleWrapper>
               {editing ? (
@@ -250,14 +284,17 @@ const ApplyEditPage: React.FC = () => {
                   isNotNull={isAllFilled}
                   onClick={() => {
                     if (isAllFilled) {
-                      handleApplyPost(applyData, user.token, jdId);
+                      handleApplyPatch(applyData, user.token, jdId);
                     }
                   }}
                 >
                   저장
                 </SaveButton>
               ) : (
-                <EditButton iscanEdit={completed} onClick={handleEditButton}>
+                <EditButton
+                  iscanEdit={completed === "작성중"}
+                  onClick={handleEditButton}
+                >
                   수정
                 </EditButton>
               )}

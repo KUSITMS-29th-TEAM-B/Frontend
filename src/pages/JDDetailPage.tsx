@@ -14,9 +14,10 @@ import calendarIcon from "../assets/icons/icon_calendar.svg";
 import linkIcon from "../assets/icons/icon_link.svg";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { formatDateRange } from "./JDListPage";
-import { jobdescriptionget } from "../services/jd";
+import { jobdelete, jobdescriptionget } from "../services/jd";
 import { getCookie } from "../services/cookie";
 import PlaneLoading from "../components/common/Loading";
+import JDDeleteModal from "../components/JD/JDDeleteModal";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
@@ -38,6 +39,20 @@ const JDDetailPage: React.FC = () => {
   const firstTime = jdData.writeStatus === "NOT_APPLIED"; // 자기소개서 작성한 이력 여부
   const user = getCookie("user");
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (jdId) {
+      handleJDDelete(jdId, user.token);
+    }
+    document.body.style.overflow = "auto";
+  };
 
   const ExptoggleContainer = () => {
     if (!active) {
@@ -106,8 +121,25 @@ const JDDetailPage: React.FC = () => {
     setIsLoading(false);
   };
 
+  const handleJDDelete = async (jobId: string, token: string) => {
+    try {
+      const response = await jobdelete(jobId, token);
+      console.log(response);
+      nav("/jd");
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   return (
     <StyledDivContainer className="page">
+      {
+        <JDDeleteModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        ></JDDeleteModal>
+      }
       {!isLoading ? (
         <MainContainer>
           <CenteredContainer
@@ -127,7 +159,11 @@ const JDDetailPage: React.FC = () => {
             </ToggleContainer>
             <TopTitleBar>
               <Title>
-                <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
+                <img
+                  src={arrowLeft}
+                  alt="arrowicon"
+                  onClick={() => nav(`/jd`)}
+                />
                 공고 상세
               </Title>
               <TopButton onClick={handleNavigate}>
@@ -156,7 +192,7 @@ const JDDetailPage: React.FC = () => {
                   >
                     수정
                   </div>
-                  <div>삭제</div>
+                  <div onClick={openModal}>삭제</div>
                 </div>
               </JobStatusBar>
               <JobTopBox>

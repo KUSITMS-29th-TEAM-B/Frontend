@@ -7,8 +7,8 @@ import OneDatePick from "../components/common/DatePicker";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/JD/JDEditModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
-import { jobpost } from "../services/jd";
-import { JobAPI } from "../types/type";
+import { jobdescriptionget, jobpatch, jobpost } from "../services/jd";
+import { JobAPI, JobDescriptionAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
 
 const JDEditPage: React.FC = () => {
@@ -16,31 +16,38 @@ const JDEditPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
   const user = getCookie("user");
-  const [jobData, setJobData] = useState<JobAPI>({
-    title: "",
+  const [jdData, setJdData] = useState<JobDescriptionAPI>({
     enterpriseName: "",
+    title: "",
+    remainingDate: "",
     content: "",
     link: "",
+    writeStatus: "",
+    createdAt: "",
     startAt: null,
     endedAt: null,
   });
   const jdId = useParams().jdId;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "auto",
     });
+    if (jdId) {
+      getJobData(jdId, user.token);
+    }
   }, []);
 
   // endTime 계산
   const getEndTime = () => {
-    if (!jobData.endedAt) return null; // endDate가 null이면 null 반환
+    if (!jdData.endedAt) return null; // endDate가 null이면 null 반환
 
     const hours = parseInt(selectedTime.split(":")[0]);
     const minutes = parseInt(selectedTime.split(":")[1]);
 
-    const endTime = new Date(jobData.endedAt); // endDate를 기반으로 새 Date 객체 생성
+    const endTime = new Date(jdData.endedAt); // endDate를 기반으로 새 Date 객체 생성
     endTime.setHours(hours, minutes, 0); // 시간과 분 설정
     console.log("최종시간은", endTime);
     return endTime;
@@ -62,30 +69,30 @@ const JDEditPage: React.FC = () => {
   };
 
   const handleSDateChange = (date: Date) => {
-    if (!jobData.startAt && !jobData.endedAt) {
-      setJobData({ ...jobData, startAt: date });
-    } else if (jobData.endedAt && date < jobData.endedAt) {
-      setJobData({ ...jobData, startAt: date });
+    if (!jdData.startAt && !jdData.endedAt) {
+      setJdData({ ...jdData, startAt: date });
+    } else if (jdData.endedAt && date < jdData.endedAt) {
+      setJdData({ ...jdData, startAt: date });
     } else {
       alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
-      setJobData({ ...jobData, startAt: jobData.endedAt });
+      setJdData({ ...jdData, startAt: jdData.endedAt });
     }
   };
 
   const handleEDateChange = (date: Date) => {
-    if (!jobData.endedAt && !jobData.startAt) {
-      setJobData({ ...jobData, endedAt: date });
-    } else if (jobData.startAt && jobData.startAt) {
-      setJobData({ ...jobData, endedAt: date });
+    if (!jdData.endedAt && !jdData.startAt) {
+      setJdData({ ...jdData, endedAt: date });
+    } else if (jdData.startAt && jdData.startAt) {
+      setJdData({ ...jdData, endedAt: date });
     } else {
       alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
 
-      setJobData({ ...jobData, endedAt: jobData.startAt });
+      setJdData({ ...jdData, endedAt: jdData.startAt });
     }
   };
 
   const handleEditorChange = (newContent: string) => {
-    setJobData({ ...jobData, content: newContent });
+    setJdData({ ...jdData, content: newContent });
   };
 
   //   useEffect(() => {
@@ -95,9 +102,9 @@ const JDEditPage: React.FC = () => {
   //   }, [selectedTime, startDate, endDate]);
 
   //api
-  const handleJDPost = async (job: JobAPI, token: string) => {
+  const handleJDPatch = async (job: JobAPI, jdId: string, token: string) => {
     try {
-      const response = await jobpost(
+      const response = await jobpatch(
         {
           enterpriseName: job.enterpriseName,
           title: job.title,
@@ -106,14 +113,38 @@ const JDEditPage: React.FC = () => {
           startAt: job.startAt,
           endedAt: job.endedAt,
         },
-        user.token
+        jdId,
+        token
       );
       console.log(response);
-      nav("/jd");
+      nav(`/jd/${jdId}`);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
     }
+  };
+
+  const getJobData = async (jdId: string, token: string) => {
+    try {
+      const response = await jobdescriptionget(jdId, token);
+      const jdApiData: JobDescriptionAPI = {
+        enterpriseName: response.data.enterpriseName,
+        title: response.data.title,
+        remainingDate: response.data.remainingDate,
+        content: response.data.link,
+        writeStatus: response.data.writeStatus,
+        link: response.data.link,
+        createdAt: response.data.createdAt,
+        startAt: response.data.startedAt,
+        endedAt: response.data.endedAt,
+      };
+      setJdData(jdApiData);
+      console.log(jdData);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -130,8 +161,8 @@ const JDEditPage: React.FC = () => {
           <CancelButton onClick={openModal}>취소</CancelButton>
           <SaveButton
             onClick={() => {
-              if (jobData.startAt && jobData.endedAt) {
-                handleJDPost(jobData, user.token);
+              if (jdData.startAt && jdData.endedAt && jdId) {
+                handleJDPatch(jdData, jdId, user.token);
               } else {
                 alert("Start date and end date must be provided.");
               }
@@ -147,10 +178,10 @@ const JDEditPage: React.FC = () => {
             <InputContainer>
               <InputTitle>기업명</InputTitle>
               <InputBox
-                value={jobData.enterpriseName}
+                value={jdData.enterpriseName}
                 onChange={(e) =>
-                  setJobData({
-                    ...jobData,
+                  setJdData({
+                    ...jdData,
                     enterpriseName: e.target.value,
                   })
                 }
@@ -159,10 +190,10 @@ const JDEditPage: React.FC = () => {
             <InputContainer>
               <InputTitle>제목</InputTitle>
               <InputBox
-                value={jobData.title}
+                value={jdData.title}
                 onChange={(e) =>
-                  setJobData({
-                    ...jobData,
+                  setJdData({
+                    ...jdData,
                     title: e.target.value,
                   })
                 }
@@ -173,10 +204,10 @@ const JDEditPage: React.FC = () => {
             <InputContainer>
               <InputTitle>지원기간</InputTitle>
               <PeriodBox>
-                {jobData.startAt ? (
+                {jdData.startAt ? (
                   <div className="datepicker">
                     <OneDatePick
-                      date={jobData.startAt}
+                      date={jdData.startAt}
                       setDate={handleSDateChange}
                     />
                   </div>
@@ -189,10 +220,10 @@ const JDEditPage: React.FC = () => {
                   </div>
                 )}
                 <div style={{ marginLeft: 20 }}>~</div>
-                {jobData.endedAt ? (
+                {jdData.endedAt ? (
                   <div className="datepicker">
                     <OneDatePick
-                      date={jobData.endedAt}
+                      date={jdData.endedAt}
                       setDate={handleEDateChange}
                     />
                   </div>
@@ -216,10 +247,10 @@ const JDEditPage: React.FC = () => {
             <InputContainer>
               <InputTitle>링크</InputTitle>
               <InputBox
-                value={jobData.link}
+                value={jdData.link}
                 onChange={(e) =>
-                  setJobData({
-                    ...jobData,
+                  setJdData({
+                    ...jdData,
                     link: e.target.value,
                   })
                 }
@@ -229,7 +260,7 @@ const JDEditPage: React.FC = () => {
         </TopContainer>
         <ContentContainer>
           <BundleEditor
-            content={jobData.content}
+            content={jdData.content}
             onContentChange={handleEditorChange}
           ></BundleEditor>
         </ContentContainer>
