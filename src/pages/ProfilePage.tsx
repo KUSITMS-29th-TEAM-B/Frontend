@@ -39,8 +39,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handlelogout = () => {
-    removeCookie("user");
-    nav(`/sign-in`);
+    removeCookie("user").then(() => nav(`/sign-in`));
   };
 
   useEffect(() => {

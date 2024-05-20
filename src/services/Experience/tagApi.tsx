@@ -11,7 +11,7 @@ export const getPrimeTags = async (token: string) => {
 
 // 하위 태그 조회
 export const getSubTags = async (primeTagId: string, token: string) => {
-  return await client.get(`/api/tags/${primeTagId}`, {
+  return await client.get(`/api/tags/my/${primeTagId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
