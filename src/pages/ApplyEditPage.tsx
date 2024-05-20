@@ -130,10 +130,13 @@ const ApplyEditPage: React.FC = () => {
   const handleCompeletedButton = () => {
     if (completed === "작성완료") {
       setCompleted("작성중");
+      handleStatusPatch(jdId, user.token);
     } else if (completed === "작성중") {
       setCompleted("작성완료");
+      handleStatusPatch(jdId, user.token);
     } else if (completed === "") {
       setCompleted("작성완료");
+      handleStatusPatch(jdId, user.token);
     }
   };
 
@@ -147,9 +150,6 @@ const ApplyEditPage: React.FC = () => {
   useEffect(() => {
     if (completed !== "") {
       console.log("completed 값이 변했습니다:", completed);
-      if (jdId) {
-        handleStatusPatch(jdId, user.token);
-      }
     }
   }, [completed]);
 
@@ -161,6 +161,9 @@ const ApplyEditPage: React.FC = () => {
         answer: apply.answer,
       }));
       setApplyData(mappedData);
+      if (response.data.writeStatus === "WRITTEN") {
+        setCompleted("작성완료");
+      }
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
