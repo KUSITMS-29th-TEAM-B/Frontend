@@ -14,9 +14,10 @@ import calendarIcon from "../assets/icons/icon_calendar.svg";
 import linkIcon from "../assets/icons/icon_link.svg";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { formatDateRange } from "./JDListPage";
-import { jobdescriptionget } from "../services/jd";
+import { jobdelete, jobdescriptionget } from "../services/jd";
 import { getCookie } from "../services/cookie";
 import PlaneLoading from "../components/common/Loading";
+import JDDeleteModal from "../components/JD/JDDeleteModal";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
@@ -31,13 +32,27 @@ const JDDetailPage: React.FC = () => {
     content: "",
     link: "",
     writeStatus: "",
-    createdAt: null,
+    createdAt: "",
     startAt: null,
     endedAt: null,
   });
   const firstTime = jdData.writeStatus === "NOT_APPLIED"; // 자기소개서 작성한 이력 여부
   const user = getCookie("user");
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    if (jdId) {
+      handleJDDelete(jdId, user.token);
+    }
+    document.body.style.overflow = "auto";
+  };
 
   const ExptoggleContainer = () => {
     if (!active) {
@@ -51,9 +66,9 @@ const JDDetailPage: React.FC = () => {
 
   const handleNavigate = () => {
     if (firstTime) {
-      nav(`/jd/${jdId}`);
+      nav(`/jd/apply/${jdId}`);
     } else {
-      nav(`/jd/edit/${jdId}`);
+      nav(`/jd/apply/edit/${jdId}`);
     }
   };
 
@@ -73,9 +88,19 @@ const JDDetailPage: React.FC = () => {
     }
   }, [active]);
 
+  const formatDate = (createdAt: Date) => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date
+      .getFullYear()
+      .toString()
+      .substring(2)}`;
+    return formattedDate;
+  };
+
   const getJobData = async (jdId: string, token: string) => {
     try {
       const response = await jobdescriptionget(jdId, token);
+      const FormatstartDate = formatDate(response.data.createdAt);
       const jdApiData: JobDescriptionAPI = {
         enterpriseName: response.data.enterpriseName,
         title: response.data.title,
@@ -83,7 +108,7 @@ const JDDetailPage: React.FC = () => {
         content: response.data.link,
         writeStatus: response.data.writeStatus,
         link: response.data.link,
-        createdAt: response.data.createdAt,
+        createdAt: FormatstartDate,
         startAt: response.data.startedAt,
         endedAt: response.data.endedAt,
       };
@@ -96,8 +121,25 @@ const JDDetailPage: React.FC = () => {
     setIsLoading(false);
   };
 
+  const handleJDDelete = async (jobId: string, token: string) => {
+    try {
+      const response = await jobdelete(jobId, token);
+      console.log(response);
+      nav("/jd");
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   return (
     <StyledDivContainer className="page">
+      {
+        <JDDeleteModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        ></JDDeleteModal>
+      }
       {!isLoading ? (
         <MainContainer>
           <CenteredContainer
@@ -117,7 +159,11 @@ const JDDetailPage: React.FC = () => {
             </ToggleContainer>
             <TopTitleBar>
               <Title>
-                <img src={arrowLeft} alt="arrowicon" onClick={() => nav(-1)} />
+                <img
+                  src={arrowLeft}
+                  alt="arrowicon"
+                  onClick={() => nav(`/jd`)}
+                />
                 공고 상세
               </Title>
               <TopButton onClick={handleNavigate}>
@@ -129,13 +175,25 @@ const JDDetailPage: React.FC = () => {
             </TopTitleBar>
             <JobContainer>
               <JobStatusBar>
-                {jdData.writeStatus !== "NOT_APPLIED" && (
-                  <StateBox
-                    className="job_status"
-                    status={jdData.writeStatus}
-                  />
-                )}
-                <div className="job_date">{jdData.createdAt?.toString()}</div>
+                <div className="left_container">
+                  {jdData.writeStatus !== "NOT_APPLIED" && (
+                    <StateBox
+                      className="job_status"
+                      status={jdData.writeStatus}
+                    />
+                  )}
+                  <div className="job_date">{jdData.createdAt?.toString()}</div>
+                </div>
+                <div className="right_container">
+                  <div
+                    onClick={() => {
+                      nav(`/jd/edit/${jdId}`);
+                    }}
+                  >
+                    수정
+                  </div>
+                  <div onClick={openModal}>삭제</div>
+                </div>
               </JobStatusBar>
               <JobTopBox>
                 <JobTopTitleBox>
@@ -337,20 +395,39 @@ const JobTopBox = styled.div`
 `;
 
 const JobStatusBar = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: row;
-  padding: 0.75rem 2rem;
-  height: 3rem;
-  background: ${(props) => props.theme.colors.neutral50};
-  border-top-right-radius: 0.9rem;
-  border-top-left-radius: 0.9rem;
-  align-items: center;
-  .job_date {
-    color: ${(props) => props.theme.colors.neutral500};
-    ${(props) => props.theme.fonts.cap1};
-    margin-left: 1rem;
-  }
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.75rem 2rem;
+    height: 3rem;
+    background: ${(props) => props.theme.colors.neutral50};
+    border-top-right-radius: 0.9rem;
+    border-top-left-radius: 0.9rem;
+    align-items: center;
+    .left_container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    .job_date {
+        color:  ${(props) => props.theme.colors.neutral500};
+        ${(props) => props.theme.fonts.cap1};
+        margin-left: 1rem;
+    }
+    }
+    .right_container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        color:  ${(props) => props.theme.colors.neutral500};
+        font-size: 1rem;
+        font-style: normal;
+        gap: 1rem;
+        font-weight: 400;
+        text-decoration-line: underline;
+    }
+    
 `;
 
 const JobTopTitleBox = styled.div`

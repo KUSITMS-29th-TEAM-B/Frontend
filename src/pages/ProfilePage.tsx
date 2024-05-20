@@ -37,8 +37,7 @@ const ProfilePage = () => {
   ];
 
   const handlelogout = () => {
-    removeCookie("user");
-    nav(`/sign-in`);
+    removeCookie("user").then(() => nav(`/sign-in`));
   };
 
   useEffect(() => {
