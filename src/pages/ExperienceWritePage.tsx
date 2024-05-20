@@ -164,7 +164,7 @@ const ExperienceWritePage = () => {
         newKeywordsNames,
         user?.token
       );
-      const newStrongPointIds = newStrongPointsRes.data.map(
+      const newStrongPointIds = newStrongPointsRes.data.strongPoints.map(
         (item: KeywordType) => item.id
       );
       const totalStrongPointIds = [
