@@ -10,7 +10,7 @@ import {
 import { ArrowDown, ArrowLeft, Plus2, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Chip from "../components/common/Chip";
 import OneDatePick from "../components/common/DatePicker";
 import Input from "../components/common/Input";
@@ -22,8 +22,16 @@ import airplaneImg from "../assets/images/airplane.png";
 import Tag from "../components/common/Tag";
 import RadioGroup from "../components/common/RadioGroup";
 import { myKeywords } from "../services/Experience/myKeywords";
-import { postExperience } from "../services/Experience/experienceApi";
-import { ExperienceType, KeywordType, TagType } from "../types/experience";
+import {
+  getExperience,
+  patchExperience,
+} from "../services/Experience/experienceApi";
+import {
+  ExperienceDetailType,
+  ExperienceType,
+  KeywordType,
+  TagType,
+} from "../types/experience";
 import { getKeywords, postKeyword } from "../services/Experience/keywordApi";
 import { getCookie } from "../services/cookie";
 import {
@@ -36,11 +44,11 @@ import {
 type TabType = "basic" | "my";
 type TagPopperType = "prime" | "sub" | null;
 
-const ExperienceWritePage = () => {
+const ExperienceEditPage = () => {
   const user = getCookie("user");
+  const { id: expId } = useParams();
   const theme = useTheme();
   const navigate = useNavigate();
-  const [expId, setExpId] = React.useState("");
   const [expData, setExpData] = React.useState<ExperienceType>({
     title: "",
     parentTagId: "",
@@ -164,7 +172,7 @@ const ExperienceWritePage = () => {
         newKeywordsNames,
         user?.token
       );
-      const newStrongPointIds = newStrongPointsRes.data.strongPoints.map(
+      const newStrongPointIds = newStrongPointsRes.data.map(
         (item: KeywordType) => item.id
       );
       const totalStrongPointIds = [
@@ -176,13 +184,14 @@ const ExperienceWritePage = () => {
         strongPointIds: totalStrongPointIds,
       };
     }
-    // 질문 저장
-    postExperience(experienceData, user?.token)
-      .then((res) => {
-        setExpId(res.data.id);
-        openModal();
-      })
-      .catch((err) => console.log(err));
+    // 질문 수정
+    if (expId) {
+      patchExperience(expId, experienceData, user?.token)
+        .then((res) => {
+          openModal();
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   // 질문 답변 핸들러
@@ -353,6 +362,24 @@ const ExperienceWritePage = () => {
   //
   //
   React.useEffect(() => {
+    // 경험 데이터 조회
+    if (expId) {
+      getExperience(expId, user?.token).then((res) => {
+        console.log(res);
+        // 상위태그, 하위태그 객체 형태로 저장
+        // 역량 키워드 => 객체 리스트로 저장
+        const { id, parentTag, childTag, strongPoints, ...rest } = res.data;
+        setExpData({
+          ...rest,
+          parentTagId: parentTag.id,
+          childTagId: childTag.id,
+          strongPointIds: strongPoints.map((item: KeywordType) => item.id),
+        });
+        setPrimeTagItem(parentTag);
+        setSubTagItem(childTag);
+        setCheckedKeywords(strongPoints);
+      });
+    }
     // 상위 태그 조회
     getPrimeTags(user?.token)
       .then((res) => {
@@ -952,4 +979,4 @@ const TagSearchBox = styled.div`
   }
 `;
 
-export default ExperienceWritePage;
+export default ExperienceEditPage;

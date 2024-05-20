@@ -28,24 +28,16 @@ interface DatePickerProps {
 }
 
 const OneDatePick: React.FC<DatePickerProps> = ({ date, setDate, style }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      setStartDate(date);
       setDate(date);
-    } else {
     }
   };
 
-  useEffect(() => {
-    setStartDate(date);
-  }, [date]);
-
   return (
     <StyledDatePicker
-      isactive={startDate !== null}
-      selected={startDate}
+      isactive={date !== null}
+      selected={date}
       onChange={handleDateChange}
       closeOnScroll={true}
       style={style || ""}

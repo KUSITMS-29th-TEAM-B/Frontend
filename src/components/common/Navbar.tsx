@@ -34,7 +34,7 @@ const Navbar = () => {
           </MenuItem>
         </MenuList>
       </ItemContainer>
-      <ItemContainer>
+      <ItemContainer className="profile">
         {user?.token ? (
           <>
             <img
@@ -81,7 +81,10 @@ const ItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  gap: 2.5rem;
+  &.profile {
+    gap: 0.5rem;
+  }
 `;
 
 const MenuList = styled.div`

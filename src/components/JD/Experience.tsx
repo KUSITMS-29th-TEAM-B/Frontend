@@ -5,17 +5,20 @@ import { detailStore } from "../../store/jdStore";
 import { Question } from "../../types/type";
 import bookmarkFillIcon from "../../assets/icons/icon_bookmark_fill.svg";
 import bookmarkBlankIcon from "../../assets/icons/icon_bookmark_blank.svg";
+import dayjs from "dayjs";
 
 interface ExpProps {
   type?: "card" | "section";
-  id: number;
+  id: string | number;
   title: string;
   tags: string[];
   maintag: string;
   subtag: string;
-  period: string;
+  period?: string;
   bookmark?: boolean;
   question?: number;
+  startedAt?: string;
+  endedAt?: string;
   detail?: Question[];
   checkedKeywords?: string[];
   onClick?: () => void;
@@ -29,7 +32,8 @@ const Experience: React.FC<ExpProps> = ({
   maintag,
   subtag,
   bookmark,
-  period,
+  startedAt,
+  endedAt,
   question,
   detail,
   checkedKeywords,
@@ -90,7 +94,10 @@ const Experience: React.FC<ExpProps> = ({
       <SubContainer className={isSection ? "section" : ""}>
         <div>{maintag + ">" + subtag}</div>
         <div>|</div>
-        <div>{period}</div>
+        <div>
+          {dayjs(new Date(startedAt || new Date())).format("YYYY.MM.DD")}~
+          {dayjs(new Date(endedAt || new Date())).format("YYYY.MM.DD")}
+        </div>
       </SubContainer>
       {question ? (
         <AnswerContainer>

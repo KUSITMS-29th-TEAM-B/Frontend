@@ -8,12 +8,12 @@ import JDChip from "./JDChip";
 import ArrowIcon from "../../assets/icons/icon_arrow_right_main500.svg";
 
 interface JobContainerProps {
-  expId: number;
+  expId: number | string;
 }
 
 const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
-  const expData = ExpData[expId - 1];
-  const [detailId, setDetailId] = useRecoilState<number>(detailStore);
+  const expData = ExpData[0];
+  const [detailId, setDetailId] = useRecoilState<number | string>(detailStore);
 
   return (
     <ExpContainer>
@@ -68,32 +68,32 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
 export default ExperienceBox;
 
 const ScrollDiv = styled.div`
-    width: 100%;
-    overflow-y: auto;
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        border-radius: 2px;
-        background: #ccc;
-    }
-    ::-webkit-scrollbar-track {
-    }
+  width: 100%;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
+  ::-webkit-scrollbar-track {
+  }
 `;
 
 const ExpContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 40rem;
-    align-items: flex-start;
-    gap: 0.625rem;
-    //padding: 2rem;
-    flex-shrink: 0;
-    border-radius: 0.9rem;
-    border: 1px solid var(--neutral-200, #EEEFF7);
-    background: var(--neutral-0, #FFF);
-    //min-height: 100rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 40rem;
+  align-items: flex-start;
+  gap: 0.625rem;
+  //padding: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  border: 1px solid var(--neutral-200, #eeeff7);
+  background: var(--neutral-0, #fff);
+  //min-height: 100rem;
 `;
 
 const TagContainer = styled.div`
@@ -114,7 +114,7 @@ const ButtonContainer = styled.div`
   flex-direction: row;
   align-items: center;
   color: ${(props) => props.theme.colors.neutral600};
-  div{
+  div {
     width: 100%;
     ${(props) => props.theme.fonts.cap3};
   }
@@ -145,7 +145,7 @@ const SubContainer = styled.div`
   gap: 0.75rem;
   color: ${(props) => props.theme.colors.neutral500};
   ${(props) => props.theme.fonts.body4};
-  border-bottom: 1px solid  ${(props) => props.theme.colors.neutral300};
+  border-bottom: 1px solid ${(props) => props.theme.colors.neutral300};
   padding-bottom: 1.25rem;
 `;
 
@@ -161,42 +161,42 @@ const TopContainer = styled.div`
 `;
 
 const ExpBottomBox = styled.div`
-    height: 27rem;
-    color: var(--neutral-700, #343A5D);
-    //overflow-y: scroll;
-    margin: 0rem 0rem 2rem 2rem;
+  height: 27rem;
+  color: var(--neutral-700, #343a5d);
+  //overflow-y: scroll;
+  margin: 0rem 0rem 2rem 2rem;
 `;
 
 const ChipWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  align-items: center;
+  text-align: center;
 `;
 
 const QuestionsWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    padding-right: 1.5rem;
-    flex-direction: column;
-    justify-content: start;
-    margin-top: 1.25rem;
-    .question-title{
-        margin-top: 0.5rem;
-        ${(props) => props.theme.fonts.subtitle3};
-        color: ${(props) => props.theme.colors.neutral700};
-    }
+  width: 100%;
+  display: flex;
+  padding-right: 1.5rem;
+  flex-direction: column;
+  justify-content: start;
+  margin-top: 1.25rem;
+  .question-title {
+    margin-top: 0.5rem;
+    ${(props) => props.theme.fonts.subtitle3};
+    color: ${(props) => props.theme.colors.neutral700};
+  }
 `;
 
 const AnswerWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    padding: 1rem 1.125rem;
-    align-items: center;
-    gap: 0.625rem;
-    border-radius: 0.75rem;
-    height: 6rem;
-    background: ${(props) => props.theme.colors.neutral50};
-    margin-top: 0.75rem;
+  width: 100%;
+  display: flex;
+  padding: 1rem 1.125rem;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.75rem;
+  height: 6rem;
+  background: ${(props) => props.theme.colors.neutral50};
+  margin-top: 0.75rem;
 `;
 
 const AnswerText = styled.div<{ isEmpty: boolean }>`
