@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { ArrowRight } from "../../assets";
-import { useRecoilState } from "recoil";
-import { keywordState, yearState } from "../../store/selectedStore";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { primeTagState, yearState } from "../../store/selectedStore";
 import PrimeTagCard from "./PrimeTagCard";
 import { moreData } from "../../services/Experience/moreData";
 
 const MoreTab = () => {
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
-  const [keyword, setKeyword] = useRecoilState(keywordState);
+  const setSelectedPrimeTag = useSetRecoilState(primeTagState);
 
   const totalNum = moreData.length;
   /**
@@ -24,7 +24,7 @@ const MoreTab = () => {
             background: "transparent",
             border: "none",
           }}
-          onClick={() => setKeyword(null)}
+          onClick={() => setSelectedPrimeTag(null)}
         >
           <ArrowRight />
         </button>

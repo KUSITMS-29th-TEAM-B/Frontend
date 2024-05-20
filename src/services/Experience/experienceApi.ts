@@ -43,3 +43,39 @@ export const deleteExperience = async (expId: string, token: string) => {
     },
   });
 };
+
+// 유저 경험 연도 목록 조회
+export const getExperienceYears = async (token: string) => {
+  return await client.get(`/api/experiences/all-years`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// 경험 목록 조회
+export const getExperienceList = async (
+  year: number,
+  primeTagId: string,
+  subTagId: string | undefined,
+  token: string
+) => {
+  if (subTagId) {
+     return await client.get(
+       `/api/experiences?year=${year}&parent-tag=${primeTagId}&child-tag=${subTagId}`,
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
+  }
+  return await client.get(
+    `/api/experiences?year=${year}&parent-tag=${primeTagId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

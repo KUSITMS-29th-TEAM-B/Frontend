@@ -1,35 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
 import { deleteState, yearState } from "../../store/selectedStore";
-import { keywordState } from "../../store/selectedStore";
+import { primeTagState } from "../../store/selectedStore";
 import { DeleteIcon } from "../../assets";
+import { TagType } from "../../types/experience";
+import { getYearPrimeTags } from "../../services/Experience/tagApi";
 
 interface YearCircleProps {
   year: number;
-  keywordList: string[];
+  primeTagList: TagType[];
   hoveredYear: number | null;
   openDeleteModal: () => void;
 }
 
 const YearCircle: React.FC<YearCircleProps> = ({
   year,
-  keywordList,
+  primeTagList,
   hoveredYear,
   openDeleteModal,
 }) => {
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
-  const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
-    keywordState
-  );
+  const [selectedPrimeTag, setSelectedPrimeTag] =
+    useRecoilState<TagType | null>(primeTagState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
+
 
   const radius = 20;
   const centralWidth = 84;
@@ -69,10 +71,10 @@ const YearCircle: React.FC<YearCircleProps> = ({
   };
 
   // 주변 원(키워드 원) 클릭 함수
-  const handleTagClick = (e: any, year: number, keyword: string) => {
+  const handleTagClick = (e: any, year: number, primeTag: TagType) => {
     e.stopPropagation();
     setSelectedYear(year);
-    setSelectedKeyword(keyword);
+    setSelectedPrimeTag(primeTag);
   };
 
   //
@@ -83,11 +85,12 @@ const YearCircle: React.FC<YearCircleProps> = ({
       <YearCircleContainer isActive={isSelectedYear || isHoveredYear}>
         <YearText isActive={isSelectedYear || isHoveredYear}>{year}</YearText>
         {(isSelectedYear || isHoveredYear) &&
-          keywordList.map((keyword, index) => {
+          primeTagList.map((tag, index) => {
             // if (index < angles.length) {
             const position = calculatePosition(index);
             return (
               <KeywordMotionDiv
+                id={tag.id}
                 key={index}
                 x={position.x}
                 y={position.y}
@@ -96,14 +99,16 @@ const YearCircle: React.FC<YearCircleProps> = ({
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                onClick={(e) => handleTagClick(e, year, keyword)}
+                onClick={(e) => handleTagClick(e, year, tag)}
               >
                 <KeywordCircle
-                  animate={{ scale: selectedKeyword === keyword ? 0.25 : 0.2 }}
+                  animate={{
+                    scale: selectedPrimeTag?.id === tag.id ? 0.25 : 0.2,
+                  }}
                   whileHover={{ scale: 0.25 }}
                 >
-                  {keyword}
-                  {selectedKeyword && isDelete && index !== 5 ? (
+                  {tag.name}
+                  {selectedPrimeTag && isDelete && index !== 5 ? (
                     <DeleteIcon
                       style={{ position: "absolute", top: -10, right: -5 }}
                       onClick={openDeleteModal}

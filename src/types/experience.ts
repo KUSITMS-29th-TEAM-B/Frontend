@@ -7,7 +7,7 @@ export interface ExperienceType {
   title: string;
   parentTagId: string;
   childTagId: string;
-  strongPointIds: KeywordType[];
+  strongPointIds: string[];
   contents: QuestionType[];
   startedAt: string;
   endedAt: string;
@@ -32,4 +32,13 @@ export interface KeywordType {
 export interface TagType {
   id: string;
   name: string;
+}
+
+export interface TagMenuType extends TagType {
+  experienceCount: number;
+}
+
+export interface YearData {
+  year: number;
+  tags: TagType[];
 }
