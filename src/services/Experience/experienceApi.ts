@@ -52,3 +52,30 @@ export const getExperienceYears = async (token: string) => {
     },
   });
 };
+
+// 경험 목록 조회
+export const getExperienceList = async (
+  year: number,
+  primeTagId: string,
+  subTagId: string | undefined,
+  token: string
+) => {
+  if (subTagId) {
+     return await client.get(
+       `/api/experiences?year=${year}&parent-tag=${primeTagId}&child-tag=${subTagId}`,
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
+  }
+  return await client.get(
+    `/api/experiences?year=${year}&parent-tag=${primeTagId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

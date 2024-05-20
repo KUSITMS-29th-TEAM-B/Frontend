@@ -38,7 +38,13 @@ import {
 } from "../../services/Experience/tagApi";
 import { getCookie } from "../../services/cookie";
 import { TagType } from "../../types/type";
-import { TagMenuType } from "../../types/experience";
+import {
+  ExperienceDetailType,
+  KeywordType,
+  TagMenuType,
+} from "../../types/experience";
+import { getExperienceList } from "../../services/Experience/experienceApi";
+import { getKeywords } from "../../services/Experience/keywordApi";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {
@@ -58,7 +64,14 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
     React.useState<TabType>("basic");
 
   const [primeTagYears, setPrimeTagYears] = React.useState();
+  const [totalExpCount, setTotalExpCount] = React.useState(0);
   const [subTagMenus, setSubTagMenus] = React.useState<TagMenuType[]>([]);
+  const [selectedSubTag, setSelectedSubTag] = React.useState<TagMenuType>();
+  const [experiences, setExperiences] = React.useState<ExperienceDetailType[]>(
+    []
+  );
+  const [myKeywordList, setMyKeywordList] = React.useState<KeywordType[]>([]);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
@@ -78,38 +91,50 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
   const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
   const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
-  const currentMyKeywords = myKeywords.slice(
+  const currentMyKeywords = myKeywordList.slice(
     firstMyKeywordIndex,
     lastMyKeywordIndex
   );
 
   // 체크된 역량 키워드 리스트
-  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = React.useState<KeywordType[]>(
+    []
+  );
 
-  // 키워드 체크박스 관리 함수
-  const handleCheckedKeywords = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 키워드 체크박스 체크 여부
+  const isKeywordChecked = (item: KeywordType) => {
+    return checkedKeywords.some(
+      (keyword) => keyword.id === item.id && keyword.name === item.name
+    );
+  };
+
+  // 키워드 체크박스 핸들러
+  const handleKeywordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: TabType
+  ) => {
     if (e.target) {
-      e.target.checked
-        ? setCheckedKeywords([...checkedKeywords, e.target.value])
-        : setCheckedKeywords(
-            checkedKeywords.filter((choice) => choice !== e.target.value)
-          );
+      if (e.target.checked) {
+        const keywordId = e.target.value;
+        const selectedKeyword = (
+          type === "basic" ? basicKeywords : myKeywordList
+        ).find((item) => item.id === keywordId);
+        setCheckedKeywords([
+          ...checkedKeywords,
+          { id: keywordId, name: selectedKeyword?.name || "" },
+        ]);
+      } else {
+        setCheckedKeywords(
+          checkedKeywords.filter((item) => item.id !== e.target.value)
+        );
+      }
     }
   };
 
   // 역량 키워드 필터된 경험 데이터
-  const filteredExpData = ExpData.filter((item) =>
-    item.tags.some((tag) => checkedKeywords.includes(tag))
+  const filteredExpData = experiences.filter((exp: ExperienceDetailType) =>
+    exp.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
   );
-
-  // 임시 데이터
-  const years = [2000, 2005, 2010, 2015, 2020];
-  const menus = [
-    { title: "전체", num: 60 },
-    { title: "기업프로젝트", num: 60 },
-    { title: "밋업데이", num: 60 },
-    { title: "대외홍보팀", num: 60 },
-  ];
 
   // 역량 키워드 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -131,16 +156,42 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   };
 
   React.useEffect(() => {
+    // My 역량 키워드 조회
+    if (user?.token) {
+      getKeywords(user?.token)
+        .then((res) => setMyKeywordList(res.data.strongPoints))
+        .catch((err) => console.log(err));
+    }
+  }, [user?.token]);
+
+  // 경험 목록 조회
+  React.useEffect(() => {
+    if (selectedYear && selectedPrimeTag && user?.token) {
+      getExperienceList(
+        selectedYear,
+        selectedPrimeTag.id,
+        selectedSubTag?.id,
+        user?.token
+      ).then((res) => {
+        setExperiences(res.data.experiences);
+      });
+    }
+  }, [selectedSubTag, selectedYear, selectedPrimeTag, user?.token]);
+
+  // 상위태그 내 하위태그 목록 조회 (메뉴)
+  React.useEffect(() => {
     if (selectedYear && selectedPrimeTag && user?.token) {
       getPrimeTagSubTags(selectedYear, selectedPrimeTag.id, user?.token).then(
         (res) => {
-          console.log(res);
-          setSubTagMenus(res.data.tagInfos);
+          const { totalExperienceCount, tagInfos } = res.data;
+          setTotalExpCount(totalExperienceCount);
+          setSubTagMenus(tagInfos);
         }
       );
     }
   }, [selectedYear, selectedPrimeTag, user?.token]);
 
+  // 상위태그 연도 리스트 조회
   React.useEffect(() => {
     if (selectedPrimeTag && user?.token) {
       getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) =>
@@ -174,8 +225,19 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
             onChange={setSelectedYear}
           />
           <MenuList>
+            <MenuItem
+              className={selectedSubTag ? "" : "active"}
+              onClick={() => setSelectedSubTag(undefined)}
+            >
+              <div className="text">전체</div>
+              <div className="text">{totalExpCount}</div>
+            </MenuItem>
             {subTagMenus?.map((item, index) => (
-              <MenuItem key={item.id}>
+              <MenuItem
+                key={item.id}
+                className={item.id === selectedSubTag?.id ? "active" : ""}
+                onClick={() => setSelectedSubTag(item)}
+              >
                 <div className="text">{item.name}</div>
                 <div className="text">{item.experienceCount}</div>
                 {isDelete && index !== 0 ? (
@@ -327,16 +389,16 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                       <Checkbox
                         value={item.id}
                         label={item.name}
-                        checked={checkedKeywords.includes(item.name)}
-                        onChange={handleCheckedKeywords}
+                        checked={isKeywordChecked(item)}
+                        onChange={(e) => handleKeywordChange(e, "basic")}
                       />
                     ))
                   : currentMyKeywords.map((item) => (
                       <Checkbox
-                        value={item}
-                        label={item}
-                        checked={checkedKeywords.includes(item)}
-                        onChange={handleCheckedKeywords}
+                        value={item.id}
+                        label={item.name}
+                        checked={isKeywordChecked(item)}
+                        onChange={(e) => handleKeywordChange(e, "my")}
                       />
                     ))}
               </div>
@@ -355,20 +417,23 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
         </KeywordSelect>
         {/* 경험 카드 리스트 */}
         <ExperienceList>
-          {(checkedKeywords.length === 0 ? ExpData : filteredExpData).map(
-            (post, index: number) => (
+          {(checkedKeywords.length === 0 ? experiences : filteredExpData).map(
+            (exp: ExperienceDetailType, index: number) => (
               <Experience
-                id={post.id}
+                id={exp.id}
                 key={index}
-                title={post.title}
-                tags={post.tags}
-                maintag={post.mainTag}
-                subtag={post.subTag}
-                period={post.period}
+                title={exp.title}
+                tags={exp?.strongPoints.map((item: KeywordType) => item.name)}
+                maintag={exp.parentTag.name}
+                subtag={exp.childTag.name}
                 question={selectedQ}
-                detail={post.detail}
-                checkedKeywords={checkedKeywords}
-                onClick={() => navigate(`/experience/detail/${post.id}`)}
+                detail={exp.contents}
+                startedAt={exp.startedAt}
+                endedAt={exp.endedAt}
+                checkedKeywords={checkedKeywords.map(
+                  (item: KeywordType) => item.name
+                )}
+                onClick={() => navigate(`/experience/detail/${exp.id}`)}
               />
             )
           )}
@@ -433,7 +498,8 @@ const MenuItem = styled.div`
   .text {
     color: ${(props) => props.theme.colors.neutral500};
   }
-  &:hover {
+  &:hover,
+  &.active {
     border-radius: 4px;
     background: #fff;
     .text {

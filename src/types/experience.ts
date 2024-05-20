@@ -7,7 +7,7 @@ export interface ExperienceType {
   title: string;
   parentTagId: string;
   childTagId: string;
-  strongPointIds: KeywordType[];
+  strongPointIds: string[];
   contents: QuestionType[];
   startedAt: string;
   endedAt: string;
