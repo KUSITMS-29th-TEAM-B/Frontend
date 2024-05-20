@@ -15,6 +15,13 @@ export interface ExperienceType {
 
 export interface ExperienceDetailType extends ExperienceType {
   id: string;
+  title: string;
+  parentTag: TagType;
+  childTag: TagType;
+  strongPoints: KeywordType[];
+  contents: QuestionType[];
+  startedAt: string;
+  endedAt: string;
 }
 
 export interface KeywordType {
