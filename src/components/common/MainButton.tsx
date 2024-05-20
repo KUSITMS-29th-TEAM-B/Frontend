@@ -11,7 +11,7 @@ const MainButton = ({ children, ...props }: MainButtonProps) => {
 const Button = styled.button`
   flex-shrink: 0;
   border-radius: 67.408px;
-  background: var(--main-500, #7d82ff);
+  background: ${(props) => props.theme.colors.main500};
   padding: 22px 44px;
   color: white;
   border: none;
@@ -20,6 +20,9 @@ const Button = styled.button`
   justify-content: center;
   ${(props) => props.theme.fonts.title4};
   gap: 5px;
+  &:disabled {
+    background: ${(props) => props.theme.colors.neutral500};
+  }
 `;
 
 export default MainButton;

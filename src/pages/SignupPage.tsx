@@ -19,11 +19,11 @@ import { RegisterDataType } from "../types/user";
 import { getCookie, setCookie } from "../services/cookie";
 
 const profileImgUrl = [
-  "../assets/images/profile1.png",
-  "../assets/images/profile2.png",
-  "../assets/images/profile3.png",
-  "../assets/images/profile4.png",
-  "../assets/images/profile5.png",
+  "/assets/profile1.png",
+  "/assets/profile2.png",
+  "/assets/profile3.png",
+  "/assets/profile4.png",
+  "/assets/profile5.png",
 ];
 
 const SignupPage = () => {
@@ -40,6 +40,7 @@ const SignupPage = () => {
     goal: "",
     dream: "",
   });
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false); // 저장 모달
 
@@ -68,18 +69,24 @@ const SignupPage = () => {
 
   const handleRegister = () => {
     register(registerData).then((res) => {
+      setIsLoading(true);
       const token = res.data.accessToken;
+      const refreshToken = res.data.refreshToken;
       getUserInfo(token)
         .then((res) => {
           setCookie("user", {
             ...user,
             nickName: res.data.nickName,
+            profileImgUrl: res.data.profileImgUrl,
             provider: res.data.provider,
+            email: res.data.email,
             token: token,
+            refreshToken: refreshToken,
           });
         })
         .then(() => openModal());
     });
+    setIsLoading(false);
   };
 
   return (
@@ -254,9 +261,12 @@ const SignupPage = () => {
             style={{ background: theme.colors.neutral100 }}
           />
           <MainButton
+            disabled={
+              isLoading ||
+              !(registerData.profileImgUrl && registerData.nickName)
+            }
             style={{
               borderRadius: "8px",
-              background: theme.colors.neutral500,
             }}
             onClick={handleRegister}
           >
