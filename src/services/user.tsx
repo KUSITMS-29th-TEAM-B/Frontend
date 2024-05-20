@@ -8,6 +8,11 @@ export const login = async (loginType: string, accessToken: string) => {
   });
 };
 
+// 로그아웃
+export const logout = async (refreshToken: string) => {
+  return await client.delete(`/api/auth/logout`);
+};
+
 // 회원가입
 export const register = async ({
   registrationToken,
