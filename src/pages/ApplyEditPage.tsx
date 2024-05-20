@@ -16,27 +16,28 @@ import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
-import { applypost } from "../services/jd";
+import { applyget, applypatch, statuspatch } from "../services/jd";
 import { getCookie } from "../services/cookie";
 
-const JDWritePage: React.FC = () => {
+const ApplyEditPage: React.FC = () => {
   const [active, setActive] = useState(false); // 오른쪽 슬라이드 팝업 여부
   const [activebutton, setActivebutton] = useState(""); // 경험 분석 or 공고 보기
   const [applyData, setApplyData] = useState<ApplyAPI[]>([
     { question: "", answer: "" },
     { question: "", answer: "" },
   ]); //문항 데이터
-  const [editing, setEditing] = useState(true); //수정중 여부
-  const [completed, setCompleted] = useState(false); //작성 완료
+  const [editing, setEditing] = useState(false); //수정중 여부
+  const [completed, setCompleted] = useState(""); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
 
-  const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
+  const [detailId, setDetailId] = useRecoilState<number | string>(detailStore); //경험의 고유 id(0이 아니여야함)
   const [isModalOpen, setIsModalOpen] = useState(false); // 문항 삭제 모달
   const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
   const nav = useNavigate();
   const jdId: string = useParams().jdId!; //공고 id
   const user = getCookie("user"); //토큰 받아오기용
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo({
@@ -44,6 +45,9 @@ const JDWritePage: React.FC = () => {
       behavior: "auto",
     });
     // console.log("token", user.token);
+    if (jdId) {
+      getApplyData(jdId, user.token);
+    }
   }, []);
 
   //모든 질문이 다 채워졌는지 검사
@@ -123,6 +127,19 @@ const JDWritePage: React.FC = () => {
     }
   };
 
+  const handleCompeletedButton = () => {
+    if (completed === "작성완료") {
+      setCompleted("작성중");
+      handleStatusPatch(jdId, user.token);
+    } else if (completed === "작성중") {
+      setCompleted("작성완료");
+      handleStatusPatch(jdId, user.token);
+    } else if (completed === "") {
+      setCompleted("작성완료");
+      handleStatusPatch(jdId, user.token);
+    }
+  };
+
   const handleSaveButton = () => {
     if (isAllFilled) {
       setEditing(false);
@@ -130,8 +147,32 @@ const JDWritePage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (completed !== "") {
+      console.log("completed 값이 변했습니다:", completed);
+    }
+  }, [completed]);
+
+  const getApplyData = async (jdId: string, token: string) => {
+    try {
+      const response = await applyget(jdId, token);
+      const mappedData = response.data.applyContentList.map((apply: any) => ({
+        question: apply.question,
+        answer: apply.answer,
+      }));
+      setApplyData(mappedData);
+      if (response.data.writeStatus === "WRITTEN") {
+        setCompleted("작성완료");
+      }
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+    setIsLoading(false);
+  };
+
   //자기소개서 post api 요청
-  const handleApplyPost = async (
+  const handleApplyPatch = async (
     applyData: ApplyAPI[],
     token: string,
     jobId: string
@@ -139,15 +180,28 @@ const JDWritePage: React.FC = () => {
     if (isAllFilled) {
       setEditing(false);
       try {
-        const response = await applypost(applyData, token, jobId);
+        const response = await applypatch(applyData, token, jobId);
         console.log(response);
-        nav(`jd/${jdId}`);
+        nav(`/jd/apply/edit/${jdId}`);
       } catch (error) {
         console.error(error);
         alert(JSON.stringify(error));
       }
     } else {
       alert("모든 항목을 다 입력하세요.");
+    }
+  };
+
+  const handleStatusPatch = async (jobId: string, token: string) => {
+    try {
+      const response = await statuspatch(jobId, token);
+      console.log(response);
+      if (jdId) {
+        getApplyData(jdId, user.token);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
     }
   };
 
@@ -212,7 +266,9 @@ const JDWritePage: React.FC = () => {
               <img
                 src={arrowLeft}
                 alt="arrowicon"
-                onClick={() => (editing ? openDiscardModal() : nav(-1))}
+                onClick={() =>
+                  editing ? openDiscardModal() : nav(`/jd/${jdId}`)
+                }
               />
               자기소개서 작성
             </Title>
@@ -222,8 +278,8 @@ const JDWritePage: React.FC = () => {
               <ToggleWrapper>
                 작성완료
                 <Toggle
-                  isActive={completed}
-                  onClick={() => (!editing ? setCompleted(!completed) : null)}
+                  isActive={completed === "작성완료"}
+                  onClick={() => (!editing ? handleCompeletedButton() : null)}
                 />
               </ToggleWrapper>
               {editing ? (
@@ -231,14 +287,17 @@ const JDWritePage: React.FC = () => {
                   isNotNull={isAllFilled}
                   onClick={() => {
                     if (isAllFilled) {
-                      handleApplyPost(applyData, user.token, jdId);
+                      handleApplyPatch(applyData, user.token, jdId);
                     }
                   }}
                 >
                   저장
                 </SaveButton>
               ) : (
-                <EditButton iscanEdit={completed} onClick={handleEditButton}>
+                <EditButton
+                  iscanEdit={completed === "작성중"}
+                  onClick={handleEditButton}
+                >
                   수정
                 </EditButton>
               )}
@@ -338,7 +397,7 @@ const JDWritePage: React.FC = () => {
   );
 };
 
-export default JDWritePage;
+export default ApplyEditPage;
 
 const StyledDivContainer = styled.div`
   width: 100%;

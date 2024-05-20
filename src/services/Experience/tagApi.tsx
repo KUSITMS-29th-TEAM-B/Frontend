@@ -2,7 +2,7 @@ import client from "../client";
 
 // 상위 태그 조회
 export const getPrimeTags = async (token: string) => {
-  return await client.get(`/api/tags`, {
+  return await client.get(`/api/tags/my`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

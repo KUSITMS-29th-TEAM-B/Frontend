@@ -1,9 +1,7 @@
 import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
-import JDEditPage from "./pages/JDEditPage";
 import JDDetailPage from "./pages/JDDetailPage";
 import JDPlusPage from "./pages/JDPlusPage";
 import JDListPage from "./pages/JDListPage";
@@ -16,7 +14,10 @@ import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import PrivateRoute from "./services/router/PrivateRoute";
 import InfoPage from "./pages/InfoPage";
-import JDWritePage from "./pages/JDWritePage";
+import ApplyEditPage from "./pages/ApplyEditPage";
+import ApplyPage from "./pages/ApplyPage";
+import JDEditPage from "./pages/JDEditPage";
+import ExperienceEditPage from "./pages/ExperienceEditPage";
 
 const App: React.FC = () => {
   return (
@@ -27,17 +28,25 @@ const App: React.FC = () => {
         <Route element={<PrivateRoute />} path="/">
           <Route path="/jd" element={<JDListPage />} />
         </Route>
+        {/* 공고 등록 JDPlusPage */}
         <Route element={<PrivateRoute />} path="/">
-          <Route path="/jd/detail/:id" element={<JDDetailPage />} />
+          <Route path="/jd/post" element={<JDPlusPage />} />
         </Route>
+        {/* 공고 상세  / JDDetailPage */}
+        <Route element={<PrivateRoute />} path="/">
+          <Route path="/jd/:id" element={<JDDetailPage />} />
+        </Route>
+        {/* 공고 수정  / JDEditPage*/}
         <Route element={<PrivateRoute />} path="/">
           <Route path="/jd/edit/:jdId" element={<JDEditPage />} />
         </Route>
+        {/* 자기소개서 - 수정 / ApplyEditPage*/}
         <Route element={<PrivateRoute />} path="/">
-          <Route path="/jd/:jdId" element={<JDWritePage />} />
+          <Route path="/jd/apply/edit/:jdId" element={<ApplyEditPage />} />
         </Route>
+        {/* 자기소개서 - 등록 / ApplyPage*/}
         <Route element={<PrivateRoute />} path="/">
-          <Route path="/jd/post" element={<JDPlusPage />} />
+          <Route path="/jd/apply/:jdId" element={<ApplyPage />} />
         </Route>
         <Route element={<PrivateRoute />} path="/">
           <Route path="/experience" element={<ExperiencePage />} />
@@ -49,6 +58,12 @@ const App: React.FC = () => {
           <Route
             path="/experience/detail/:id"
             element={<ExperienceDetailPage />}
+          />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route
+            path="/experience/detail/:id/edit"
+            element={<ExperienceEditPage />}
           />
         </Route>
         <Route path="/sign-in" element={<SignInPage />} />
