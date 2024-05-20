@@ -16,7 +16,7 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
   const nav = useNavigate();
 
   return (
-    <Container onClick={() => nav(`/jd/detail/${id}`)}>
+    <Container onClick={() => nav(`/jd/${id}`)}>
       <TopContainer>
         <StatusContainer>
           {status !== "CLOSED" && <DdayContainer>{"D-" + dday}</DdayContainer>}

@@ -66,7 +66,7 @@ export type JobDescriptionAPI = {
   content: string;
   writeStatus: string;
   link: string;
-  createdAt: Date | null;
+  createdAt: string;
   startAt: Date | null;
   endedAt: Date | null;
 };

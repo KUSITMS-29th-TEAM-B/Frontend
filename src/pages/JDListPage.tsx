@@ -117,6 +117,7 @@ const JDListPage: React.FC = () => {
         status: job.writeStatus,
       }));
       setJobsData(mappedData);
+      setpageTotal(response.data.totalPage);
       console.log(jobsData);
     } catch (error) {
       console.error(error);
