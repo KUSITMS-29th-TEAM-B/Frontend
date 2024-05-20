@@ -43,3 +43,12 @@ export const deleteExperience = async (expId: string, token: string) => {
     },
   });
 };
+
+// 유저 경험 연도 목록 조회
+export const getExperienceYears = async (token: string) => {
+  return await client.get(`/api/experiences/all-years`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

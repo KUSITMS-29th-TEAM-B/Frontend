@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import YearCircle from "./YearCircle";
@@ -8,6 +8,8 @@ import {
   keywordState,
   yearState,
 } from "../../store/selectedStore";
+import { getExperienceYears } from "../../services/Experience/experienceApi";
+import { getCookie } from "../../services/cookie";
 
 interface YearListProps {
   width: number;
@@ -15,6 +17,7 @@ interface YearListProps {
 }
 
 const YearList = ({ width, openDeleteModal }: YearListProps) => {
+  const user = getCookie("user");
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
@@ -22,11 +25,11 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
     keywordState
   );
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
+  const [years, setYears] = React.useState<number[]>([]);
 
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
   // 임시 데이터
-  const years = [2000, 2005, 2010, 2015, 2020];
   const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅", "승효", "더보기"];
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
@@ -97,6 +100,13 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   //
   //
   //
+
+  useEffect(() => {
+    if (user?.token) {
+      getExperienceYears(user?.token).then((res) => setYears(res.data.years));
+    }
+  }, [user?.token]);
+
   useEffect(() => {
     if (selectedYear) {
       yearRefs.current[selectedYear]?.scrollIntoView({
@@ -139,6 +149,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
 };
 
 const Line = styled.div<{ length: number }>`
+  min-width: 100vw;
   width: ${(props) => props.length}px;
   height: 1px;
   background-color: grey;
