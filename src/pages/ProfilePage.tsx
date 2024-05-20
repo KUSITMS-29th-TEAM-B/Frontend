@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TicketContainer from "../assets/images/ticketContainer.svg";
 import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../services/cookie";
+import PlaneLoading from "../components/common/Loading";
 
 interface UserDetail {
   question: string;
@@ -39,6 +40,7 @@ const ProfilePage = () => {
     },
   ];
   const nav = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   const handlelogout = () => {
     removeCookie("user");
@@ -49,9 +51,14 @@ const ProfilePage = () => {
       top: 0,
       behavior: "auto",
     });
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  return (
+  return !isLoading ? (
     <StyledContainer className="page">
       <Title>마이페이지</Title>
       <TicketWrapper>
@@ -83,6 +90,10 @@ const ProfilePage = () => {
         </ContentWrapper>
       </TicketWrapper>
     </StyledContainer>
+  ) : (
+    <LoadingContainer>
+      <PlaneLoading />
+    </LoadingContainer>
   );
 };
 
@@ -93,6 +104,16 @@ const StyledContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 100%;
+  overflow-y: scroll;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 18%;
   width: 100%;
   overflow-y: scroll;
 `;

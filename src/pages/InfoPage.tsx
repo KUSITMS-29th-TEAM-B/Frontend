@@ -4,10 +4,13 @@ import filghtImage_2 from "../assets/images/image_flight_main_banner.png";
 import overview from "../assets/images/image_info_overview.png";
 import banner from "../assets/images/image_flight_banner.png";
 import info_bg from "../assets/images/image_info_bg.png";
-import info_bg2 from "../assets/images/image_info_bg2.png";
+import info_bg3 from "../assets/images/image_info_bg3.jpg";
+import info_bg4 from "../assets/images/image_info_bg4.jpg";
+import info_bg5 from "../assets/images/image_info_bg5.jpg";
 import Footer from "../components/common/Footer";
 import StyledSubContainer from "../components/Info/SubContainer";
 import Filghtbackground from "../assets/images/image_flight_main_info.png";
+import MainScreen from "../assets/images/image_info_main_screen.png";
 import ScreenImage_1 from "../assets/images/image_info_screen_1.png";
 import ScreenImage_2 from "../assets/images/image_info_screen_2.png";
 import TextContainer from "../components/Info/TextContainer";
@@ -15,6 +18,9 @@ import TextContainer from "../components/Info/TextContainer";
 const InfoPage = () => {
   return (
     <StyledContainer>
+      <MainContainer>
+        <img src={MainScreen} alt="flight" className="overview" />
+      </MainContainer>
       <MainContainer>
         <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
         <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
@@ -47,11 +53,36 @@ const InfoPage = () => {
         </ContentWrapper>
       </MainContainer>
       <MainContainer>
-        <img src={info_bg2} alt="bg" style={{ width: "100vw" }} />
+        <img src={info_bg3} alt="bg" style={{ width: "100vw" }} />
       </MainContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
       </div>
+      <MainContainer>
+        <div className="steptext">Step2</div>
+        <div className="maintext">
+          채용공고부터 자기소개서까지
+          <br />
+          모두 플라잇에서!
+        </div>
+        <KeyWordWrapper>나의 경험</KeyWordWrapper>
+        <ContentWrapper>
+          <div className="main_content">
+            연도별로 나의 경험을 시각화해서 보여줘요
+          </div>
+          <div className="sub_content">
+            정리해놓지 않으면 금방 휘발되는 나의 경험들을 체계적으로 정리할 수
+            있어요
+          </div>
+          <img src={ScreenImage_1} alt="screenshot" className="screenshot" />
+        </ContentWrapper>
+      </MainContainer>
+      <MainContainer>
+        <img src={info_bg4} alt="bg" style={{ width: "100vw" }} />
+      </MainContainer>
+      <MainContainer>
+        <img src={info_bg5} alt="bg" style={{ width: "100vw" }} />
+      </MainContainer>
       <div>
         <img src={overview} alt="overview" className="overview" />
       </div>
@@ -71,6 +102,7 @@ const StyledContainer = styled.div`
   overflow-x: hidden;
   margin-top: 6.125rem;
   padding: 3.5625rem 8.75rem;
+  padding-top: 0;
   padding-bottom: 0;
   .overview{
     width: 100vw;
