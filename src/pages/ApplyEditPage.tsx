@@ -30,7 +30,7 @@ const ApplyEditPage: React.FC = () => {
   const [completed, setCompleted] = useState(""); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
 
-  const [detailId, setDetailId] = useRecoilState<number>(detailStore); //경험의 고유 id(0이 아니여야함)
+  const [detailId, setDetailId] = useRecoilState<number | string>(detailStore); //경험의 고유 id(0이 아니여야함)
   const [isModalOpen, setIsModalOpen] = useState(false); // 문항 삭제 모달
   const [discardModal, setdiscardModal] = useState(false); // 작성내용 버리기 모달
   const [deleteIdx, setDeleteIdx] = useState<number>(-1); //modal 열기전 삭제할 index 저장
