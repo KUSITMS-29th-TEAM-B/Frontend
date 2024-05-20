@@ -6,6 +6,7 @@ import { Question } from "../../types/type";
 import bookmarkFillIcon from "../../assets/icons/icon_bookmark_fill.svg";
 import bookmarkBlankIcon from "../../assets/icons/icon_bookmark_blank.svg";
 import dayjs from "dayjs";
+import { KeywordType, QuestionType } from "../../types/experience";
 
 interface ExpProps {
   type?: "card" | "section";
@@ -19,7 +20,7 @@ interface ExpProps {
   question?: number;
   startedAt?: string;
   endedAt?: string;
-  detail?: Question[];
+  detail?: QuestionType[];
   checkedKeywords?: string[];
   onClick?: () => void;
 }
@@ -46,7 +47,7 @@ const Experience: React.FC<ExpProps> = ({
   const isSection = type === "section";
 
   // 경험의 선택된 질문 답변
-  const answer = detail?.filter((item) => item.num === question)[0];
+  const answer = detail?.[(question || 1)-1]?.answer;
 
   const handleClick = () => {
     setDetailId(id);
@@ -104,7 +105,7 @@ const Experience: React.FC<ExpProps> = ({
           <div className="label">내가 작성한 답변</div>
           <hr />
           <div className={answer ? "content" : "noContent"}>
-            {answer?.content || "작성한 답변이 없습니다"}
+            {answer || "작성한 답변이 없습니다"}
           </div>
         </AnswerContainer>
       ) : null}

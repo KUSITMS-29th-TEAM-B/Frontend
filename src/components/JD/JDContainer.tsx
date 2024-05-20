@@ -1,54 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { jobDetails } from "../../services/JD/jdData";
 import StateBox from "./StateBox";
 import calendarIcon from "../../assets/icons/icon_calendar.svg";
 import linkIcon from "../../assets/icons/icon_link.svg";
+import { JobDescriptionAPI } from "../../types/type";
+import { jobdescriptionget } from "../../services/jd";
+import { formatDateRange } from "../../pages/JDListPage";
 
 interface JobContainerProps {
   jdId: string;
+  token: string;
 }
 
-const JDContainer: React.FC<JobContainerProps> = ({ jdId }) => {
-  const jdData = jobDetails[1]; // api data로 변경 , id를 통해 api 호출
+const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
+  //   const jdData = jobDetails[1];
+  const [jdData, setJdData] = useState<JobDescriptionAPI>({
+    enterpriseName: "",
+    title: "",
+    remainingDate: "",
+    content: "",
+    link: "",
+    writeStatus: "",
+    createdAt: "",
+    startAt: null,
+    endedAt: null,
+  });
+
+  const formatDate = (createdAt: Date) => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date
+      .getFullYear()
+      .toString()
+      .substring(2)}`;
+    return formattedDate;
+  };
+
+  const getJobData = async (jdId: string, token: string) => {
+    try {
+      const response = await jobdescriptionget(jdId, token);
+      const FormatstartDate = formatDate(response.data.createdAt);
+      const jdApiData: JobDescriptionAPI = {
+        enterpriseName: response.data.enterpriseName,
+        title: response.data.title,
+        remainingDate: response.data.remainingDate,
+        content: response.data.link,
+        writeStatus: response.data.writeStatus,
+        link: response.data.link,
+        createdAt: FormatstartDate,
+        startAt: response.data.startedAt,
+        endedAt: response.data.endedAt,
+      };
+      setJdData(jdApiData);
+      console.log(jdData);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  useEffect(() => {
+    getJobData(jdId, token);
+  }, []);
 
   return (
     <JobContainer>
-      <div className="job_box">
-        <JobStatusBar>
-          <StateBox className="job_status" status={jdData.status} />
-          <div className="job_date">{jdData.date}</div>
-        </JobStatusBar>
-        <JobTopBox>
-          <JobTopTitleBox>
-            <div className="job_detail_dday">{"D-" + jdData.dday}</div>
-            <div className="job_detail_title">{jdData.title}</div>
-          </JobTopTitleBox>
-          <JobTopDescription>{jdData.description}</JobTopDescription>
-          <JobSubBox>
-            <div className="period">
-              <img src={calendarIcon} alt="calendar" width={16} height={16} />
-              {jdData.recruitmentPeriod}
-            </div>
-            <div className="link">
-              <img src={linkIcon} alt="link" width={16} height={16} />
-              <a
-                href={jdData.link}
-                className="link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {jdData.link}
-              </a>
-            </div>
-          </JobSubBox>
-        </JobTopBox>
-        <ScrollDiv>
-          <JobBottomBox>
-            <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
-          </JobBottomBox>
-        </ScrollDiv>
-      </div>
+      <JobStatusBar>
+        <StateBox className="job_status" status={jdData.writeStatus} />
+        <div className="job_date">{jdData.createdAt}</div>
+      </JobStatusBar>
+      <JobTopBox>
+        <JobTopTitleBox>
+          <div className="job_detail_dday">{"D-" + jdData.remainingDate}</div>
+          <div className="job_detail_title">{jdData.title}</div>
+        </JobTopTitleBox>
+        <JobTopDescription>{jdData.content}</JobTopDescription>
+        <JobSubBox>
+          <div className="period">
+            <img src={calendarIcon} alt="calendar" width={16} height={16} />
+            {jdData.startAt &&
+              jdData.endedAt &&
+              formatDateRange(
+                jdData.startAt.toString(),
+                jdData.endedAt.toString()
+              )}
+          </div>
+          <div className="link">
+            <img src={linkIcon} alt="link" width={16} height={16} />
+            <a
+              href={jdData.link}
+              className="link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {jdData.link}
+            </a>
+          </div>
+        </JobSubBox>
+      </JobTopBox>
+      <ScrollDiv>
+        <JobBottomBox>
+          <div dangerouslySetInnerHTML={{ __html: jdData.content }} />
+        </JobBottomBox>
+      </ScrollDiv>
     </JobContainer>
   );
 };

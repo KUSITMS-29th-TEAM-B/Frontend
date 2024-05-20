@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import YearCircle from "./YearCircle";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   deleteState,
-  keywordState,
+  primeTagState,
   yearState,
 } from "../../store/selectedStore";
+import { getExperienceYears } from "../../services/Experience/experienceApi";
+import { getCookie } from "../../services/cookie";
+import { getYearPrimeTags } from "../../services/Experience/tagApi";
+import { TagType, YearData } from "../../types/experience";
 
 interface YearListProps {
   width: number;
@@ -15,18 +19,19 @@ interface YearListProps {
 }
 
 const YearList = ({ width, openDeleteModal }: YearListProps) => {
+  const user = getCookie("user");
+  const [primeTags, setPrimeTags] = React.useState<TagType[]>([]);
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
-  const [selectedKeyword, setSelectedKeyword] = useRecoilState<string | null>(
-    keywordState
-  );
+  const setSelectedPrimeTag = useSetRecoilState<TagType | null>(primeTagState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
+  const [years, setYears] = React.useState<number[]>([]);
+  const [allYearsData, setAllYearsData] = React.useState<YearData[]>([]);
 
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
 
   // 임시 데이터
-  const years = [2000, 2005, 2010, 2015, 2020];
   const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅", "승효", "더보기"];
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
@@ -50,7 +55,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   const handleYearContainerClick = (year: number) => {
     if (selectedYear === year) {
       setSelectedYear(null);
-      setSelectedKeyword(null);
+      setSelectedPrimeTag(null);
       setIsDelete(false);
     } else {
       setSelectedYear(year);
@@ -94,9 +99,18 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
     return index * 250;
   };
 
-  //
-  //
-  //
+  // 전체 연도 및 연도별 태그 목록 정보
+  useEffect(() => {
+    if (user?.token) {
+      getExperienceYears(user?.token).then((res) => {
+        const { years, yearTagInfos } = res.data;
+        setYears(years);
+        setAllYearsData(yearTagInfos);
+      });
+    }
+  }, [user?.token]);
+
+  // 클릭한 연도 원형 중심으로 스크롤 이동
   useEffect(() => {
     if (selectedYear) {
       yearRefs.current[selectedYear]?.scrollIntoView({
@@ -110,25 +124,27 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   //
   return (
     <Line length={lineLength}>
-      {years.map((year, index) => (
+      {allYearsData?.map((data, index) => (
         <YearMotionDiv
-          ref={(el) => (yearRefs.current[year] = el)}
-          key={year}
+          ref={(el) => (yearRefs.current[data.year] = el)}
+          key={data.year}
           initial={{ x: index * 100 }}
           animate={{
             x: calculateXPosition(index),
-            scale: hoveredYear === year || selectedYear === year ? 5 : 1,
+            scale:
+              hoveredYear === data.year || selectedYear === data.year ? 5 : 1,
           }}
           whileHover={{
-            scale: hoveredYear === year || selectedYear === year ? 5 : 1,
+            scale:
+              hoveredYear === data.year || selectedYear === data.year ? 5 : 1,
           }}
-          onMouseOver={() => handleMouseOver(year)}
+          onMouseOver={() => handleMouseOver(data.year)}
           onMouseLeave={() => handleMouseLeave()}
-          onClick={() => handleYearContainerClick(year)}
+          onClick={() => handleYearContainerClick(data.year)}
         >
           <YearCircle
-            year={year}
-            keywordList={keywords}
+            year={data.year}
+            primeTagList={data.tags}
             hoveredYear={hoveredYear}
             openDeleteModal={openDeleteModal}
           />
@@ -139,6 +155,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
 };
 
 const Line = styled.div<{ length: number }>`
+  min-width: 100vw;
   width: ${(props) => props.length}px;
   height: 1px;
   background-color: grey;

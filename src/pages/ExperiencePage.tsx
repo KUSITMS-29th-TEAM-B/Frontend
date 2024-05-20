@@ -3,7 +3,7 @@ import YearListContainer from "../components/Experience/YearList";
 import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
-import { keywordState, yearState } from "../store/selectedStore";
+import { primeTagState, yearState } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
 import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
@@ -19,7 +19,7 @@ const ExperiencePage = () => {
   const user = getCookie("user");
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
-  const [selectedKeyword, setSelectedKeyword] = useRecoilState(keywordState);
+  const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -46,7 +46,7 @@ const ExperiencePage = () => {
         ref={componentRef}
         initial={{ width: "100%" }}
         animate={{
-          width: selectedKeyword ? "40%" : "100%",
+          width: selectedPrimeTag ? "40%" : "100%",
         }}
         transition={{
           type: "spring",
@@ -69,14 +69,14 @@ const ExperiencePage = () => {
     return (
       <ActiveContainer
         initial={{ width: "0%" }}
-        animate={{ width: selectedKeyword ? "60%" : "0%" }}
+        animate={{ width: selectedPrimeTag ? "60%" : "0%" }}
         exit={{
           transition: { delay: 0.5, stiffness: 50, damping: 20 },
         }}
         transition={{ type: "spring", stiffness: 40 }}
       >
-        {selectedKeyword &&
-          (selectedKeyword === "더보기" ? (
+        {selectedPrimeTag &&
+          (selectedPrimeTag.name === "더보기" ? (
             <MoreTab />
           ) : (
             <KeywordTab openDeleteModal={openDeleteModal} />
@@ -92,7 +92,7 @@ const ExperiencePage = () => {
     <>
       <MainContainer>
         {/* <NoExperience /> */}
-        {selectedKeyword ? null : (
+        {selectedPrimeTag ? null : (
           <Description>
             <span className="user">{user?.nickName || "사용자"}</span>
             님의 여정을
@@ -105,7 +105,7 @@ const ExperiencePage = () => {
         <MainButton
           style={{
             position: "absolute",
-            right: selectedKeyword ? "62%" : 30,
+            right: selectedPrimeTag ? "62%" : 30,
             bottom: 30,
           }}
           onClick={() => navigate(`/experience/write`)}

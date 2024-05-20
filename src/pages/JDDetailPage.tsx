@@ -105,7 +105,7 @@ const JDDetailPage: React.FC = () => {
         enterpriseName: response.data.enterpriseName,
         title: response.data.title,
         remainingDate: response.data.remainingDate,
-        content: response.data.link,
+        content: response.data.content,
         writeStatus: response.data.writeStatus,
         link: response.data.link,
         createdAt: FormatstartDate,
