@@ -277,7 +277,7 @@ const StyledDivContainer = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  background-color: #FBFBFD;
+  background-color: #fbfbfd;
   overflow-x: hidden;
 `;
 

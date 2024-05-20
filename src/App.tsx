@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./pages/MainPage";
 import Navbar from "./components/common/Navbar";
 import JDDetailPage from "./pages/JDDetailPage";
 import JDPlusPage from "./pages/JDPlusPage";
@@ -18,6 +17,7 @@ import InfoPage from "./pages/InfoPage";
 import ApplyEditPage from "./pages/ApplyEditPage";
 import ApplyPage from "./pages/ApplyPage";
 import JDEditPage from "./pages/JDEditPage";
+import ExperienceEditPage from "./pages/ExperienceEditPage";
 
 const App: React.FC = () => {
   return (
@@ -58,6 +58,12 @@ const App: React.FC = () => {
           <Route
             path="/experience/detail/:id"
             element={<ExperienceDetailPage />}
+          />
+        </Route>
+        <Route element={<PrivateRoute />} path="/">
+          <Route
+            path="/experience/detail/:id/edit"
+            element={<ExperienceEditPage />}
           />
         </Route>
         <Route path="/sign-in" element={<SignInPage />} />
