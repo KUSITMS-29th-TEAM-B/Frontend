@@ -23,7 +23,9 @@ const ExperienceDetailPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [expData, setExpData] = React.useState<ExperienceDetailType>();
-  const expKeywords = expData?.strongPointIds?.map((item) => item.name) || [];
+  const primeTag = expData?.childTag.name || "상위태그값없음";
+  const subTag = expData?.parentTag.name || "하위태그값없음";
+  const expKeywords = expData?.strongPoints?.map((item) => item.name) || [];
 
   // 삭제 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -82,8 +84,8 @@ const ExperienceDetailPage = () => {
             id={expData?.id || ExpData[0].id}
             title={expData?.title || ""}
             tags={expKeywords}
-            maintag={ExpData[0].mainTag}
-            subtag={ExpData[0].subTag}
+            maintag={primeTag}
+            subtag={subTag}
             startedAt={expData?.startedAt}
             endedAt={expData?.endedAt}
           />
@@ -107,6 +109,7 @@ const ExperienceDetailPage = () => {
                     background: `${theme.colors.neutral50}`,
                     padding: "24px 30px",
                   }}
+                  readOnly
                 />
               </AnswerItem>
             ))}
