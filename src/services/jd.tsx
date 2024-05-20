@@ -39,13 +39,21 @@ export const jobpatch = async (job: JobAPI, jdId: string, token: string) => {
   );
 };
 
-export const jobget = async (
+export const jobget = async (page: string, token: string) => {
+  return await client.get(`/api/job-description?page=${page}&size=9`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const filteredjobget = async (
   page: string,
-  writeStatus: string | null,
+  writeStatus: string,
   sortType: string,
   token: string
 ) => {
-  if (writeStatus) {
+  if (writeStatus !== "ALL") {
     return await client.get(
       `/api/job-description?page=${page}&size=9&writeStatus=${writeStatus}&sortType=${sortType}`,
       {
@@ -55,11 +63,14 @@ export const jobget = async (
       }
     );
   } else {
-    return await client.get(`/api/job-description?page=${page}&size=9`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await client.get(
+      `/api/job-description?page=${page}&size=9&sortType=${sortType}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   }
 };
 
