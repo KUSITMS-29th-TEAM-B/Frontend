@@ -14,14 +14,19 @@ import MainScreen from "../assets/images/image_info_main_screen.png";
 import ScreenImage_1 from "../assets/images/image_info_screen_1.png";
 import ScreenImage_2 from "../assets/images/image_info_screen_2.png";
 import TextContainer from "../components/Info/TextContainer";
+import { useNavigate } from "react-router-dom";
 
 const InfoPage = () => {
+  const nav = useNavigate();
   return (
     <StyledContainer>
-      <MainContainer>
+      <MainContainer className="main_1">
         <img src={MainScreen} alt="flight" className="overview" />
+        <div className="start_btn" onClick={() => nav("/sign-in")}>
+          시작하기
+        </div>
       </MainContainer>
-      <MainContainer>
+      <MainContainer className="main_2">
         <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
         <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
         <img src={filghtImage_2} alt="frame" className="image" />
@@ -29,15 +34,11 @@ const InfoPage = () => {
       <div>
         <img src={Filghtbackground} alt="flight" className="overview" />
       </div>
-      <MainContainer>
+      <MainContainer className="main_3">
         <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
         <StyledSubContainer />
       </MainContainer>
-      {/* <TextContainer direction="right">슬라이드될 내용이 들어감</TextContainer>
-      <TextContainer direction="left">슬라이드될 내용이 들어감</TextContainer>
-      <TextContainer direction="up">슬라이드될 내용이 들어감</TextContainer>
-      <TextContainer direction="down">슬라이드될 내용이 들어감</TextContainer> */}
-      <MainContainer>
+      <MainContainer className="main_4">
         <div className="steptext">Step1</div>
         <div className="maintext">플라잇과 함께 나의 경험을 정리해볼까요?</div>
         <KeyWordWrapper>나의 경험</KeyWordWrapper>
@@ -52,15 +53,17 @@ const InfoPage = () => {
           <img src={ScreenImage_1} alt="screenshot" className="screenshot" />
         </ContentWrapper>
       </MainContainer>
-      <MainContainer>
+      <MainContainer className="main_4">
+        <div>contentbox</div>
+        <img src={ScreenImage_2} alt="screenshot" className="sub_screenshot" />
         <img src={info_bg3} alt="bg" style={{ width: "100vw" }} />
       </MainContainer>
       <div>
         <img src={banner} alt="banner" className="sub_banner" />
       </div>
-      <MainContainer>
+      <MainContainer className="main_5">
         <div className="steptext">Step2</div>
-        <div className="maintext">
+        <div className="maintext_2">
           채용공고부터 자기소개서까지
           <br />
           모두 플라잇에서!
@@ -77,10 +80,23 @@ const InfoPage = () => {
           <img src={ScreenImage_1} alt="screenshot" className="screenshot" />
         </ContentWrapper>
       </MainContainer>
-      <MainContainer>
-        <img src={info_bg4} alt="bg" style={{ width: "100vw" }} />
+      <MainContainer className="main_6">
+        <KeyWordWrapper className="keyword">자기소개서 작성</KeyWordWrapper>
+        <ContentWrapper>
+          <div className="main_content">
+            유기적인 연결을 통해 나만의 스토리를 만들어보세요
+          </div>
+          <div className="sub_content">
+            기업에서는 요구하는 다양한 역량에 대해 어떤 경험을 어필해야 할지
+            모르겠다면? 플라잇에서 정리한 경험을 바탕으로 역량을 파악하고
+            자기소개서를 작성해요
+          </div>
+        </ContentWrapper>
+        <ImageWrapper>
+          <img src={info_bg4} alt="bg" style={{ width: "100%" }} />
+        </ImageWrapper>
       </MainContainer>
-      <MainContainer>
+      <MainContainer className="main_7">
         <img src={info_bg5} alt="bg" style={{ width: "100vw" }} />
       </MainContainer>
       <div>
@@ -104,6 +120,9 @@ const StyledContainer = styled.div`
   padding: 3.5625rem 8.75rem;
   padding-top: 0;
   padding-bottom: 0;
+  .main_1{
+    margin-bottom: 7rem;
+  }
   .overview{
     width: 100vw;
     height: auto;
@@ -111,6 +130,15 @@ const StyledContainer = styled.div`
   .sub_banner{
     width: 100vw;
     height: auto;
+  }
+  .main_4{
+    margin-bottom: 8rem;
+  }
+  .main_6{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
   }
 `;
 
@@ -141,10 +169,50 @@ const MainContainer = styled.div`
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
+    .maintext_2{
+        font-size: 3.75rem;
+        font-style: normal;
+        font-weight: 800;
+        height: 11rem;
+        line-height: 150%; 
+        letter-spacing: -0.1125rem;
+        background: linear-gradient(89deg, #6167FF -10.58%, #7D82FF 47.56%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
     .image{
         width: 80rem;
         margin-top: 7rem;
     }
+    .start_btn{
+        position: absolute;
+        width: 22rem;
+        height: 5rem;
+        bottom: 15%;
+        right: 37%;
+        border-radius: 5rem;
+        color: var(--white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        ${(props) => props.theme.fonts.headline2};
+        background: linear-gradient(134deg, #7D82FF 21.06%, #444CFF 162.77%);
+    }
+    .sub_screenshot{
+        position: absolute;
+        width: 50%;
+        right: 5rem;
+        bottom: 5px;
+    }
+    .keyword {
+        width: 14rem;
+    }
+`;
+
+const ImageWrapper = styled.div`
+    width: 80vw;
+    border-radius: 1rem;
 `;
 
 const KeyWordWrapper = styled.div`
@@ -185,8 +253,9 @@ const ContentWrapper = styled.div`
     }
     .screenshot{
         width: 100%;
-        margin-top: 5rem;
+        margin-top: 7rem;
         margin-bottom: 7rem;
     }
+
     
 `;
