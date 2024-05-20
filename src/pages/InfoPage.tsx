@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import filghtImage_2 from "../assets/images/image_flight_main_banner.png";
 import overview from "../assets/images/image_info_overview.png";
@@ -19,154 +19,178 @@ import ScreenImage_5 from "../assets/images/image_info_screenshot5.png";
 import ScreenImage_6 from "../assets/images/image_info_screenshot6.png";
 import TextContainer from "../components/Info/TextContainer";
 import { useNavigate } from "react-router-dom";
+import PlaneLoading from "../components/common/Loading";
 
 const InfoPage = () => {
   const nav = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <StyledContainer>
-      <MainContainer className="main_1">
-        <img src={MainScreen} alt="flight" className="overview" />
-        <div className="start_btn" onClick={() => nav("/sign-in")}>
-          시작하기
-        </div>
-      </MainContainer>
-      <MainContainer className="main_2">
-        <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
-        <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
-        <img src={filghtImage_2} alt="frame" className="image" />
-      </MainContainer>
-      <div>
-        <img src={Filghtbackground} alt="flight" className="overview" />
-      </div>
-      <MainContainer className="main_3">
-        <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
-        <StyledSubContainer />
-      </MainContainer>
-      <MainContainer className="main_4">
-        <div className="steptext">Step1</div>
-        <div className="maintext">플라잇과 함께 나의 경험을 정리해볼까요?</div>
-
-        <KeyWordWrapper>나의 경험</KeyWordWrapper>
-
-        <ContentWrapper>
-          <div className="main_content">
-            연도별로 나의 경험을 시각화해서 보여줘요
+    <>
+      <StyledContainer isLoading={isLoading}>
+        <MainContainer className="main_1">
+          <img src={MainScreen} alt="flight" className="overview" />
+          <div className="start_btn" onClick={() => nav("/sign-in")}>
+            시작하기
           </div>
-          <div className="sub_content">
-            정리해놓지 않으면 금방 휘발되는 나의 경험들을 체계적으로 정리할 수
-            있어요
-          </div>
-          <img src={ScreenImage_1} alt="screenshot" className="screenshot" />
-        </ContentWrapper>
-      </MainContainer>
-      <MainContainer className="main_4">
-        <ExperienceBox>
-          <TextContainer direction="up">
-            <div className="ewbox-keyword">
-              <KeyWordWrapper>경험 작성</KeyWordWrapper>
-            </div>
-            <div className="ewbox-maintext">
-              질문형 프레임워크로 <br />
-              경험을 체계적으로 <br />
-              정리해요
-            </div>
-            <div className="ewbox-subtext">
-              편하게 질문에 답하다 보면 <br /> 자연스럽게 내 경험을 정리하고
-              <br />
-              역량을 파악할 수 있어요
-            </div>
-          </TextContainer>
-        </ExperienceBox>
-        <img src={ScreenImage_2} alt="screenshot" className="sub_screenshot" />
-        <img src={info_bg3} alt="bg" style={{ width: "100vw" }} />
-      </MainContainer>
-      <div>
-        <img src={banner} alt="banner" className="sub_banner" />
-      </div>
-      <MainContainer className="main_5">
-        <div className="steptext">Step2</div>
-        <div className="maintext_2">
-          채용공고부터 자기소개서까지
-          <br />
-          모두 플라잇에서!
+        </MainContainer>
+        <MainContainer className="main_2">
+          <div className="subtext">작년에는 뭘 했더라? 올해는?</div>
+          <div className="maintext">나를 알아가는 경험 정리의 시작,</div>
+          <img src={filghtImage_2} alt="frame" className="image" />
+        </MainContainer>
+        <div>
+          <img src={Filghtbackground} alt="flight" className="overview" />
         </div>
-        <TextContainer direction="right">
-          <JDBox>
-            <img
-              src={ScreenImage_3}
-              alt="screenshot"
-              className="jd_screenshot"
-            />
+        <MainContainer className="main_3">
+          <img src={info_bg} alt="bg" style={{ width: "100vw" }} />
+          <StyledSubContainer />
+        </MainContainer>
+        <MainContainer className="main_4">
+          <div className="steptext">Step1</div>
+          <div className="maintext">
+            플라잇과 함께 나의 경험을 정리해볼까요?
+          </div>
 
-            <div className="jdbox-description-container">
-              <KeyWordWrapper className="jdbox-description-keyword">
-                채용공고
-              </KeyWordWrapper>
-              <div className="jdbox-description-title">
-                원하는 채용공고만 아카이빙해
-                <br /> 정리할 수 있어요
-              </div>
-              <div className="jdbox-description-subtitle">
-                지원하고자 하는 공고만 따로 스크랩해
-                <br /> 일정, 지원 자격 등의 상세정보를
-                <br /> 편하게 볼 수 있어요
-              </div>
-            </div>
-          </JDBox>
-        </TextContainer>
-      </MainContainer>
-      <MainContainer className="main_6">
-        <TextContainer direction="down">
-          <KeyWordWrapper className="keyword">자기소개서 작성</KeyWordWrapper>
+          <KeyWordWrapper>나의 경험</KeyWordWrapper>
+
           <ContentWrapper>
             <div className="main_content">
-              유기적인 연결을 통해 나만의 스토리를 만들어보세요
+              연도별로 나의 경험을 시각화해서 보여줘요
             </div>
             <div className="sub_content">
-              기업에서는 요구하는 다양한 역량에 대해 어떤 경험을 어필해야 할지
-              모르겠다면?
-              <br /> 플라잇에서 정리한 경험을 바탕으로 역량을 파악하고
-              자기소개서를 작성해요
+              정리해놓지 않으면 금방 휘발되는 나의 경험들을 체계적으로 정리할 수
+              있어요
             </div>
+            <img src={ScreenImage_1} alt="screenshot" className="screenshot" />
           </ContentWrapper>
-        </TextContainer>
-        <ImageWrapper>
-          <img src={ScreenImage_4} alt="screenshot" className="image_left" />
-          <img src={ScreenImage_5} alt="screenshot" className="image_right" />
-          <img src={info_bg4} alt="bg" className="image_bg" />
-        </ImageWrapper>
-      </MainContainer>
-      <MainContainer className="main_7">
-        <MessageContainer>
-          <div className="ms-title">
-            연결하고 싶은 경험을
-            <br /> 탐색하고 선택해요
-          </div>
-          <div className="ms-subtitle">
-            사용자의 경험과 채용공고, 역량을 유기적으로
+        </MainContainer>
+        <MainContainer className="main_4">
+          <ExperienceBox>
+            <TextContainer direction="up">
+              <div className="ewbox-keyword">
+                <KeyWordWrapper>경험 작성</KeyWordWrapper>
+              </div>
+              <div className="ewbox-maintext">
+                질문형 프레임워크로 <br />
+                경험을 체계적으로 <br />
+                정리해요
+              </div>
+              <div className="ewbox-subtext">
+                편하게 질문에 답하다 보면 <br /> 자연스럽게 내 경험을 정리하고
+                <br />
+                역량을 파악할 수 있어요
+              </div>
+            </TextContainer>
+          </ExperienceBox>
+          <img
+            src={ScreenImage_2}
+            alt="screenshot"
+            className="sub_screenshot"
+          />
+          <img src={info_bg3} alt="bg" style={{ width: "100vw" }} />
+        </MainContainer>
+        <div>
+          <img src={banner} alt="banner" className="sub_banner" />
+        </div>
+        <MainContainer className="main_5">
+          <div className="steptext">Step2</div>
+          <div className="maintext_2">
+            채용공고부터 자기소개서까지
             <br />
-            연결할 수 있도록 플라잇이 도와줄게요
+            모두 플라잇에서!
           </div>
-        </MessageContainer>
-        <img
-          src={ScreenImage_6}
-          alt="screenshot"
-          className="main_7_screenshot"
-        />
-        <img src={info_bg5} alt="bg" style={{ width: "100vw" }} />
-      </MainContainer>
-      <div>
-        <img src={overview} alt="overview" className="overview" />
-      </div>
-      <Footer />
-    </StyledContainer>
+          <TextContainer direction="right">
+            <JDBox>
+              <img
+                src={ScreenImage_3}
+                alt="screenshot"
+                className="jd_screenshot"
+              />
+
+              <div className="jdbox-description-container">
+                <KeyWordWrapper className="jdbox-description-keyword">
+                  채용공고
+                </KeyWordWrapper>
+                <div className="jdbox-description-title">
+                  원하는 채용공고만 아카이빙해
+                  <br /> 정리할 수 있어요
+                </div>
+                <div className="jdbox-description-subtitle">
+                  지원하고자 하는 공고만 따로 스크랩해
+                  <br /> 일정, 지원 자격 등의 상세정보를
+                  <br /> 편하게 볼 수 있어요
+                </div>
+              </div>
+            </JDBox>
+          </TextContainer>
+        </MainContainer>
+        <MainContainer className="main_6">
+          <TextContainer direction="down">
+            <KeyWordWrapper className="keyword">자기소개서 작성</KeyWordWrapper>
+            <ContentWrapper>
+              <div className="main_content">
+                유기적인 연결을 통해 나만의 스토리를 만들어보세요
+              </div>
+              <div className="sub_content">
+                기업에서는 요구하는 다양한 역량에 대해 어떤 경험을 어필해야 할지
+                모르겠다면?
+                <br /> 플라잇에서 정리한 경험을 바탕으로 역량을 파악하고
+                자기소개서를 작성해요
+              </div>
+            </ContentWrapper>
+          </TextContainer>
+          <ImageWrapper>
+            <img src={ScreenImage_4} alt="screenshot" className="image_left" />
+            <img src={ScreenImage_5} alt="screenshot" className="image_right" />
+            <img src={info_bg4} alt="bg" className="image_bg" />
+          </ImageWrapper>
+        </MainContainer>
+        <MainContainer className="main_7">
+          <MessageContainer>
+            <div className="ms-title">
+              연결하고 싶은 경험을
+              <br /> 탐색하고 선택해요
+            </div>
+            <div className="ms-subtitle">
+              사용자의 경험과 채용공고, 역량을 유기적으로
+              <br />
+              연결할 수 있도록 플라잇이 도와줄게요
+            </div>
+          </MessageContainer>
+          <img
+            src={ScreenImage_6}
+            alt="screenshot"
+            className="main_7_screenshot"
+          />
+          <img src={info_bg5} alt="bg" style={{ width: "100vw" }} />
+        </MainContainer>
+        <div>
+          <img src={overview} alt="overview" className="overview" />
+        </div>
+        <Footer />
+      </StyledContainer>
+      {isLoading && (
+        <LoadingContainer>
+          <PlaneLoading />
+          <div className="loading">이륙 준비중...</div>
+        </LoadingContainer>
+      )}
+    </>
   );
 };
 
 export default InfoPage;
 
-const StyledContainer = styled.div`
-  display: flex;
+const StyledContainer = styled.div<{ isLoading: boolean }>`
+  display: ${(props) => (props.isLoading ? "none" : "flex")};
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -202,6 +226,21 @@ const StyledContainer = styled.div`
     width: 40%;
     top: 5rem;
     right: 7rem;
+  }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin-top: 15%;
+  .loading{
+    font-size: 1.5rem;
+    opacity: 0.4;
+    color: ${(props) => props.theme.colors.neutral700};
   }
 `;
 
