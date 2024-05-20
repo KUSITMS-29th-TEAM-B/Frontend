@@ -328,7 +328,7 @@ const ApplyPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId} /> : null}
+                {jdId ? <JDContainer jdId={jdId} token={user.token} /> : null}
               </JobContainer>
             )}
           </ActiveContainer>
