@@ -23,8 +23,8 @@ const ExperienceDetailPage = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [expData, setExpData] = React.useState<ExperienceDetailType>();
-  const primeTag = expData?.childTag.name || "상위태그값없음";
-  const subTag = expData?.parentTag.name || "하위태그값없음";
+  const primeTag = expData?.parentTag.name || "상위태그값없음";
+  const subTag = expData?.childTag.name || "하위태그값없음";
   const expKeywords = expData?.strongPoints?.map((item) => item.name) || [];
 
   // 삭제 모달

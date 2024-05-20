@@ -368,8 +368,15 @@ const ExperienceEditPage = () => {
         console.log(res);
         // 상위태그, 하위태그 객체 형태로 저장
         // 역량 키워드 => 객체 리스트로 저장
-        const { id, strongPoints, ...rest } = res.data;
-        setExpData({ ...rest });
+        const { id, parentTag, childTag, strongPoints, ...rest } = res.data;
+        setExpData({
+          ...rest,
+          parentTagId: parentTag.id,
+          childTagId: childTag.id,
+          strongPointIds: strongPoints.map((item: KeywordType) => item.id),
+        });
+        setPrimeTagItem(parentTag);
+        setSubTagItem(childTag);
         setCheckedKeywords(strongPoints);
       });
     }
