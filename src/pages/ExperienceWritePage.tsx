@@ -133,7 +133,7 @@ const ExperienceWritePage = () => {
       const subTagId = subTagRes.data.id;
 
       experienceData = {
-        ...expData,
+        ...experienceData,
         parentTagId: primeTagId,
         childTagId: subTagId,
       };
@@ -147,7 +147,7 @@ const ExperienceWritePage = () => {
       );
       const subTagId = subTagRes.data.id;
       experienceData = {
-        ...expData,
+        ...experienceData,
         childTagId: subTagId,
       };
     }
@@ -172,7 +172,7 @@ const ExperienceWritePage = () => {
         ...newStrongPointIds,
       ];
       experienceData = {
-        ...expData,
+        ...experienceData,
         strongPointIds: totalStrongPointIds,
       };
     }
