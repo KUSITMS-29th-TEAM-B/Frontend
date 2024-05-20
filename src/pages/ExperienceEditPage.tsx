@@ -378,6 +378,7 @@ const ExperienceEditPage = () => {
         setPrimeTagItem(parentTag);
         setSubTagItem(childTag);
         setCheckedKeywords(strongPoints);
+        setResultKeywords(strongPoints);
       });
     }
     // 상위 태그 조회
