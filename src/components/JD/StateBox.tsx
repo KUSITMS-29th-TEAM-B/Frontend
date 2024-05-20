@@ -7,9 +7,21 @@ interface StateBoxProps {
 }
 
 const StateBox: React.FC<StateBoxProps> = ({ status, className }) => {
+  const getStatusLabel = (status: string | undefined) => {
+    switch (status) {
+      case "WRITING":
+        return "작성중";
+      case "WRITTEN":
+        return "작성완료";
+      case "CLOSED":
+        return "마감";
+      default:
+        return "";
+    }
+  };
   return (
     <StyledStateBox className={className} status={status}>
-      {status}
+      {getStatusLabel(status)}
     </StyledStateBox>
   );
 };
@@ -20,13 +32,11 @@ const StyledStateBox = styled.div<{ status?: string }>`
   font-size: 0.8rem;
   background-color: ${(props) => {
     switch (props.status) {
-      case "작성중":
+      case "WRITING":
         return "#E5E6FF";
-      case "지원완료":
-        return "#E5E6FF";
-      case "작성완료":
+      case "WRITTEN":
         return "#FFF5D1";
-      case "마감":
+      case "CLOSED":
         return "#EEEFF7";
       default:
         return "transparent";
@@ -34,13 +44,11 @@ const StyledStateBox = styled.div<{ status?: string }>`
   }};
   color: ${(props) => {
     switch (props.status) {
-      case "작성중":
+      case "WRITING":
         return "#5C70DB";
-      case "지원완료":
-        return "#5C70DB";
-      case "작성완료":
+      case "WRITTEN":
         return "#FFA63E";
-      case "마감":
+      case "CLOSED":
         return "#63698D";
       default:
         return "transparent";

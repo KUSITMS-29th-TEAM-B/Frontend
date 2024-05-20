@@ -13,16 +13,16 @@ import MoreTab from "../components/Experience/MoreTab";
 import Modal from "../components/common/Modal";
 import React from "react";
 import warningImg from "../assets/images/warningIcon.png";
+import { getCookie } from "../services/cookie";
 
 const ExperiencePage = () => {
+  const user = getCookie("user");
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedKeyword, setSelectedKeyword] = useRecoilState(keywordState);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  const name = "사용자";
 
   // 모달 관리
   const openDeleteModal = () => {
@@ -94,7 +94,7 @@ const ExperiencePage = () => {
         {/* <NoExperience /> */}
         {selectedKeyword ? null : (
           <Description>
-            <span className="user">{name}</span>
+            <span className="user">{user?.nickName || "사용자"}</span>
             님의 여정을
             <br />
             시작해볼까요?

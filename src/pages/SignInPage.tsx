@@ -35,12 +35,16 @@ const SignInPage = () => {
             // 기존 계정 (로그인)
             else {
               const token = res.data.accessToken;
+              const refreshToken = res.data.refreshToken;
               getUserInfo(token)
                 .then((res) =>
                   setCookie("user", {
                     nickName: res.data.nickName,
+                    profileImgUrl: res.data.profileImgUrl,
                     provider: "KAKAO",
+                    email: res.data.email,
                     token: token,
+                    refreshToken: refreshToken,
                   })
                 )
                 .then(() => navigate("/experience"));
@@ -83,12 +87,16 @@ const SignInPage = () => {
                 // 기존 계정 (로그인)
                 else {
                   const token = res.data.accessToken;
+                  const refreshToken = res.data.refreshToken;
                   getUserInfo(token)
                     .then((res) =>
                       setCookie("user", {
                         nickName: res.data.nickName,
+                        profileImgUrl: res.data.profileImgUrl,
                         provider: "GOOGLE",
+                        email: res.data.email,
                         token: token,
+                        refreshToken: refreshToken,
                       })
                     )
                     .then(() => navigate("/experience"));

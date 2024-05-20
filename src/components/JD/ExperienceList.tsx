@@ -229,9 +229,9 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                       {keywordTabOption === "basic"
                         ? currentBasicKeywords.map((item) => (
                             <Checkbox
-                              value={item}
-                              label={item}
-                              checked={checkedKeywords.includes(item)}
+                              value={item.id}
+                              label={item.name}
+                              checked={checkedKeywords.includes(item.name)}
                               onChange={handleCheckedKeywords}
                             />
                           ))

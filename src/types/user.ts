@@ -15,6 +15,7 @@ export interface UserDataType {
   nickName: string;
   jobSearchStatus: string;
   desiredJob: string;
+  email: string;
   goal: string;
   dream: string;
 }

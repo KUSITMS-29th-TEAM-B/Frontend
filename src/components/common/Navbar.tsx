@@ -9,6 +9,10 @@ const Navbar = () => {
   const location = useLocation();
   const user = getCookie("user");
 
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/profile1.png`;
+  };
+
   return (
     <NavContainer>
       <ItemContainer>
@@ -30,11 +34,26 @@ const Navbar = () => {
           </MenuItem>
         </MenuList>
       </ItemContainer>
-      <ItemContainer>
+      <ItemContainer className="profile">
         {user?.token ? (
-          <UserInfo onClick={() => navigate(`/profile`)}>
-            {user?.nickName}님
-          </UserInfo>
+          <>
+            <img
+              src={
+                user?.profileImgUrl ||
+                `${process.env.PUBLIC_URL}/assets/profile1.png`
+              }
+              alt="profile"
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+              }}
+              onError={handleImgError}
+            />
+            <UserInfo onClick={() => navigate(`/profile`)}>
+              {user?.nickName}님
+            </UserInfo>
+          </>
         ) : (
           <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
         )}
@@ -63,6 +82,9 @@ const ItemContainer = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 2.5rem;
+  &.profile {
+    gap: 0.5rem;
+  }
 `;
 
 const MenuList = styled.div`

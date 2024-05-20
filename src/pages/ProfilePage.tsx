@@ -5,6 +5,8 @@ import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../services/cookie";
+import { getUserInfo } from "../services/user";
+import { UserDataType } from "../types/user";
 
 interface UserDetail {
   question: string;
@@ -12,38 +14,41 @@ interface UserDetail {
 }
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
+  const nav = useNavigate();
   const user = getCookie("user");
-  const username = user.nickName;
-  const useremail = "email@gmail.com";
-  const userAccount: string = user.provider; //or google
+  const [userData, setUserData] = React.useState<UserDataType>();
   const userDetailList: UserDetail[] = [
     {
       question: "구직활동 여부",
-      answer:
-        "직무공고를 탐색하고, 취업을 위한 적극적 구직 활동을 하고 있어요.",
+      answer: userData?.jobSearchStatus || "",
     },
     {
       question: "희망 직무",
-      answer: "서비스 기획자",
+      answer: userData?.desiredJob || "",
     },
     {
       question: "역량 탐색",
-      answer:
-        "프로젝트 경험은 많은데 실제로 사용자를 받아보거나 서비스를 운영해본 경험은 없다. 한 가지 프로젝트를 깊게 파보면서도 내가 가진 창의력과 아이디어를 최대한 활용해 마케팅이나 브랜딩으로 유저를 끌어모으는 경험을 해보고 싶다.",
+      answer: userData?.goal || "",
     },
     {
       question: "꿈",
-      answer:
-        "난난꿈이있어요버려지고찢겨남루하여도그래요있어요 블라블라 오찌고 저쭈그",
+      answer: userData?.dream || "",
     },
   ];
-  const nav = useNavigate();
 
   const handlelogout = () => {
-    removeCookie("user");
-    navigate(`/sign-in`);
+    removeCookie("user").then(() => nav(`/sign-in`));
   };
+
+  useEffect(() => {
+    if (user?.token) {
+      getUserInfo(user?.token).then((res) => {
+        console.log(res);
+        setUserData(res.data);
+      });
+    }
+  }, []);
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -58,10 +63,10 @@ const ProfilePage = () => {
         <img src={TicketContainer} alt="ticketContainer" />
         <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
         <ProfileWrapper>
-          <div className="profile_username">{username}</div>
+          <div className="profile_username">{userData?.nickName}</div>
           <div className="profile_email">
-            {userAccount === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
-            {useremail}
+            {userData?.provider === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
+            {userData?.email}
           </div>
           <div
             className="profile_edit_btn"

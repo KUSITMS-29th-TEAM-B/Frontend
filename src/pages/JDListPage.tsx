@@ -10,16 +10,22 @@ import prebtn_v2 from "../assets/icons/icon_prev_btn_v2.svg";
 import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
 import PlusIcon from "../assets/icons/icon_plus_white.svg";
+import { JobAnnouncement } from "../types/type";
+import { filteredjobget, jobget } from "../services/jd";
+import { getCookie } from "../services/cookie";
 
 const JDListPage: React.FC = () => {
-  const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
-  const [selectedSort, setSelectedSort] = useState<string>("등록순"); // 등록순 or 마감순 , 초기값은 등록순
-  const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
-  const [pageTotal, setpageTotal] = useState(20);
-  const [pages, setPages] = useState<React.ReactNode[]>([]);
-  const nav = useNavigate();
-
   const Filterbuttons = ["전체", "작성전", "작성중", "작성완료", "마감"];
+  const [activeButton, setActiveButton] = useState<string>("전체"); // "전체", "작성전", "작성중", "작성완료", "지원완료"
+  const [selectedSort, setSelectedSort] = useState<string>(""); // CREATED, ENDED , 초기값은 등록순
+  const [currentPage, setCurrentPage] = useState(1); //현재 위치한 페이지
+  const [pageTotal, setpageTotal] = useState(0);
+  const [pages, setPages] = useState<React.ReactNode[]>([]);
+  const [jobsData, setJobsData] = useState<JobAnnouncement[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const user = getCookie("user");
+
+  const nav = useNavigate();
   const handleClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
@@ -28,7 +34,7 @@ const JDListPage: React.FC = () => {
     setSelectedSort(sortType);
   };
 
-  const navToDetail = () => {
+  const navToJdPost = () => {
     nav("/jd/post");
   };
 
@@ -39,6 +45,7 @@ const JDListPage: React.FC = () => {
     });
   }, []);
 
+  //페이지네이션
   useEffect(() => {
     //...을 제외한 페이지 렌더 부분
     const renderPageNumber = (i: number) => (
@@ -83,131 +90,258 @@ const JDListPage: React.FC = () => {
       ) {
         tempPages.push(<span key="right-ellipsis">...</span>);
       }
-      tempPages.push(renderPageNumber(pageTotal));
+      if (pageTotal !== 0) {
+        tempPages.push(renderPageNumber(pageTotal));
+      }
     };
 
     generatePages();
     setPages(tempPages);
-  }, [currentPage, pageTotal]);
+    console.log("curr" + currentPage);
+    console.log("total" + pageTotal);
+  }, [currentPage, pageTotal, activeButton]);
 
-  type DateTimeFormatPart = {
-    type: "day" | "month" | "weekday" | "hour" | "minute";
-    value: string;
+  const getJobList = async (page: string, token: string) => {
+    try {
+      const response = await jobget(page, token);
+      const mappedData = response.data.content.map((job: any) => ({
+        id: job.jobDescriptionId,
+        title: job.title,
+        description: job.enterpriseName,
+        dday: job.remainingDate,
+        recruitmentPeriod: formatDateRange(job.startedAt, job.endedAt),
+        status: job.writeStatus,
+      }));
+      setJobsData(mappedData);
+      if (response.data.totalPage !== 0) {
+        setpageTotal(response.data.totalPage);
+      } else {
+        setpageTotal(1);
+      }
+      console.log(jobsData);
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
   };
 
-  const formatDateRange = (start: string, end: string): string => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+  useEffect(() => {
+    let currentpage = (currentPage - 1).toString();
+    if (activeButton === "작성전") {
+      setCurrentPage(1);
+      getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
+    } else if (activeButton === "작성중") {
+      setCurrentPage(1);
+      getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
+    } else if (activeButton === "작성완료") {
+      setCurrentPage(1);
+      getFilteredJobList(currentpage, "WRITTEN", selectedSort, user.token);
+    } else if (activeButton === "마감") {
+      setCurrentPage(1);
+      getFilteredJobList(currentpage, "CLOSED", selectedSort, user.token);
+    } else if (activeButton === "전체") {
+      setCurrentPage(1);
+      getFilteredJobList(currentpage, "ALL", selectedSort, user.token);
+    }
+  }, [activeButton]);
 
-    // 날짜 포맷터: 월, 일, 요일
-    const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
-      month: "numeric",
-      day: "2-digit",
-      weekday: "short",
-    });
+  useEffect(() => {
+    let currentpage = (currentPage - 1).toString();
+    if (activeButton === "작성전") {
+      getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
+    } else if (activeButton === "작성중") {
+      getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
+    } else if (activeButton === "작성완료") {
+      getFilteredJobList(currentpage, "WRITTEN", selectedSort, user.token);
+    } else if (activeButton === "마감") {
+      getFilteredJobList(currentpage, "CLOSED", selectedSort, user.token);
+    } else if (activeButton === "전체") {
+      getFilteredJobList(currentpage, "ALL", selectedSort, user.token);
+    }
+  }, [selectedSort]);
 
-    // 시간 포맷터: 시간과 분
-    const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+  useEffect(() => {
+    let currentpage = (currentPage - 1).toString();
+    if (activeButton === "작성전") {
+      getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
+    } else if (activeButton === "작성중") {
+      getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
+    } else if (activeButton === "작성완료") {
+      getFilteredJobList(currentpage, "WRITTEN", selectedSort, user.token);
+    } else if (activeButton === "마감") {
+      getFilteredJobList(currentpage, "CLOSED", selectedSort, user.token);
+    } else if (activeButton === "전체") {
+      getJobList(currentpage, user.token);
+    }
+  }, [currentPage]);
 
-    const formatManual = (date: Date): string => {
-      const parts: DateTimeFormatPart[] = dateFormatter.formatToParts(
-        date
-      ) as DateTimeFormatPart[];
-      const month = parts.find((part) => part.type === "month")!.value;
-      const day = parts.find((part) => part.type === "day")!.value;
-      const weekday = parts.find((part) => part.type === "weekday")!.value;
-      return `${parseInt(month)}/${day} (${weekday})`; // 월 값을 parseInt로 처리하여 필요시 한 자리 숫자로 조정
-    };
-
-    const startFormatted = formatManual(startDate);
-    const endFormatted = formatManual(endDate);
-    const endTime = timeFormatter.format(endDate);
-
-    return `${startFormatted} ~ ${endFormatted} ${endTime}`;
+  const getFilteredJobList = async (
+    page: string,
+    writeStatus: string,
+    sortType: string,
+    token: string
+  ) => {
+    if (writeStatus !== "") {
+      try {
+        const response = await filteredjobget(
+          page,
+          writeStatus,
+          sortType,
+          token
+        );
+        const mappedData = response.data.content.map((job: any) => ({
+          id: job.jobDescriptionId,
+          title: job.title,
+          description: job.enterpriseName,
+          dday: job.remainingDate,
+          recruitmentPeriod: formatDateRange(job.startedAt, job.endedAt),
+          status: job.writeStatus,
+        }));
+        setJobsData(mappedData);
+        setpageTotal(response.data.totalPage);
+        console.log(jobsData);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        alert(JSON.stringify(error));
+      }
+    } else {
+    }
   };
 
   return (
     <StyledDivContainer className="page">
-      <TopTitleBar>
-        <Title>등록한 공고 목록</Title>
-      </TopTitleBar>
-      <MiddleContainer>
-        <LeftFilterBox>
-          {Filterbuttons.map((button) => (
-            <FilterButton
-              key={button}
-              active={activeButton === button}
-              onClick={() => handleClick(button)}
-            >
-              {button.toUpperCase()}
-            </FilterButton>
-          ))}
-        </LeftFilterBox>
-        <RightFilterBox>
-          <SortContainer>
-            <SelectableDiv
-              isSelected={selectedSort === "등록순"}
-              onClick={() => handleSortChange("등록순")}
-            >
-              등록순
-            </SelectableDiv>
-            <DivideLine>|</DivideLine>
-            <SelectableDiv
-              isSelected={selectedSort === "마감순"}
-              onClick={() => handleSortChange("마감순")}
-            >
-              마감순
-            </SelectableDiv>
-          </SortContainer>
-        </RightFilterBox>
-      </MiddleContainer>
-      {/* <PlaneLoading /> api 추가 되었을때 loading 처리해주기 */}
-      {jobAnnouncements.length === 0 ? (
-        <NullContainer>
-          <div>아직 등록된 공고가 없어요.</div>
-          <div>새 공고를 등록해주세요.</div>
-          <button onClick={navToDetail}>
-            공고 등록하기 <img src={PlusIcon} alt="plus" />
-          </button>
-        </NullContainer>
+      {!isLoading ? (
+        <>
+          <TopTitleBar>
+            <Title>등록한 공고 목록</Title>
+          </TopTitleBar>
+          <MiddleContainer>
+            <LeftFilterBox>
+              {Filterbuttons.map((button) => (
+                <FilterButton
+                  key={button}
+                  active={activeButton === button}
+                  onClick={() => handleClick(button)}
+                >
+                  {button.toUpperCase()}
+                </FilterButton>
+              ))}
+            </LeftFilterBox>
+            <RightFilterBox>
+              <SortContainer>
+                <SelectableDiv
+                  isSelected={selectedSort === "CREATED" || selectedSort === ""}
+                  onClick={() => handleSortChange("CREATED")}
+                >
+                  등록순
+                </SelectableDiv>
+                <DivideLine>|</DivideLine>
+                <SelectableDiv
+                  isSelected={selectedSort === "ENDED"}
+                  onClick={() => handleSortChange("ENDED")}
+                >
+                  마감순
+                </SelectableDiv>
+              </SortContainer>
+            </RightFilterBox>
+          </MiddleContainer>
+          {jobsData.length === 0 && activeButton === "전체" ? (
+            <NullContainer>
+              <div>아직 등록된 공고가 없어요.</div>
+              <div>새 공고를 등록해주세요.</div>
+              <button onClick={navToJdPost}>
+                공고 등록하기 <img src={PlusIcon} alt="plus" />
+              </button>
+            </NullContainer>
+          ) : (
+            <MainContainer>
+              {jobsData.map((announcement, index) => (
+                <JobAnnouncementCard key={index} announcement={announcement} />
+              ))}
+            </MainContainer>
+          )}
+          <PagenationContainer>
+            <PagenationButton
+              src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
+              alt="prevbtn"
+              onClick={() =>
+                setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)
+              }
+            />
+            <PageNumbers>{pages}</PageNumbers>
+            <PagenationButton
+              src={
+                currentPage === pageTotal || pageTotal === 0
+                  ? nextbtn_v2
+                  : nextbtn
+              }
+              alt="nextbtn"
+              onClick={() =>
+                setCurrentPage(
+                  currentPage < pageTotal ? currentPage + 1 : pageTotal
+                )
+              }
+            />
+          </PagenationContainer>
+          {jobAnnouncements.length !== 0 ? (
+            <PostButton>
+              <img src={btnbg} alt="공고등록" onClick={navToJdPost} />
+            </PostButton>
+          ) : null}
+        </>
       ) : (
-        <MainContainer>
-          {jobAnnouncements.map((announcement, index) => (
-            <JobAnnouncementCard key={index} announcement={announcement} />
-          ))}
-        </MainContainer>
+        <>
+          <PlaneLoading />
+        </>
       )}
-      <PagenationContainer>
-        <PagenationButton
-          src={currentPage > 1 && pageTotal !== 1 ? prebtn_v2 : prebtn}
-          alt="prevbtn"
-          onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
-        />
-        <PageNumbers>{pages}</PageNumbers>
-        <PagenationButton
-          src={currentPage === pageTotal ? nextbtn_v2 : nextbtn}
-          alt="nextbtn"
-          onClick={() =>
-            setCurrentPage(
-              currentPage < pageTotal ? currentPage + 1 : pageTotal
-            )
-          }
-        />
-      </PagenationContainer>
-      {jobAnnouncements.length !== 0 ? (
-        <PostButton>
-          <img src={btnbg} alt="공고등록" onClick={navToDetail} />
-        </PostButton>
-      ) : null}
     </StyledDivContainer>
   );
 };
 
 export default JDListPage;
+
+type DateTimeFormatPart = {
+  type: "day" | "month" | "weekday" | "hour" | "minute";
+  value: string;
+};
+
+//Date 형식을 지원기간 형식으로 변경 (ex. 4/25 (목) ~ 5/3 (금) 17:00)
+export const formatDateRange = (start: string, end: string): string => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // 날짜 포맷터: 월, 일, 요일
+  const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
+    month: "numeric",
+    day: "2-digit",
+    weekday: "short",
+  });
+
+  // 시간 포맷터: 시간과 분
+  const timeFormatter = new Intl.DateTimeFormat("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const formatManual = (date: Date): string => {
+    const parts: DateTimeFormatPart[] = dateFormatter.formatToParts(
+      date
+    ) as DateTimeFormatPart[];
+    const month = parts.find((part) => part.type === "month")!.value;
+    const day = parts.find((part) => part.type === "day")!.value;
+    const weekday = parts.find((part) => part.type === "weekday")!.value;
+    return `${parseInt(month)}/${day} (${weekday})`; // 월 값을 parseInt로 처리하여 필요시 한 자리 숫자로 조정
+  };
+
+  const startFormatted = formatManual(startDate);
+  const endFormatted = formatManual(endDate);
+  const endTime = timeFormatter.format(endDate);
+
+  return `${startFormatted} ~ ${endFormatted} ${endTime}`;
+};
 
 const StyledDivContainer = styled.div`
   width: 100%;

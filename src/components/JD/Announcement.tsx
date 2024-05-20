@@ -16,11 +16,11 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
   const nav = useNavigate();
 
   return (
-    <Container onClick={() => nav(`/jd/detail/${id}`)}>
+    <Container onClick={() => nav(`/jd/${id}`)}>
       <TopContainer>
         <StatusContainer>
-          {status !== "마감" && <DdayContainer>{"D-" + dday}</DdayContainer>}
-          {status !== "작성전" && <StateBox status={status} />}
+          {status !== "CLOSED" && <DdayContainer>{"D-" + dday}</DdayContainer>}
+          {status !== "NOT_APPLIED" && <StateBox status={status} />}
         </StatusContainer>
         <DateContainer>24.01.19</DateContainer>
       </TopContainer>

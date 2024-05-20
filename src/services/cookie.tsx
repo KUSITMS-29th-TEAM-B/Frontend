@@ -19,6 +19,9 @@ export const getCookie = (name: string) => {
   return cookies.get(name);
 };
 //쿠키를 지울때
-export const removeCookie = (name: string) => {
-  return cookies.remove(name);
+export const removeCookie = (name: string): Promise<void> => {
+  return new Promise((resolve) => {
+    cookies.remove(name);
+    resolve();
+  });
 };
