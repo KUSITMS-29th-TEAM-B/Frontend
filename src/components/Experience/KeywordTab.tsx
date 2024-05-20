@@ -369,7 +369,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                   />
                 ) : (
                   <PopperPagination
-                    postsNum={myKeywords.length}
+                    postsNum={myKeywordList.length}
                     postsPerPage={keywordsPerPage}
                     setCurrentPage={setCurrentMyKeywordPage}
                     currentPage={currentMyKeywordPage}
