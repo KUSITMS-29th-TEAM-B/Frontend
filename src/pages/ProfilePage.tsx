@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import TicketContainer from "../assets/images/ticketContainer.svg";
 import TicketContent from "../assets/images/ticketContent.svg";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../services/cookie";
 import { getUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
+import PlaneLoading from "../components/common/Loading";
 
 interface UserDetail {
   question: string;
@@ -35,6 +36,7 @@ const ProfilePage = () => {
       answer: userData?.dream || "",
     },
   ];
+  const [isLoading, setIsLoading] = useState(true);
 
   const handlelogout = () => {
     removeCookie("user");
@@ -55,52 +57,72 @@ const ProfilePage = () => {
       top: 0,
       behavior: "auto",
     });
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <StyledContainer className="page">
-      <Title>마이페이지</Title>
-      <TicketWrapper>
-        <img src={TicketContainer} alt="ticketContainer" />
-        <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
-        <ProfileWrapper>
-          <div className="profile_username">{userData?.nickName}</div>
-          <div className="profile_email">
-            {userData?.provider === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
-            {userData?.email}
-          </div>
-          <div
-            className="profile_edit_btn"
-            onClick={() => nav("/profile/edit")}
-          >
-            프로필 수정
-          </div>
-        </ProfileWrapper>
-      </TicketWrapper>
-      <TicketWrapper>
-        <img src={TicketContent} alt="ticketContainer" />
-        <ContentWrapper>
-          {userDetailList.map(({ question, answer }) => (
-            <React.Fragment key={question}>
-              <SubTitle>{question}</SubTitle>
-              <SubContent>{answer}</SubContent>
-            </React.Fragment>
-          ))}
-        </ContentWrapper>
-      </TicketWrapper>
-    </StyledContainer>
+    <>
+      <StyledContainer isLoading={isLoading} className="page">
+        <Title>마이페이지</Title>
+        <TicketWrapper>
+          <img src={TicketContainer} alt="ticketContainer" />
+          <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
+          <ProfileWrapper>
+            <div className="profile_username">{userData?.nickName}</div>
+            <div className="profile_email">
+              {userData?.provider === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
+              {userData?.email}
+            </div>
+            <div
+              className="profile_edit_btn"
+              onClick={() => nav("/profile/edit")}
+            >
+              프로필 수정
+            </div>
+          </ProfileWrapper>
+        </TicketWrapper>
+        <TicketWrapper>
+          <img src={TicketContent} alt="ticketContainer" />
+          <ContentWrapper>
+            {userDetailList.map(({ question, answer }) => (
+              <React.Fragment key={question}>
+                <SubTitle>{question}</SubTitle>
+                <SubContent>{answer}</SubContent>
+              </React.Fragment>
+            ))}
+          </ContentWrapper>
+        </TicketWrapper>
+      </StyledContainer>
+      {isLoading && (
+        <LoadingContainer>
+          <PlaneLoading />
+        </LoadingContainer>
+      )}
+    </>
   );
 };
 
 export default ProfilePage;
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<{ isLoading: boolean }>`
+  display: ${(props) => (props.isLoading ? "none" : "flex")};
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const LoadingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  overflow-y: scroll;
+  height: 100%;
+  margin-top: 15%;
 `;
 
 const Title = styled.div`
