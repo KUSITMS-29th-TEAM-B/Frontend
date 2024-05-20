@@ -53,54 +53,57 @@ const ProfilePage = () => {
     });
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1800);
 
     return () => clearTimeout(timer);
   }, []);
 
-  return !isLoading ? (
-    <StyledContainer className="page">
-      <Title>마이페이지</Title>
-      <TicketWrapper>
-        <img src={TicketContainer} alt="ticketContainer" />
-        <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
-        <ProfileWrapper>
-          <div className="profile_username">{username}</div>
-          <div className="profile_email">
-            {userAccount === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
-            {useremail}
-          </div>
-          <div
-            className="profile_edit_btn"
-            onClick={() => nav("/profile/edit")}
-          >
-            프로필 수정
-          </div>
-        </ProfileWrapper>
-      </TicketWrapper>
-      <TicketWrapper>
-        <img src={TicketContent} alt="ticketContainer" />
-        <ContentWrapper>
-          {userDetailList.map(({ question, answer }) => (
-            <React.Fragment key={question}>
-              <SubTitle>{question}</SubTitle>
-              <SubContent>{answer}</SubContent>
-            </React.Fragment>
-          ))}
-        </ContentWrapper>
-      </TicketWrapper>
-    </StyledContainer>
-  ) : (
-    <LoadingContainer>
-      <PlaneLoading />
-    </LoadingContainer>
+  return (
+    <>
+      <StyledContainer isLoading={isLoading} className="page">
+        <Title>마이페이지</Title>
+        <TicketWrapper>
+          <img src={TicketContainer} alt="ticketContainer" />
+          <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
+          <ProfileWrapper>
+            <div className="profile_username">{username}</div>
+            <div className="profile_email">
+              {userAccount === "GOOGLE" ? <GoogleIcon /> : <KakaoIcon />}
+              {useremail}
+            </div>
+            <div
+              className="profile_edit_btn"
+              onClick={() => nav("/profile/edit")}
+            >
+              프로필 수정
+            </div>
+          </ProfileWrapper>
+        </TicketWrapper>
+        <TicketWrapper>
+          <img src={TicketContent} alt="ticketContainer" />
+          <ContentWrapper>
+            {userDetailList.map(({ question, answer }) => (
+              <React.Fragment key={question}>
+                <SubTitle>{question}</SubTitle>
+                <SubContent>{answer}</SubContent>
+              </React.Fragment>
+            ))}
+          </ContentWrapper>
+        </TicketWrapper>
+      </StyledContainer>
+      {isLoading && (
+        <LoadingContainer>
+          <PlaneLoading />
+        </LoadingContainer>
+      )}
+    </>
   );
 };
 
 export default ProfilePage;
 
-const StyledContainer = styled.div`
-  display: flex;
+const StyledContainer = styled.div<{ isLoading: boolean }>`
+  display: ${(props) => (props.isLoading ? "none" : "flex")};
   align-items: center;
   justify-content: center;
   flex-direction: column;
