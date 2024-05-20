@@ -33,3 +33,12 @@ export interface TagType {
   id: string;
   name: string;
 }
+
+export interface TagMenuType extends TagType {
+  experienceCount: number;
+}
+
+export interface YearData {
+  year: number;
+  tags: TagType[];
+}

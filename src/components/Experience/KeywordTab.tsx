@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import styled, { useTheme } from "styled-components";
 import {
   deleteState,
-  keywordState,
+  primeTagState,
   yearState,
 } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
@@ -32,6 +32,13 @@ import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
 import { myKeywords } from "../../services/Experience/myKeywords";
 import { useNavigate } from "react-router-dom";
+import {
+  getPrimeTagSubTags,
+  getPrimeTagYears,
+} from "../../services/Experience/tagApi";
+import { getCookie } from "../../services/cookie";
+import { TagType } from "../../types/type";
+import { TagMenuType } from "../../types/experience";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {
@@ -39,16 +46,19 @@ interface KeywordTabProp {
 }
 
 const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
+  const user = getCookie("user");
   const theme = useTheme();
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
-  const [keyword, setKeyword] = useRecoilState(keywordState);
+  const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
 
+  const [primeTagYears, setPrimeTagYears] = React.useState();
+  const [subTagMenus, setSubTagMenus] = React.useState<TagMenuType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
@@ -108,7 +118,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
 
   const handleBackButton = () => {
     setIsDelete(false);
-    setKeyword(null);
+    setSelectedPrimeTag(null);
   };
   const handleQuestionChange = () => {
     if (expanded) {
@@ -119,6 +129,25 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const handleDelete = () => {
     setIsDelete(!isDelete);
   };
+
+  React.useEffect(() => {
+    if (selectedYear && selectedPrimeTag && user?.token) {
+      getPrimeTagSubTags(selectedYear, selectedPrimeTag.id, user?.token).then(
+        (res) => {
+          console.log(res);
+          setSubTagMenus(res.data.tagInfos);
+        }
+      );
+    }
+  }, [selectedYear, selectedPrimeTag, user?.token]);
+
+  React.useEffect(() => {
+    if (selectedPrimeTag && user?.token) {
+      getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) =>
+        setPrimeTagYears(res.data.years)
+      );
+    }
+  }, [selectedPrimeTag, user?.token]);
 
   /**
    * 사이드 메뉴 컨테이너
@@ -138,17 +167,17 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           >
             <ArrowRight />
           </button>
-          <KeywordText>{keyword}</KeywordText>
+          <KeywordText>{selectedPrimeTag?.name}</KeywordText>
           <YearSelect
             value={selectedYear}
-            options={years}
+            options={primeTagYears || []}
             onChange={setSelectedYear}
           />
           <MenuList>
-            {menus.map((item, index) => (
-              <MenuItem>
-                <div className="text">{item.title}</div>
-                <div className="text">{item.num}</div>
+            {subTagMenus?.map((item, index) => (
+              <MenuItem key={item.id}>
+                <div className="text">{item.name}</div>
+                <div className="text">{item.experienceCount}</div>
                 {isDelete && index !== 0 ? (
                   <DeleteIcon
                     width={"20px"}
@@ -159,7 +188,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
               </MenuItem>
             ))}
           </MenuList>
-          {keyword && isDelete ? (
+          {selectedPrimeTag && isDelete ? (
             <div
               className="edit-end"
               style={{ marginTop: "40px", marginLeft: "auto", padding: "5px" }}
