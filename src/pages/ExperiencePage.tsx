@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import {
   deleteTagState,
   primeTagState,
+  subTagState,
   yearState,
 } from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
@@ -25,6 +26,7 @@ const ExperiencePage = () => {
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
+  const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
   const [selectedDeleteTag, setSelectedDeleteTag] =
     useRecoilState(deleteTagState);
   const navigate = useNavigate();
@@ -41,11 +43,15 @@ const ExperiencePage = () => {
 
   const handleDelete = () => {
     if (selectedDeleteTag && user?.token) {
-      deleteTag(selectedDeleteTag.id, user?.token).then((res) =>
-        console.log(res)
-      );
+      deleteTag(selectedDeleteTag.id, user?.token).then((res) => {
+        if (selectedDeleteTag.id === selectedPrimeTag?.id) {
+          setSelectedPrimeTag({ id: "더보기", name: "더보기" });
+        } else if (selectedDeleteTag.id === selectedSubTag?.id) {
+          setSelectedSubTag(null);
+        }
+        closeDeleteModal();
+      });
     }
-    closeDeleteModal();
   };
 
   /**

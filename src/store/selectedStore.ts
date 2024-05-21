@@ -1,6 +1,6 @@
 // countStore.ts
 import { atom } from "recoil";
-import { TagType } from "../types/experience";
+import { TagMenuType, TagType } from "../types/experience";
 
 export const yearState = atom<number | null>({
   key: "yearState",
@@ -9,6 +9,11 @@ export const yearState = atom<number | null>({
 
 export const primeTagState = atom<TagType | null>({
   key: "primeTagState",
+  default: null,
+});
+
+export const subTagState = atom<TagMenuType | null>({
+  key: "subTagState",
   default: null,
 });
 

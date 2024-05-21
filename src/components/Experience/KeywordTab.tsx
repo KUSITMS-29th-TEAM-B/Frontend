@@ -5,6 +5,7 @@ import {
   deleteState,
   deleteTagState,
   primeTagState,
+  subTagState,
   yearState,
 } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
@@ -60,6 +61,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
+  const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
   const [keywordTabOption, setKeywordTabOption] =
@@ -68,7 +70,6 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const [primeTagYears, setPrimeTagYears] = React.useState();
   const [totalExpCount, setTotalExpCount] = React.useState(0);
   const [subTagMenus, setSubTagMenus] = React.useState<TagMenuType[]>([]);
-  const [selectedSubTag, setSelectedSubTag] = React.useState<TagMenuType>();
   const [experiences, setExperiences] = React.useState<ExperienceDetailType[]>(
     []
   );
@@ -193,7 +194,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           const { totalExperienceCount, tagInfos } = res.data;
           setTotalExpCount(totalExperienceCount);
           setSubTagMenus(tagInfos);
-          setSelectedSubTag(undefined);
+          setSelectedSubTag(null);
         }
       );
     }
@@ -235,7 +236,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           <MenuList>
             <MenuItem
               className={selectedSubTag ? "" : "active"}
-              onClick={() => setSelectedSubTag(undefined)}
+              onClick={() => setSelectedSubTag(null)}
             >
               <div className="text">전체</div>
               <div className="text">{totalExpCount}</div>
