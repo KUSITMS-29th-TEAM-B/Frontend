@@ -29,11 +29,13 @@ const JDListPage: React.FC = () => {
 
   //전체, 작성전, 작성중, 작성완료, 마감
   const handleClick = (buttonName: string) => {
+    setCurrentPage(1);
     setActiveButton(buttonName);
   };
 
   //CREATED, ENDED
   const handleSortChange = (sortType: string) => {
+    setCurrentPage(1);
     setSelectedSort(sortType);
   };
 

@@ -40,12 +40,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [experienceData, setExperienceData] = useState({
-    type: "ALL", // "ALL", "SEARCH", "TAG"
-    checkedKeyWord: [],
-    count: -1,
-    data: [],
-  });
+  const [experienceData, setExperienceData] = useState({});
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -71,12 +66,15 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     lastMyKeywordIndex
   );
 
+  useEffect(() => {
+    // getExperienceList(user.token);
+  }, []);
+
   //모든 경험리스트 불러오기
   const getExperienceList = async (token: string) => {
     try {
       const response = await getAllExperienceList(token);
       console.log(response);
-      setExperienceData({ ...experienceData, data: [] });
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -126,9 +124,22 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   };
 
   useEffect(() => {
-    console.log(mainTag + "maintag");
-    console.log(subTag + "subtag");
-  }, [mainTag, subTag]);
+    if (mainTag) {
+      console.log("maintag: " + mainTag);
+    }
+  }, [mainTag]);
+
+  useEffect(() => {
+    if (subTag) {
+      console.log("subtag: " + subTag);
+    }
+  }, [subTag]);
+
+  useEffect(() => {
+    if (searchText) {
+      console.log("search: " + searchText);
+    }
+  }, [searchText]);
 
   return (
     <StyledContainer>
