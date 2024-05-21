@@ -3,14 +3,15 @@ import styled from "styled-components";
 import { ArrowRight } from "../../assets";
 
 interface PrimeTagCardProp {
+  key: number;
   title: string;
   tagNum: number;
   expNum: number;
 }
 
-const PrimeTagCard = ({ title, tagNum, expNum }: PrimeTagCardProp) => {
+const PrimeTagCard = ({ key, title, tagNum, expNum }: PrimeTagCardProp) => {
   return (
-    <CardContainer>
+    <CardContainer key={key}>
       <CardTitle>
         <div className="title">{title}</div>
         <ArrowRight />

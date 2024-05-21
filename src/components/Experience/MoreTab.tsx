@@ -44,8 +44,9 @@ const MoreTab = () => {
     return (
       <ContentContainer>
         <CardList>
-          {moreData.map((item) => (
+          {moreData.map((item, index) => (
             <PrimeTagCard
+              key={index}
               title={item.title}
               tagNum={item.tagNum}
               expNum={item.expNum}
