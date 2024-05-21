@@ -155,8 +155,8 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
     setIsDelete(!isDelete);
   };
 
+  // My 역량 키워드 조회
   React.useEffect(() => {
-    // My 역량 키워드 조회
     if (user?.token) {
       getKeywords(user?.token)
         .then((res) => setMyKeywordList(res.data.strongPoints))
@@ -186,6 +186,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           const { totalExperienceCount, tagInfos } = res.data;
           setTotalExpCount(totalExperienceCount);
           setSubTagMenus(tagInfos);
+          setSelectedSubTag(undefined);
         }
       );
     }

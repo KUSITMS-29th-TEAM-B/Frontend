@@ -70,7 +70,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },
   };
 
-  // 주변 원(키워드 원) 클릭 함수
+  // 주변 원(상위 태그 원) 클릭 함수
   const handleTagClick = (e: any, year: number, primeTag: TagType) => {
     e.stopPropagation();
     setSelectedYear(year);
