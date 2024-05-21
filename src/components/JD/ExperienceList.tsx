@@ -40,9 +40,11 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [filteredData, setFilteredData] = useState({
+  const [experienceData, setExperienceData] = useState({
     type: "ALL", // "ALL", "SEARCH", "TAG"
     checkedKeyWord: [],
+    count: -1,
+    data: [],
   });
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -74,6 +76,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     try {
       const response = await getAllExperienceList(token);
       console.log(response);
+      setExperienceData({ ...experienceData, data: [] });
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));

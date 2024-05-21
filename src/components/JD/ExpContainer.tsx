@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ExpData from "../../services/JD/ExpData";
 import { useRecoilState } from "recoil";
@@ -6,6 +6,8 @@ import { detailStore } from "../../store/jdStore";
 import { questions } from "../../assets/data/questions";
 import JDChip from "./JDChip";
 import ArrowIcon from "../../assets/icons/icon_arrow_right_main500.svg";
+import { getCookie } from "../../services/cookie";
+import { getExperience } from "../../services/Experience/experienceApi";
 
 interface JobContainerProps {
   expId: number | string;
@@ -13,7 +15,31 @@ interface JobContainerProps {
 
 const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
   const expData = ExpData[0];
+  const user = getCookie("user");
+  const [apiData, setapiData] = useState({
+    id: "",
+    title: "",
+    parentTag: "",
+    childTag: "",
+    strongPoints: "",
+    contents: [],
+  });
+
+  useEffect(() => {
+    // getExperienceData(expId.toString(), user.token);
+  }, []);
+
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore);
+
+  const getExperienceData = async (expId: string, token: string) => {
+    try {
+      const response = await getExperience(expId, token);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
 
   return (
     <ExpContainer>

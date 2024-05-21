@@ -6,6 +6,7 @@ import linkIcon from "../../assets/icons/icon_link.svg";
 import { JobDescriptionAPI } from "../../types/type";
 import { jobdescriptionget } from "../../services/JD/jdApi";
 import { formatDateRange } from "../../pages/JDListPage";
+import { formatDate } from "../../pages/JDDetailPage";
 
 interface JobContainerProps {
   jdId: string;
@@ -26,15 +27,6 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
     endedAt: null,
   });
 
-  const formatDate = (createdAt: Date) => {
-    const date = new Date(createdAt);
-    const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date
-      .getFullYear()
-      .toString()
-      .substring(2)}`;
-    return formattedDate;
-  };
-
   const getJobData = async (jdId: string, token: string) => {
     try {
       const response = await jobdescriptionget(jdId, token);
@@ -43,7 +35,7 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
         enterpriseName: response.data.enterpriseName,
         title: response.data.title,
         remainingDate: response.data.remainingDate,
-        content: response.data.link,
+        content: response.data.content,
         writeStatus: response.data.writeStatus,
         link: response.data.link,
         createdAt: FormatstartDate,
@@ -51,7 +43,6 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
-      console.log(jdData);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -71,9 +62,9 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
       <JobTopBox>
         <JobTopTitleBox>
           <div className="job_detail_dday">{"D-" + jdData.remainingDate}</div>
-          <div className="job_detail_title">{jdData.title}</div>
+          <div className="job_detail_title">{jdData.enterpriseName}</div>
         </JobTopTitleBox>
-        <JobTopDescription>{jdData.content}</JobTopDescription>
+        <JobTopDescription>{jdData.title}</JobTopDescription>
         <JobSubBox>
           <div className="period">
             <img src={calendarIcon} alt="calendar" width={16} height={16} />
@@ -110,6 +101,7 @@ export default JDContainer;
 
 const ScrollDiv = styled.div`
     overflow-y: auto;
+    width: 100%;
     &::-webkit-scrollbar {
         width: 4px;
     }
