@@ -398,7 +398,13 @@ const ApplyEditPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId} token={user.token} /> : null}
+                {jdId ? (
+                  <JDContainer
+                    jdId={jdId}
+                    token={user.token}
+                    status={completed}
+                  />
+                ) : null}
               </JobContainer>
             )}
           </ActiveContainer>
