@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  jdId: string;
 }
 
-const DiscardModal: FC<ModalProps> = ({ isOpen, onClose }) => {
+const DiscardModal: FC<ModalProps> = ({ isOpen, onClose, jdId }) => {
   const nav = useNavigate();
   if (!isOpen) {
     return null;
@@ -34,7 +35,7 @@ const DiscardModal: FC<ModalProps> = ({ isOpen, onClose }) => {
           <ConfirmButton
             onClick={() => {
               onClose();
-              nav(-1);
+              nav(`/jd/${jdId}`);
             }}
           >
             <div>네, 취소할래요</div>

@@ -47,7 +47,7 @@ const Experience: React.FC<ExpProps> = ({
   const isSection = type === "section";
 
   // 경험의 선택된 질문 답변
-  const answer = detail?.[(question || 1)-1]?.answer;
+  const answer = detail?.[(question || 1) - 1]?.answer;
 
   const handleClick = () => {
     setDetailId(id);

@@ -18,6 +18,7 @@ export interface JobAnnouncement {
   dday: number;
   recruitmentPeriod: string;
   status: RecruitmentStatus;
+  createdAt?: string;
 }
 
 export interface Job {
@@ -70,3 +71,19 @@ export type JobDescriptionAPI = {
   startAt: Date | null;
   endedAt: Date | null;
 };
+
+export type ExperienceSimpleAPI = {
+  id: string;
+  title: string;
+  strongPoints: [];
+};
+
+export interface TagListAPI {
+  id: string;
+  name: string;
+  childTags?: TagAPI[];
+}
+
+export interface TagAPI {
+  tags: TagListAPI[];
+}

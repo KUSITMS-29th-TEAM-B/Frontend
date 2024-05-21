@@ -3,7 +3,12 @@ import YearListContainer from "../components/Experience/YearList";
 import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
-import { primeTagState, yearState } from "../store/selectedStore";
+import {
+  deleteTagState,
+  primeTagState,
+  subTagState,
+  yearState,
+} from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
 import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
@@ -14,12 +19,16 @@ import Modal from "../components/common/Modal";
 import React from "react";
 import warningImg from "../assets/images/warningIcon.png";
 import { getCookie } from "../services/cookie";
+import { deleteTag } from "../services/Experience/tagApi";
 
 const ExperiencePage = () => {
   const user = getCookie("user");
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
+  const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
+  const [selectedDeleteTag, setSelectedDeleteTag] =
+    useRecoilState(deleteTagState);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -33,8 +42,16 @@ const ExperiencePage = () => {
   };
 
   const handleDelete = () => {
-    console.log("삭제 api");
-    closeDeleteModal();
+    if (selectedDeleteTag && user?.token) {
+      deleteTag(selectedDeleteTag.id, user?.token).then((res) => {
+        if (selectedDeleteTag.id === selectedPrimeTag?.id) {
+          setSelectedPrimeTag({ id: "더보기", name: "더보기" });
+        } else if (selectedDeleteTag.id === selectedSubTag?.id) {
+          setSelectedSubTag(null);
+        }
+        closeDeleteModal();
+      });
+    }
   };
 
   /**
@@ -76,7 +93,7 @@ const ExperiencePage = () => {
         transition={{ type: "spring", stiffness: 40 }}
       >
         {selectedPrimeTag &&
-          (selectedPrimeTag.name === "더보기" ? (
+          (selectedPrimeTag.id === "더보기" ? (
             <MoreTab />
           ) : (
             <KeywordTab openDeleteModal={openDeleteModal} />
