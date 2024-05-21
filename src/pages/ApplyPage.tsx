@@ -424,6 +424,7 @@ const TextCountWrapper = styled.div`
 const SaveButton = styled.button<{ isNotNull: boolean }>`
   display: inline-flex;
   padding: 0.625rem 4rem;
+  cursor: pointer;
   justify-content: center;
   align-items: center;
   color: #fff;
@@ -556,6 +557,7 @@ const JDButton = styled.button<ButtonProps>`
   top: 1rem;
   width: 2rem;
   height: 7rem;
+  cursor: pointer;
   flex-shrink: 0;
   border: none;
   border-radius: 0.66019rem 0rem 0rem 0.66019rem;
@@ -568,6 +570,7 @@ const ExperienceButton = styled.button<ButtonProps>`
   left: -2rem;
   top: 8.5rem;
   width: 2rem;
+  cursor: pointer;
   height: 7rem;
   flex-shrink: 0;
   border: none;
@@ -584,6 +587,7 @@ const QuestionsWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
   }
   //overflow-y: scroll;
 `;
