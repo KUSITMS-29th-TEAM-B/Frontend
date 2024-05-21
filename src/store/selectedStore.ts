@@ -16,3 +16,8 @@ export const deleteState = atom<boolean>({
   key: "deleteState",
   default: false,
 });
+
+export const deleteTagState = atom<TagType | null>({
+  key: "deleteTagState",
+  default: null,
+});

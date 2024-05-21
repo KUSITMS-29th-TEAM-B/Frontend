@@ -82,3 +82,12 @@ export const getYearAllPrimeTags = async (year: number, token: string) => {
     },
   });
 };
+
+// 태그 삭제
+export const deleteTag = async (tagId: string, token: string) => {
+  return await client.delete(`/api/tags/${tagId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

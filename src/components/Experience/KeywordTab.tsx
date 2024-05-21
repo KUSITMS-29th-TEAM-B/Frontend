@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import styled, { useTheme } from "styled-components";
 import {
   deleteState,
+  deleteTagState,
   primeTagState,
   yearState,
 } from "../../store/selectedStore";
@@ -30,18 +31,18 @@ import { basicKeywords } from "../../assets/data/keywords";
 import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
-import { myKeywords } from "../../services/Experience/myKeywords";
 import { useNavigate } from "react-router-dom";
 import {
+  deleteTag,
   getPrimeTagSubTags,
   getPrimeTagYears,
 } from "../../services/Experience/tagApi";
 import { getCookie } from "../../services/cookie";
-import { TagType } from "../../types/type";
 import {
   ExperienceDetailType,
   KeywordType,
   TagMenuType,
+  TagType,
 } from "../../types/experience";
 import { getExperienceList } from "../../services/Experience/experienceApi";
 import { getKeywords } from "../../services/Experience/keywordApi";
@@ -57,6 +58,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
+  const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
@@ -152,7 +154,12 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
     setExpanded(!expanded);
   };
   const handleDelete = () => {
+    setSelectedDeleteTag(null);
     setIsDelete(!isDelete);
+  };
+  const handleDeleteSubTag = (item: TagType) => {
+    setSelectedDeleteTag(item);
+    openDeleteModal();
   };
 
   // My 역량 키워드 조회
@@ -241,11 +248,13 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
               >
                 <div className="text">{item.name}</div>
                 <div className="text">{item.experienceCount}</div>
-                {isDelete && index !== 0 ? (
+                {isDelete ? (
                   <DeleteIcon
                     width={"20px"}
                     style={{ position: "absolute", left: -10 }}
-                    onClick={openDeleteModal}
+                    onClick={() =>
+                      handleDeleteSubTag({ id: item.id, name: item.name })
+                    }
                   />
                 ) : null}
               </MenuItem>

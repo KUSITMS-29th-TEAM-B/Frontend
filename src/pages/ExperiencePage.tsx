@@ -3,7 +3,11 @@ import YearListContainer from "../components/Experience/YearList";
 import { AnimatePresence, motion } from "framer-motion";
 import useComponentSize from "../components/hooks/useComponentSize";
 import { useRecoilState } from "recoil";
-import { primeTagState, yearState } from "../store/selectedStore";
+import {
+  deleteTagState,
+  primeTagState,
+  yearState,
+} from "../store/selectedStore";
 import backgroundImg from "../assets/images/background.jpg";
 import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
@@ -14,12 +18,15 @@ import Modal from "../components/common/Modal";
 import React from "react";
 import warningImg from "../assets/images/warningIcon.png";
 import { getCookie } from "../services/cookie";
+import { deleteTag } from "../services/Experience/tagApi";
 
 const ExperiencePage = () => {
   const user = getCookie("user");
   const [componentRef, size] = useComponentSize();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
+  const [selectedDeleteTag, setSelectedDeleteTag] =
+    useRecoilState(deleteTagState);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -33,7 +40,11 @@ const ExperiencePage = () => {
   };
 
   const handleDelete = () => {
-    console.log("삭제 api");
+    if (selectedDeleteTag && user?.token) {
+      deleteTag(selectedDeleteTag.id, user?.token).then((res) =>
+        console.log(res)
+      );
+    }
     closeDeleteModal();
   };
 
