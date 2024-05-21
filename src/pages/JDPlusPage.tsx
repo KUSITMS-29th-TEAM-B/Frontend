@@ -7,7 +7,7 @@ import OneDatePick from "../components/common/DatePicker";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
-import { jobpost } from "../services/jd";
+import { jobpost } from "../services/JD/jdApi";
 import { JobAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
 
@@ -31,6 +31,19 @@ const JDPlusPage: React.FC = () => {
       behavior: "auto",
     });
   }, []);
+
+  //유효성검사
+  const isJobDataComplete = () => {
+    const { title, enterpriseName, content, link, startAt, endedAt } = jobData;
+    return (
+      title.trim() !== "" &&
+      enterpriseName.trim() !== "" &&
+      content.trim() !== "" &&
+      link.trim() !== "" &&
+      startAt !== null &&
+      endedAt !== null
+    );
+  };
 
   // endTime 계산
   const getEndTime = () => {
@@ -127,10 +140,10 @@ const JDPlusPage: React.FC = () => {
           <CancelButton onClick={openModal}>취소</CancelButton>
           <SaveButton
             onClick={() => {
-              if (jobData.startAt && jobData.endedAt) {
+              if (isJobDataComplete()) {
                 handleJDPost(jobData, user.token);
               } else {
-                alert("Start date and end date must be provided.");
+                alert("모든 문항을 입력하세요.");
               }
             }}
           >

@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { JobAnnouncement } from "../../types/type";
 import { useNavigate } from "react-router-dom";
 import StateBox from "./StateBox";
+import { formatDate } from "../../pages/JDDetailPage";
 
 interface JobAnnouncementProps {
   announcement: JobAnnouncement;
@@ -11,7 +12,7 @@ interface JobAnnouncementProps {
 const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
   announcement,
 }) => {
-  const { id, title, description, recruitmentPeriod, status, dday } =
+  const { id, title, description, recruitmentPeriod, status, dday, createdAt } =
     announcement;
   const nav = useNavigate();
 
@@ -19,10 +20,12 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
     <Container onClick={() => nav(`/jd/${id}`)}>
       <TopContainer>
         <StatusContainer>
-          {status !== "CLOSED" && <DdayContainer>{"D-" + dday}</DdayContainer>}
+          {status !== "CLOSED" && (
+            <DdayContainer>{dday === 0 ? "D-DAY" : "D-" + dday}</DdayContainer>
+          )}
           {status !== "NOT_APPLIED" && <StateBox status={status} />}
         </StatusContainer>
-        <DateContainer>24.01.19</DateContainer>
+        <DateContainer>{formatDate(createdAt)}</DateContainer>
       </TopContainer>
       <Title>{title}</Title>
       <Description>{description}</Description>

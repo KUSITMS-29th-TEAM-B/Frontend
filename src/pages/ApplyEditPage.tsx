@@ -16,7 +16,7 @@ import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
-import { applyget, applypatch, statuspatch } from "../services/jd";
+import { applyget, applypatch, statuspatch } from "../services/JD/jdApi";
 import { getCookie } from "../services/cookie";
 
 const ApplyEditPage: React.FC = () => {
@@ -27,7 +27,7 @@ const ApplyEditPage: React.FC = () => {
     { question: "", answer: "" },
   ]); //문항 데이터
   const [editing, setEditing] = useState(false); //수정중 여부
-  const [completed, setCompleted] = useState(""); //작성 완료
+  const [completed, setCompleted] = useState<string>(""); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
 
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore); //경험의 고유 id(0이 아니여야함)
@@ -123,6 +123,8 @@ const ApplyEditPage: React.FC = () => {
       setEditing(!editing);
       //저장기능
     } else if (!editing && !completed) {
+      setEditing(!editing);
+    } else if (!editing && completed === "작성중") {
       setEditing(!editing);
     }
   };
@@ -275,13 +277,17 @@ const ApplyEditPage: React.FC = () => {
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
-              <ToggleWrapper>
-                작성완료
-                <Toggle
-                  isActive={completed === "작성완료"}
-                  onClick={() => (!editing ? handleCompeletedButton() : null)}
-                />
-              </ToggleWrapper>
+              {!editing ? (
+                <ToggleWrapper>
+                  작성완료
+                  <Toggle
+                    isActive={completed === "작성완료"}
+                    onClick={() => (!editing ? handleCompeletedButton() : null)}
+                  />
+                </ToggleWrapper>
+              ) : (
+                <ToggleWrapper></ToggleWrapper>
+              )}
               {editing ? (
                 <SaveButton
                   isNotNull={isAllFilled}
@@ -293,11 +299,12 @@ const ApplyEditPage: React.FC = () => {
                 >
                   저장
                 </SaveButton>
+              ) : completed === "작성완료" ? (
+                <EditButton iscanEdit={true} onClick={handleEditButton}>
+                  수정
+                </EditButton>
               ) : (
-                <EditButton
-                  iscanEdit={completed === "작성중"}
-                  onClick={handleEditButton}
-                >
+                <EditButton iscanEdit={false} onClick={handleEditButton}>
                   수정
                 </EditButton>
               )}
@@ -476,7 +483,7 @@ const SaveButton = styled.button<{ isNotNull: boolean }>`
     display: inline-flex;
     padding: 0.625rem 4rem;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     color:#FFF;
     gap: 0.625rem;
     font-size: 1rem;

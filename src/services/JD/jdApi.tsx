@@ -1,5 +1,5 @@
-import { ApplyAPI, JobAPI } from "../types/type";
-import client from "./client";
+import { ApplyAPI, JobAPI } from "../../types/type";
+import client from "../client";
 
 export const jobpost = async (job: JobAPI, token: string) => {
   return await client.post(
@@ -39,12 +39,15 @@ export const jobpatch = async (job: JobAPI, jdId: string, token: string) => {
   );
 };
 
-export const jobget = async (page: string, token: string) => {
-  return await client.get(`/api/job-description?page=${page}&size=9`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const jobget = async (page: string, token: string, sortType: string) => {
+  return await client.get(
+    `/api/job-description?page=${page}&size=9&sortType=${sortType}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const filteredjobget = async (
