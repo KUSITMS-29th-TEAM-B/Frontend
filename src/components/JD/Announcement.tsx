@@ -20,7 +20,9 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
     <Container onClick={() => nav(`/jd/${id}`)}>
       <TopContainer>
         <StatusContainer>
-          {status !== "CLOSED" && <DdayContainer>{"D-" + dday}</DdayContainer>}
+          {status !== "CLOSED" && (
+            <DdayContainer>{dday === 0 ? "D-DAY" : "D-" + dday}</DdayContainer>
+          )}
           {status !== "NOT_APPLIED" && <StateBox status={status} />}
         </StatusContainer>
         <DateContainer>{formatDate(createdAt)}</DateContainer>
