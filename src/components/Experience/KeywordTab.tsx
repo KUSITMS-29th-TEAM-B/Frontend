@@ -3,7 +3,9 @@ import { useRecoilState } from "recoil";
 import styled, { useTheme } from "styled-components";
 import {
   deleteState,
+  deleteTagState,
   primeTagState,
+  subTagState,
   yearState,
 } from "../../store/selectedStore";
 import { questions } from "../../assets/data/questions";
@@ -30,18 +32,18 @@ import { basicKeywords } from "../../assets/data/keywords";
 import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
-import { myKeywords } from "../../services/Experience/myKeywords";
 import { useNavigate } from "react-router-dom";
 import {
+  deleteTag,
   getPrimeTagSubTags,
   getPrimeTagYears,
 } from "../../services/Experience/tagApi";
 import { getCookie } from "../../services/cookie";
-import { TagType } from "../../types/type";
 import {
   ExperienceDetailType,
   KeywordType,
   TagMenuType,
+  TagType,
 } from "../../types/experience";
 import { getExperienceList } from "../../services/Experience/experienceApi";
 import { getKeywords } from "../../services/Experience/keywordApi";
@@ -57,7 +59,9 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
+  const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
+  const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
   const [keywordTabOption, setKeywordTabOption] =
@@ -66,7 +70,6 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const [primeTagYears, setPrimeTagYears] = React.useState();
   const [totalExpCount, setTotalExpCount] = React.useState(0);
   const [subTagMenus, setSubTagMenus] = React.useState<TagMenuType[]>([]);
-  const [selectedSubTag, setSelectedSubTag] = React.useState<TagMenuType>();
   const [experiences, setExperiences] = React.useState<ExperienceDetailType[]>(
     []
   );
@@ -152,11 +155,16 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
     setExpanded(!expanded);
   };
   const handleDelete = () => {
+    setSelectedDeleteTag(null);
     setIsDelete(!isDelete);
   };
+  const handleDeleteSubTag = (item: TagType) => {
+    setSelectedDeleteTag(item);
+    openDeleteModal();
+  };
 
+  // My 역량 키워드 조회
   React.useEffect(() => {
-    // My 역량 키워드 조회
     if (user?.token) {
       getKeywords(user?.token)
         .then((res) => setMyKeywordList(res.data.strongPoints))
@@ -186,6 +194,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           const { totalExperienceCount, tagInfos } = res.data;
           setTotalExpCount(totalExperienceCount);
           setSubTagMenus(tagInfos);
+          setSelectedSubTag(null);
         }
       );
     }
@@ -227,7 +236,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
           <MenuList>
             <MenuItem
               className={selectedSubTag ? "" : "active"}
-              onClick={() => setSelectedSubTag(undefined)}
+              onClick={() => setSelectedSubTag(null)}
             >
               <div className="text">전체</div>
               <div className="text">{totalExpCount}</div>
@@ -240,11 +249,13 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
               >
                 <div className="text">{item.name}</div>
                 <div className="text">{item.experienceCount}</div>
-                {isDelete && index !== 0 ? (
+                {isDelete ? (
                   <DeleteIcon
                     width={"20px"}
                     style={{ position: "absolute", left: -10 }}
-                    onClick={openDeleteModal}
+                    onClick={() =>
+                      handleDeleteSubTag({ id: item.id, name: item.name })
+                    }
                   />
                 ) : null}
               </MenuItem>
