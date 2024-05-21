@@ -190,7 +190,11 @@ const ApplyPage: React.FC = () => {
         onClose={closeModal}
         onCancel={cancelModal}
       />
-      <DiscardModal isOpen={discardModal} onClose={closeDiscardModal} />
+      <DiscardModal
+        isOpen={discardModal}
+        onClose={closeDiscardModal}
+        jdId={jdId}
+      />
       <MainContainer>
         <CenteredContainer
           initial={{ width: "100%" }}
