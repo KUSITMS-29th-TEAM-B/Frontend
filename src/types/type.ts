@@ -77,3 +77,13 @@ export type ExperienceSimpleAPI = {
   title: string;
   strongPoints: [];
 };
+
+export interface TagListAPI {
+  id: string;
+  name: string;
+  childTags?: TagAPI[];
+}
+
+export interface TagAPI {
+  tags: TagListAPI[];
+}

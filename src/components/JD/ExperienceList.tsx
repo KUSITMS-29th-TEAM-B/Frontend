@@ -5,7 +5,6 @@ import styled from "styled-components";
 import FillfilterIcon from "../../assets/icons/icon_filter_fill.svg";
 import BlankfilterIcon from "../../assets/icons/icon_filter_blank.svg";
 import SearchIcon from "../../assets/icons/icon_search_grey500.svg";
-import { TagList } from "../../services/JD/TagData";
 import ArrowIcon_net from "../../assets/icons/icon_arrow_right_net500.svg";
 import ArrowIcon_main from "../../assets/icons/icon_arrow_right_main500.svg";
 import FilterRemoveIcon from "../../assets/icons/icon_filter_remove.svg";
@@ -17,6 +16,7 @@ import { myKeywords } from "../../services/Experience/myKeywords";
 import Checkbox from "../common/Checkbox";
 import { getAllExperienceList } from "../../services/JD/ExperienceApi";
 import { getCookie } from "../../services/cookie";
+import { getAllTags } from "../../services/JD/tagApi";
 
 type TabType = "basic" | "my";
 
@@ -83,10 +83,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     }
   };
 
-  useEffect(() => {
-    // getExperienceList(user.token);
-  }, []);
-
   // 체크된 역량 키워드 리스트
   const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
 
@@ -128,6 +124,11 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       setSubTag("");
     }
   };
+
+  useEffect(() => {
+    console.log(mainTag + "maintag");
+    console.log(subTag + "subtag");
+  }, [mainTag, subTag]);
 
   return (
     <StyledContainer>
@@ -340,30 +341,71 @@ interface TagPopupProps {
   onSelect: (mainTag: string, subTag?: string) => void;
 }
 
-const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
-  const [visibleSubTag, setVisibleSubTag] = useState<number | null>(null);
+interface ChildTag {
+  id: string;
+  name: string;
+}
 
-  const toggleSubTags = (id: number, mainTag: string) => {
-    onSelect(mainTag);
+interface Tag {
+  id: string;
+  name: string;
+  childTags: ChildTag[];
+}
+
+const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
+  const [visibleSubTag, setVisibleSubTag] = useState<string | null>(null);
+  const [tagList, setTagList] = useState<Tag[]>([]);
+  const user = getCookie("user");
+
+  const getTagList = async (token: string) => {
+    try {
+      const response = await getAllTags(token);
+      console.log(response);
+      const list = response.data.tags.map((tag: Tag) => ({
+        id: tag.id,
+        name: tag.name,
+        childTags: tag.childTags,
+      }));
+      setTagList(list);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  useEffect(() => {
+    getTagList(user.token);
+  }, []);
+
+  const toggleSubTags = (id: string) => {
     if (visibleSubTag === id) {
       setVisibleSubTag(null);
     } else {
       setVisibleSubTag(id);
     }
   };
+
   return (
     <PopupContainer>
-      {TagList.map((tag) => (
+      {tagList.map((tag) => (
         <div key={tag.id}>
-          <Tag onClick={() => toggleSubTags(tag.id, tag.mainTag)}>
+          <Tag
+            onClick={() => {
+              toggleSubTags(tag.id);
+              onSelect(tag.name);
+            }}
+          >
             <img src={ArrowIcon_net} alt="arrow" />
-            {tag.mainTag}
+            {tag.name}
           </Tag>
           {visibleSubTag === tag.id &&
-            tag.subTag.map((sub) => (
-              <SubTag key={sub} onClick={() => onSelect(tag.mainTag, sub)}>
+            tag.childTags.map((child) => (
+              <SubTag
+                key={child.id}
+                onClick={() => onSelect(tag.name, child.name)}
+              >
                 <img src={ArrowIcon_net} alt="arrow" />
-                {sub}
+                {child.name}
               </SubTag>
             ))}
         </div>

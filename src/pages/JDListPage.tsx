@@ -103,9 +103,13 @@ const JDListPage: React.FC = () => {
   }, [currentPage, pageTotal, activeButton]);
 
   //writenStatus 없이 전체 조회
-  const getJobList = async (page: string, token: string) => {
+  const getJobList = async (
+    page: string,
+    token: string,
+    sortType: string = "CREATED"
+  ) => {
     try {
-      const response = await jobget(page, token);
+      const response = await jobget(page, token, sortType);
       const mappedData = response.data.content.map((job: any) => ({
         id: job.jobDescriptionId,
         title: job.title,
@@ -170,7 +174,7 @@ const JDListPage: React.FC = () => {
     } else if (activeButton === "마감") {
       getFilteredJobList(currentpage, "CLOSED", sortedType, user.token);
     } else if (activeButton === "전체") {
-      getJobList(currentpage, user.token);
+      getJobList(currentpage, user.token, sortedType);
     }
   };
 
