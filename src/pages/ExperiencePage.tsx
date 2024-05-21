@@ -76,7 +76,7 @@ const ExperiencePage = () => {
         transition={{ type: "spring", stiffness: 40 }}
       >
         {selectedPrimeTag &&
-          (selectedPrimeTag.name === "더보기" ? (
+          (selectedPrimeTag.id === "더보기" ? (
             <MoreTab />
           ) : (
             <KeywordTab openDeleteModal={openDeleteModal} />

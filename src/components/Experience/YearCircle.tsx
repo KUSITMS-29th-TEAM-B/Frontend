@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
@@ -7,7 +7,6 @@ import { deleteState, yearState } from "../../store/selectedStore";
 import { primeTagState } from "../../store/selectedStore";
 import { DeleteIcon } from "../../assets";
 import { TagType } from "../../types/experience";
-import { getYearPrimeTags } from "../../services/Experience/tagApi";
 
 interface YearCircleProps {
   year: number;
@@ -31,7 +30,6 @@ const YearCircle: React.FC<YearCircleProps> = ({
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
-
 
   const radius = 20;
   const centralWidth = 84;
