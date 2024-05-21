@@ -40,11 +40,14 @@ export const jobpatch = async (job: JobAPI, jdId: string, token: string) => {
 };
 
 export const jobget = async (page: string, token: string) => {
-  return await client.get(`/api/job-description?page=${page}&size=9`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await client.get(
+    `/api/job-description?page=${page}&size=9&sortType=CREATED`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 
 export const filteredjobget = async (

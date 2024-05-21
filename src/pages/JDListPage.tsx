@@ -97,8 +97,6 @@ const JDListPage: React.FC = () => {
 
     generatePages();
     setPages(tempPages);
-    console.log("curr" + currentPage);
-    console.log("total" + pageTotal);
   }, [currentPage, pageTotal, activeButton]);
 
   const getJobList = async (page: string, token: string) => {
@@ -130,41 +128,6 @@ const JDListPage: React.FC = () => {
   useEffect(() => {
     let currentpage = (currentPage - 1).toString();
     if (activeButton === "작성전") {
-      setCurrentPage(1);
-      getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
-    } else if (activeButton === "작성중") {
-      setCurrentPage(1);
-      getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
-    } else if (activeButton === "작성완료") {
-      setCurrentPage(1);
-      getFilteredJobList(currentpage, "WRITTEN", selectedSort, user.token);
-    } else if (activeButton === "마감") {
-      setCurrentPage(1);
-      getFilteredJobList(currentpage, "CLOSED", selectedSort, user.token);
-    } else if (activeButton === "전체") {
-      setCurrentPage(1);
-      getFilteredJobList(currentpage, "ALL", selectedSort, user.token);
-    }
-  }, [activeButton]);
-
-  useEffect(() => {
-    let currentpage = (currentPage - 1).toString();
-    if (activeButton === "작성전") {
-      getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
-    } else if (activeButton === "작성중") {
-      getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
-    } else if (activeButton === "작성완료") {
-      getFilteredJobList(currentpage, "WRITTEN", selectedSort, user.token);
-    } else if (activeButton === "마감") {
-      getFilteredJobList(currentpage, "CLOSED", selectedSort, user.token);
-    } else if (activeButton === "전체") {
-      getFilteredJobList(currentpage, "ALL", selectedSort, user.token);
-    }
-  }, [selectedSort]);
-
-  useEffect(() => {
-    let currentpage = (currentPage - 1).toString();
-    if (activeButton === "작성전") {
       getFilteredJobList(currentpage, "NOT_APPLIED", selectedSort, user.token);
     } else if (activeButton === "작성중") {
       getFilteredJobList(currentpage, "WRITING", selectedSort, user.token);
@@ -176,6 +139,35 @@ const JDListPage: React.FC = () => {
       getJobList(currentpage, user.token);
     }
   }, [currentPage]);
+
+  useEffect(() => {
+    if (selectedSort !== "") {
+      handleApiGet(selectedSort);
+    } else {
+      handleApiGet("CREATED");
+    }
+  }, [activeButton]);
+
+  useEffect(() => {
+    if (selectedSort !== "") {
+      handleApiGet(selectedSort);
+    }
+  }, [selectedSort]);
+
+  const handleApiGet = (sortedType: string) => {
+    let currentpage = (currentPage - 1).toString();
+    if (activeButton === "작성전") {
+      getFilteredJobList(currentpage, "NOT_APPLIED", sortedType, user.token);
+    } else if (activeButton === "작성중") {
+      getFilteredJobList(currentpage, "WRITING", sortedType, user.token);
+    } else if (activeButton === "작성완료") {
+      getFilteredJobList(currentpage, "WRITTEN", sortedType, user.token);
+    } else if (activeButton === "마감") {
+      getFilteredJobList(currentpage, "CLOSED", sortedType, user.token);
+    } else if (activeButton === "전체") {
+      getJobList(currentpage, user.token);
+    }
+  };
 
   const getFilteredJobList = async (
     page: string,
@@ -227,7 +219,7 @@ const JDListPage: React.FC = () => {
                   active={activeButton === button}
                   onClick={() => handleClick(button)}
                 >
-                  {button.toUpperCase()}
+                  {button}
                 </FilterButton>
               ))}
             </LeftFilterBox>
