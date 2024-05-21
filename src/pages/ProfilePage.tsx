@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import TicketContainer from "../assets/images/ticketContainer.svg";
+import TicketContainer from "../assets/images/image_profile_bg.png";
 import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,11 @@ import { getCookie, removeCookie } from "../services/cookie";
 import { getUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
+import profile1 from "../assets/images/profile1.png";
+import profile2 from "../assets/images/profile2.png";
+import profile3 from "../assets/images/profile3.png";
+import profile4 from "../assets/images/profile4.png";
+import profile5 from "../assets/images/profile5.png";
 
 interface UserDetail {
   question: string;
@@ -18,6 +23,8 @@ const ProfilePage = () => {
   const nav = useNavigate();
   const user = getCookie("user");
   const [userData, setUserData] = React.useState<UserDataType>();
+  const [profileImage, setprofileImage] = useState(profile1);
+
   const userDetailList: UserDetail[] = [
     {
       question: "구직활동 여부",
@@ -47,6 +54,17 @@ const ProfilePage = () => {
       getUserInfo(user?.token).then((res) => {
         console.log(res);
         setUserData(res.data);
+        if (res.data.profileImgUrl === "/assets/profile1.png") {
+          setprofileImage(profile1);
+        } else if (res.data.profileImgUrl === "/assets/profile2.png") {
+          setprofileImage(profile2);
+        } else if (res.data.profileImgUrl === "/assets/profile3.png") {
+          setprofileImage(profile3);
+        } else if (res.data.profileImgUrl === "/assets/profile4.png") {
+          setprofileImage(profile4);
+        } else if (res.data.profileImgUrl === "/assets/profile5.png") {
+          setprofileImage(profile5);
+        }
       });
     }
   }, []);
@@ -67,6 +85,9 @@ const ProfilePage = () => {
       <StyledContainer isLoading={isLoading} className="page">
         <Title>마이페이지</Title>
         <TicketWrapper>
+          <ProfileImage>
+            <img src={profileImage} alt="profileImage" />
+          </ProfileImage>
           <img src={TicketContainer} alt="ticketContainer" />
           <LogoutWrapper onClick={handlelogout}>로그아웃</LogoutWrapper>
           <ProfileWrapper>
@@ -193,4 +214,14 @@ const ContentWrapper = styled.div`
   left: 8%;
   flex-direction: column;
   display: flex;
+`;
+
+const ProfileImage = styled.div`
+    position: absolute;
+    top: 3rem;
+    left: 3rem;
+    img{
+        width: 9.0625rem;
+        height: 12.125rem;
+    }
 `;
