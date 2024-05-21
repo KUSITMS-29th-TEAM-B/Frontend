@@ -277,7 +277,7 @@ const ApplyEditPage: React.FC = () => {
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
-              {!editing && (
+              {!editing ? (
                 <ToggleWrapper>
                   작성완료
                   <Toggle
@@ -285,6 +285,8 @@ const ApplyEditPage: React.FC = () => {
                     onClick={() => (!editing ? handleCompeletedButton() : null)}
                   />
                 </ToggleWrapper>
+              ) : (
+                <ToggleWrapper></ToggleWrapper>
               )}
               {editing ? (
                 <SaveButton
