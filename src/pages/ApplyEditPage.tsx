@@ -277,13 +277,15 @@ const ApplyEditPage: React.FC = () => {
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
-              <ToggleWrapper>
-                작성완료
-                <Toggle
-                  isActive={completed === "작성완료"}
-                  onClick={() => (!editing ? handleCompeletedButton() : null)}
-                />
-              </ToggleWrapper>
+              {!editing && (
+                <ToggleWrapper>
+                  작성완료
+                  <Toggle
+                    isActive={completed === "작성완료"}
+                    onClick={() => (!editing ? handleCompeletedButton() : null)}
+                  />
+                </ToggleWrapper>
+              )}
               {editing ? (
                 <SaveButton
                   isNotNull={isAllFilled}
@@ -479,7 +481,7 @@ const SaveButton = styled.button<{ isNotNull: boolean }>`
     display: inline-flex;
     padding: 0.625rem 4rem;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     color:#FFF;
     gap: 0.625rem;
     font-size: 1rem;
