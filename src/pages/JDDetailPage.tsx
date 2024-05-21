@@ -191,7 +191,9 @@ const JDDetailPage: React.FC = () => {
                 <JobTopTitleBox>
                   {jdData.writeStatus !== "CLOSED" && (
                     <div className="job_detail_dday">
-                      {"D-" + jdData.remainingDate}
+                      {parseInt(jdData.remainingDate) <= 0
+                        ? "D-DAY"
+                        : "D-" + jdData.remainingDate}
                     </div>
                   )}
                   <div className="job_detail_title">{jdData.title}</div>
