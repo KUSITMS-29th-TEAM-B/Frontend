@@ -26,10 +26,13 @@ const JDListPage: React.FC = () => {
   const user = getCookie("user");
 
   const nav = useNavigate();
+
+  //전체, 작성전, 작성중, 작성완료, 마감
   const handleClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
 
+  //CREATED, ENDED
   const handleSortChange = (sortType: string) => {
     setSelectedSort(sortType);
   };
@@ -99,6 +102,7 @@ const JDListPage: React.FC = () => {
     setPages(tempPages);
   }, [currentPage, pageTotal, activeButton]);
 
+  //writenStatus 없이 전체 조회
   const getJobList = async (page: string, token: string) => {
     try {
       const response = await jobget(page, token);
@@ -125,6 +129,7 @@ const JDListPage: React.FC = () => {
     }
   };
 
+  //page 넘길 때 api 호출
   useEffect(() => {
     let currentpage = (currentPage - 1).toString();
     if (activeButton === "작성전") {
