@@ -14,7 +14,7 @@ import calendarIcon from "../assets/icons/icon_calendar.svg";
 import linkIcon from "../assets/icons/icon_link.svg";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { formatDateRange } from "./JDListPage";
-import { jobdelete, jobdescriptionget } from "../services/jd";
+import { jobdelete, jobdescriptionget } from "../services/JD/jdApi";
 import { getCookie } from "../services/cookie";
 import PlaneLoading from "../components/common/Loading";
 import JDDeleteModal from "../components/JD/JDDeleteModal";
@@ -87,15 +87,6 @@ const JDDetailPage: React.FC = () => {
       setDetailId(0);
     }
   }, [active]);
-
-  const formatDate = (createdAt: Date) => {
-    const date = new Date(createdAt);
-    const formattedDate = `${date.getDate()}.${date.getMonth() + 1}.${date
-      .getFullYear()
-      .toString()
-      .substring(2)}`;
-    return formattedDate;
-  };
 
   const getJobData = async (jdId: string, token: string) => {
     try {
@@ -283,6 +274,15 @@ const JDDetailPage: React.FC = () => {
 };
 
 export default JDDetailPage;
+
+export const formatDate = (createdAt: any) => {
+  const date = new Date(createdAt);
+  const year = date.getFullYear().toString().slice(2); // 년도의 마지막 두 자리
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // 월 (0부터 시작하므로 1을 더함)
+  const day = date.getDate().toString().padStart(2, "0"); // 날짜
+
+  return `${year}.${month}.${day}`; // 포맷된 문자열 반환
+};
 
 const StyledDivContainer = styled.div`
   width: 100%;

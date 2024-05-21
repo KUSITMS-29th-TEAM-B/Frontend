@@ -4,7 +4,7 @@ import StateBox from "./StateBox";
 import calendarIcon from "../../assets/icons/icon_calendar.svg";
 import linkIcon from "../../assets/icons/icon_link.svg";
 import { JobDescriptionAPI } from "../../types/type";
-import { jobdescriptionget } from "../../services/jd";
+import { jobdescriptionget } from "../../services/JD/jdApi";
 import { formatDateRange } from "../../pages/JDListPage";
 
 interface JobContainerProps {

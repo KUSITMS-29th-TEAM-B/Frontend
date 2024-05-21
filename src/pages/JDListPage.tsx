@@ -11,7 +11,7 @@ import nextbtn_v2 from "../assets/icons/icon_next_btn_v2.svg";
 import { useNavigate } from "react-router-dom";
 import PlusIcon from "../assets/icons/icon_plus_white.svg";
 import { JobAnnouncement } from "../types/type";
-import { filteredjobget, jobget } from "../services/jd";
+import { filteredjobget, jobget } from "../services/JD/jdApi";
 import { getCookie } from "../services/cookie";
 
 const JDListPage: React.FC = () => {
@@ -111,6 +111,7 @@ const JDListPage: React.FC = () => {
         dday: job.remainingDate,
         recruitmentPeriod: formatDateRange(job.startedAt, job.endedAt),
         status: job.writeStatus,
+        createdAt: job.createdAt,
       }));
       setJobsData(mappedData);
       if (response.data.totalPage !== 0) {
@@ -197,6 +198,7 @@ const JDListPage: React.FC = () => {
           dday: job.remainingDate,
           recruitmentPeriod: formatDateRange(job.startedAt, job.endedAt),
           status: job.writeStatus,
+          createdAt: job.createdAt,
         }));
         setJobsData(mappedData);
         setpageTotal(response.data.totalPage);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ExpData from "../../services/JD/ExpData";
 import Experience from "./Experience";
 import styled from "styled-components";
@@ -15,6 +15,8 @@ import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import { myKeywords } from "../../services/Experience/myKeywords";
 import Checkbox from "../common/Checkbox";
+import { getAllExperienceList } from "../../services/JD/ExperienceApi";
+import { getCookie } from "../../services/cookie";
 
 type TabType = "basic" | "my";
 
@@ -37,6 +39,11 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const bookmarkData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
+  const user = getCookie("user");
+  const [filteredData, setFilteredData] = useState({
+    type: "ALL", // "ALL", "SEARCH", "TAG"
+    checkedKeyWord: [],
+  });
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -61,6 +68,21 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     firstMyKeywordIndex,
     lastMyKeywordIndex
   );
+
+  //모든 경험리스트 불러오기
+  const getExperienceList = async (token: string) => {
+    try {
+      const response = await getAllExperienceList(token);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  useEffect(() => {
+    // getExperienceList(user.token);
+  }, []);
 
   // 체크된 역량 키워드 리스트
   const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);

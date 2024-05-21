@@ -7,7 +7,7 @@ import OneDatePick from "../components/common/DatePicker";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
-import { jobpost } from "../services/jd";
+import { jobpost } from "../services/JD/jdApi";
 import { JobAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
 

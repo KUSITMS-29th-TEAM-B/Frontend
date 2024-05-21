@@ -16,7 +16,7 @@ import DiscardModal from "../components/JD/DiscardModal";
 import JDContainer from "../components/JD/JDContainer";
 import ExperienceBox from "../components/JD/ExpContainer";
 import { ApplyAPI } from "../types/type";
-import { applyget, applypatch, statuspatch } from "../services/jd";
+import { applyget, applypatch, statuspatch } from "../services/JD/jdApi";
 import { getCookie } from "../services/cookie";
 
 const ApplyEditPage: React.FC = () => {

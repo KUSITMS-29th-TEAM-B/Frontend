@@ -1,5 +1,5 @@
-import { ApplyAPI, JobAPI } from "../types/type";
-import client from "./client";
+import { ApplyAPI, JobAPI } from "../../types/type";
+import client from "../client";
 
 export const jobpost = async (job: JobAPI, token: string) => {
   return await client.post(
