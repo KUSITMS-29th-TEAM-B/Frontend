@@ -42,3 +42,10 @@ export interface YearData {
   year: number;
   tags: TagType[];
 }
+
+export interface PrimeTagData {
+  id: string;
+  name: string;
+  strongPointCount: number;
+  experienceCount: number;
+}

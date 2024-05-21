@@ -4,13 +4,21 @@ import { ArrowRight } from "../../assets";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { primeTagState, yearState } from "../../store/selectedStore";
 import PrimeTagCard from "./PrimeTagCard";
-import { moreData } from "../../services/Experience/moreData";
+import { getYearAllPrimeTags } from "../../services/Experience/tagApi";
+import { PrimeTagData } from "../../types/experience";
+import { getCookie } from "../../services/cookie";
 
 const MoreTab = () => {
+  const user = getCookie("user");
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const setSelectedPrimeTag = useSetRecoilState(primeTagState);
+  const [primeTagList, setPrimeTagList] = React.useState<PrimeTagData[]>([]);
 
-  const totalNum = moreData.length;
+
+  const handlePrimeTagClick = (item: PrimeTagData) => {
+    const selectedPrimeTag = { id: item.id, name: item.name };
+    setSelectedPrimeTag(selectedPrimeTag);
+  };
   /**
    * 사이드 메뉴 컨테이너
    */
@@ -31,7 +39,7 @@ const MoreTab = () => {
         <YearText>{selectedYear} 활동</YearText>
         <YearInfo>
           <div className="total">총</div>
-          <div className="num">{totalNum}개</div>
+          <div className="num">{primeTagList.length}개</div>
         </YearInfo>
       </LeftContainer>
     );
@@ -44,18 +52,27 @@ const MoreTab = () => {
     return (
       <ContentContainer>
         <CardList>
-          {moreData.map((item, index) => (
+          {primeTagList.map((item) => (
             <PrimeTagCard
-              key={index}
-              title={item.title}
-              tagNum={item.tagNum}
-              expNum={item.expNum}
+              key={item.id}
+              title={item.name}
+              tagNum={item.strongPointCount}
+              expNum={item.experienceCount}
+              onClick={() => handlePrimeTagClick(item)}
             />
           ))}
         </CardList>
       </ContentContainer>
     );
   };
+
+  React.useEffect(() => {
+    if (selectedYear) {
+      getYearAllPrimeTags(selectedYear, user?.token).then((res) =>
+        setPrimeTagList(res.data.tagInfos)
+      );
+    }
+  }, [selectedYear]);
 
   //
   //
