@@ -10,7 +10,6 @@ import {
 } from "../../store/selectedStore";
 import { getExperienceYears } from "../../services/Experience/experienceApi";
 import { getCookie } from "../../services/cookie";
-import { getYearPrimeTags } from "../../services/Experience/tagApi";
 import { TagType, YearData } from "../../types/experience";
 
 interface YearListProps {
@@ -20,7 +19,6 @@ interface YearListProps {
 
 const YearList = ({ width, openDeleteModal }: YearListProps) => {
   const user = getCookie("user");
-  const [primeTags, setPrimeTags] = React.useState<TagType[]>([]);
   const [selectedYear, setSelectedYear] = useRecoilState<number | null>(
     yearState
   );
@@ -30,9 +28,6 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   const [allYearsData, setAllYearsData] = React.useState<YearData[]>([]);
 
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
-
-  // 임시 데이터
-  const keywords = ["큐시즘", "밋업", "밤양갱", "화이팅", "승효", "더보기"];
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
   const yearRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -144,7 +139,11 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
         >
           <YearCircle
             year={data.year}
-            primeTagList={data.tags}
+            primeTagList={
+              data.tags.length > 5
+                ? [...data.tags.slice(0, 5), { id: "더보기", name: "더보기" }]
+                : data.tags
+            }
             hoveredYear={hoveredYear}
             openDeleteModal={openDeleteModal}
           />

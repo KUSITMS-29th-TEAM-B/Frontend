@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import yearCircle from "../../assets/images/yearActiveCircle.png";
 import { useRecoilState } from "recoil";
-import { deleteState, yearState } from "../../store/selectedStore";
+import {
+  deleteState,
+  deleteTagState,
+  yearState,
+} from "../../store/selectedStore";
 import { primeTagState } from "../../store/selectedStore";
 import { DeleteIcon } from "../../assets";
 import { TagType } from "../../types/experience";
-import { getYearPrimeTags } from "../../services/Experience/tagApi";
 
 interface YearCircleProps {
   year: number;
@@ -28,10 +31,10 @@ const YearCircle: React.FC<YearCircleProps> = ({
   const [selectedPrimeTag, setSelectedPrimeTag] =
     useRecoilState<TagType | null>(primeTagState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
+  const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
-
 
   const radius = 20;
   const centralWidth = 84;
@@ -70,11 +73,16 @@ const YearCircle: React.FC<YearCircleProps> = ({
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },
   };
 
-  // 주변 원(키워드 원) 클릭 함수
+  // 주변 원(상위 태그 원) 클릭 함수
   const handleTagClick = (e: any, year: number, primeTag: TagType) => {
     e.stopPropagation();
     setSelectedYear(year);
     setSelectedPrimeTag(primeTag);
+  };
+
+  const handleTagDelete = (item: TagType) => {
+    setSelectedDeleteTag(item);
+    openDeleteModal();
   };
 
   //
@@ -111,7 +119,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
                   {selectedPrimeTag && isDelete && index !== 5 ? (
                     <DeleteIcon
                       style={{ position: "absolute", top: -10, right: -5 }}
-                      onClick={openDeleteModal}
+                      onClick={() => handleTagDelete(tag)}
                     />
                   ) : null}
                 </KeywordCircle>
