@@ -117,7 +117,12 @@ const ExperienceWritePage = () => {
     lastMyKeywordIndex
   );
 
-  const isSaveButtonDisabled = !expData.title || !primeTagItem.id || !subTagItem.id || !expData.startedAt || !expData.endedAt;
+  const isSaveButtonDisabled =
+    !expData.title ||
+    !primeTagItem.id ||
+    !subTagItem.id ||
+    !expData.startedAt ||
+    !expData.endedAt;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -200,9 +205,9 @@ const ExperienceWritePage = () => {
 
   // 상위 태그 라디오 버튼 클릭 함수
   const handlePrimeRadioChange = (item: TagType) => {
+    setPrimeTagItem(item);
     // 기존 상위 태그 선택한 경우
     if (item.id !== item.name) {
-      setPrimeTagItem(item);
       setExpData({ ...expData, parentTagId: item.id });
       getSubTags(item.id, user?.token).then((res) => {
         setSubTagList(res.data.tags);
@@ -210,9 +215,12 @@ const ExperienceWritePage = () => {
     }
     // 새로 생성한 상위 태그 선택한 경우
     else {
-      setPrimeTagItem(item);
       setExpData({ ...expData, parentTagId: "" });
       setSubTagList([]);
+    }
+    // 이전의 선택한 상위태그 다른 태그 선택한 경우
+    if (primeTagItem.id !== item.id) {
+      setSubTagItem({ id: "", name: "" });
     }
     setPopperInfo(null);
   };
@@ -279,7 +287,8 @@ const ExperienceWritePage = () => {
     type: TabType
   ) => {
     if (e.target) {
-      if (e.target.checked) {
+      // 체크박스 선택
+      if (e.target.checked && checkedKeywords.length < 5) {
         const keywordId = e.target.value;
         const selectedKeyword = (
           type === "basic" ? basicKeywords : myKeywordList
@@ -288,7 +297,9 @@ const ExperienceWritePage = () => {
           ...checkedKeywords,
           { id: keywordId, name: selectedKeyword?.name || "" },
         ]);
-      } else {
+      }
+      // 체크박스 해제
+      else {
         setCheckedKeywords(
           checkedKeywords.filter((item) => item.id !== e.target.value)
         );
@@ -420,12 +431,14 @@ const ExperienceWritePage = () => {
                   style={customInputCss}
                   onClick={handleTagPopper}
                   placeholder="하위 경험 분류"
+                  disabled={primeTagItem.id === ""}
                 />
                 {popperInfo && (
                   <Popper
                     open={open}
                     anchorEl={anchorEl}
                     sx={{ paddingTop: "8px" }}
+                    placement="bottom-end"
                   >
                     <TagPopperBox>
                       <TagSearchBox>
@@ -531,7 +544,7 @@ const ExperienceWritePage = () => {
                       ))}
                     </div>
                   ) : (
-                    "최대 5개까지 추가 가능 (ex) 커뮤니케이션, 협업 등)"
+                    "최대 5개까지 추가 가능 (ex. 커뮤니케이션, 협업 등)"
                   )}
                 </KeywordInput>
               </AccordionSummary>
@@ -620,6 +633,11 @@ const ExperienceWritePage = () => {
                         onDelete={() => handleDeleteTag(item.id)}
                       />
                     ))}
+                    {checkedKeywords.length >= 5 ? (
+                      <div className="warning-text">
+                        최대 5개까지만 키워드를 선택할 수 있어요.
+                      </div>
+                    ) : null}
                   </div>
                 </KeywordSelect>
               </AccordionDetails>
@@ -868,6 +886,13 @@ const KeywordSelect = styled.div`
     display: flex;
     flex-direction: row;
     gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .warning-text {
+    margin-left: 1rem;
+    ${(props) => props.theme.fonts.cap2};
+    color: red;
   }
 `;
 

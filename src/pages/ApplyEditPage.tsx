@@ -398,7 +398,13 @@ const ApplyEditPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId} token={user.token} /> : null}
+                {jdId ? (
+                  <JDContainer
+                    jdId={jdId}
+                    token={user.token}
+                    status={completed}
+                  />
+                ) : null}
               </JobContainer>
             )}
           </ActiveContainer>
@@ -646,6 +652,7 @@ const QuestionsWrapper = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
     }
     //overflow-y: scroll;
 `;

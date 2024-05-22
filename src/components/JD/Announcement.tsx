@@ -36,6 +36,7 @@ const JobAnnouncementCard: React.FC<JobAnnouncementProps> = ({
 
 const Container = styled.div`
     border-radius: 0.75rem;
+    cursor: pointer;
     display: flex;
     padding: 1.25rem;
     flex-direction: column;

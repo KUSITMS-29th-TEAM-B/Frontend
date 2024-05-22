@@ -22,7 +22,7 @@ import JDDeleteModal from "../components/JD/JDDeleteModal";
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const jdId = useParams().id;
+  const jdId = useParams().jdId;
   const nav = useNavigate();
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore);
   const [jdData, setJdData] = useState<JobDescriptionAPI>({
@@ -190,7 +190,9 @@ const JDDetailPage: React.FC = () => {
                 <JobTopTitleBox>
                   {jdData.writeStatus !== "CLOSED" && (
                     <div className="job_detail_dday">
-                      {"D-" + jdData.remainingDate}
+                      {parseInt(jdData.remainingDate) <= 0
+                        ? "D-DAY"
+                        : "D-" + jdData.remainingDate}
                     </div>
                   )}
                   <div className="job_detail_title">{jdData.title}</div>
@@ -327,6 +329,7 @@ const Title = styled.h1`
 
 const TopButton = styled.button`
   display: inline-flex;
+  cursor: pointer;
   padding: 0.5rem 2.75rem;
   align-items: flex-start;
   gap: 0.625rem;
@@ -410,6 +413,7 @@ const JobStatusBar = styled.div`
     .left_container{
         display: flex;
         flex-direction: row;
+        cursor: pointer;
         align-items: center;
     .job_date {
         color:  ${(props) => props.theme.colors.neutral500};
@@ -420,6 +424,7 @@ const JobStatusBar = styled.div`
     .right_container{
         display: flex;
         flex-direction: row;
+        cursor: pointer;
         align-items: center;
         justify-content: center;
         color:  ${(props) => props.theme.colors.neutral500};
@@ -549,6 +554,7 @@ const ExperienceButton = styled.button<ButtonProps>`
   width: 2rem;
   height: 7rem;
   flex-shrink: 0;
+  cursor: pointer;
   border: none;
   border-radius: 0.66019rem 0rem 0rem 0.66019rem;
   background: var(--neutral-300, #eaebf3);
