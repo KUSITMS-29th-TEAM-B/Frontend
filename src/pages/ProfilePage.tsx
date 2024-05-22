@@ -9,10 +9,6 @@ import { getUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
-import profile2 from "../assets/images/profile2.png";
-import profile3 from "../assets/images/profile3.png";
-import profile4 from "../assets/images/profile4.png";
-import profile5 from "../assets/images/profile5.png";
 
 interface UserDetail {
   question: string;
@@ -54,17 +50,9 @@ const ProfilePage = () => {
       getUserInfo(user?.token).then((res) => {
         console.log(res);
         setUserData(res.data);
-        if (res.data.profileImgUrl === "/assets/profile1.png") {
-          setprofileImage(profile1);
-        } else if (res.data.profileImgUrl === "/assets/profile2.png") {
-          setprofileImage(profile2);
-        } else if (res.data.profileImgUrl === "/assets/profile3.png") {
-          setprofileImage(profile3);
-        } else if (res.data.profileImgUrl === "/assets/profile4.png") {
-          setprofileImage(profile4);
-        } else if (res.data.profileImgUrl === "/assets/profile5.png") {
-          setprofileImage(profile5);
-        }
+        setprofileImage(
+          `${process.env.PUBLIC_URL}${res.data.profileImgUrl}` || profile1
+        );
       });
     }
   }, []);
@@ -217,11 +205,11 @@ const ContentWrapper = styled.div`
 `;
 
 const ProfileImage = styled.div`
-    position: absolute;
-    top: 3rem;
-    left: 3rem;
-    img{
-        width: 9.0625rem;
-        height: 12.125rem;
-    }
+  position: absolute;
+  top: 3rem;
+  left: 3rem;
+  img {
+    width: 9.0625rem;
+    height: 12.125rem;
+  }
 `;

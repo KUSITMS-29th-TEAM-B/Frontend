@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import Input from "../components/common/Input";
 import Textarea from "../components/common/Textarea";
@@ -9,16 +8,38 @@ import profile2 from "../assets/images/profile2.png";
 import profile3 from "../assets/images/profile3.png";
 import profile4 from "../assets/images/profile4.png";
 import profile5 from "../assets/images/profile5.png";
-import { Popper } from "@mui/material";
+import React from "react";
 import { jobStateOptions } from "../assets/data/form";
+import { Popper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { getUserInfo, patchUserInfo } from "../services/user";
+import { UserDataType } from "../types/user";
+import { getCookie } from "../services/cookie";
+import { useGetUserInfo } from "../components/hooks/useGetUserInfo";
+
+const profileImgUrl = [
+  "/assets/profile1.png",
+  "/assets/profile2.png",
+  "/assets/profile3.png",
+  "/assets/profile4.png",
+  "/assets/profile5.png",
+];
+
+type ProfileUserType = Omit<UserDataType, "provider" | "email">;
 
 const ProfileEditPage = () => {
-  const [profile, setProfile] = React.useState<number | null>(null);
-  const [nickname, setNickname] = React.useState("");
-  const [jobState, setJobState] = React.useState("");
-  const [jobs, setJobs] = React.useState("");
-  const [abilities, setAbilities] = React.useState("");
-  const [dreams, setDreams] = React.useState("");
+  const navigate = useNavigate();
+  const user = getCookie("user");
+
+  const [userData, setUserData] = React.useState<ProfileUserType>({
+    profileImgUrl: "",
+    nickName: "",
+    jobSearchStatus: "",
+    desiredJob: "",
+    goal: "",
+    dream: "",
+  });
+  const { refetch } = useGetUserInfo(user?.token);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null); // 팝업 위치 관리
   const [popperWidth, setPopperWidth] = React.useState(0);
@@ -31,14 +52,44 @@ const ProfileEditPage = () => {
   };
 
   const handleOptionClick = (item: string) => {
-    setJobState(item);
+    setUserData({ ...userData, jobSearchStatus: item });
     setAnchorEl(null);
   };
+
+  const handleEditProfile = () => {
+    patchUserInfo(userData, user?.token).then(() => {
+      refetch();
+      navigate(`/profile`);
+    });
+  };
+
+  React.useEffect(() => {
+    if (user?.token) {
+      getUserInfo(user?.token).then((res) => {
+        const {
+          nickName,
+          profileImgUrl,
+          jobSearchStatus,
+          desiredJob,
+          goal,
+          dream,
+        } = res.data;
+        setUserData({
+          nickName,
+          profileImgUrl,
+          jobSearchStatus,
+          desiredJob,
+          goal,
+          dream,
+        });
+      });
+    }
+  }, [user?.token]);
 
   return (
     <>
       <Container className="page">
-        <Title>프로필 수정</Title>
+        <Title>회원가입</Title>
         <FormContainer>
           <ProfileFormContainer>
             <div className="profile-label">
@@ -46,53 +97,95 @@ const ProfileEditPage = () => {
             </div>
             <div className="profile-list">
               <div
-                className={profile === 1 ? "active" : ""}
-                onClick={() => setProfile(1)}
+                className={
+                  userData.profileImgUrl === profileImgUrl[0] ? "active" : ""
+                }
+                onClick={() =>
+                  setUserData({
+                    ...userData,
+                    profileImgUrl: profileImgUrl[0],
+                  })
+                }
               >
                 <img src={profile1} alt="profile1" />
               </div>
               <div
-                className={profile === 2 ? "active" : ""}
-                onClick={() => setProfile(2)}
+                className={
+                  userData.profileImgUrl === profileImgUrl[1] ? "active" : ""
+                }
+                onClick={() =>
+                  setUserData({
+                    ...userData,
+                    profileImgUrl: profileImgUrl[1],
+                  })
+                }
               >
                 <img src={profile2} alt="profile2" />
               </div>
               <div
-                className={profile === 3 ? "active" : ""}
-                onClick={() => setProfile(3)}
+                className={
+                  userData.profileImgUrl === profileImgUrl[2] ? "active" : ""
+                }
+                onClick={() =>
+                  setUserData({
+                    ...userData,
+                    profileImgUrl: profileImgUrl[2],
+                  })
+                }
               >
                 <img src={profile3} alt="profile3" />
               </div>
               <div
-                className={profile === 4 ? "active" : ""}
-                onClick={() => setProfile(4)}
+                className={
+                  userData.profileImgUrl === profileImgUrl[3] ? "active" : ""
+                }
+                onClick={() =>
+                  setUserData({
+                    ...userData,
+                    profileImgUrl: profileImgUrl[3],
+                  })
+                }
               >
                 <img src={profile4} alt="profile4" />
               </div>
               <div
-                className={profile === 5 ? "active" : ""}
-                onClick={() => setProfile(5)}
+                className={
+                  userData.profileImgUrl === profileImgUrl[4] ? "active" : ""
+                }
+                onClick={() =>
+                  setUserData({
+                    ...userData,
+                    profileImgUrl: profileImgUrl[4],
+                  })
+                }
               >
                 <img src={profile5} alt="profile5" />
               </div>
             </div>
           </ProfileFormContainer>
           <Input
-            value={nickname}
+            value={userData.nickName}
             label="닉네임을 입력하세요."
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={true}
             placeholder="닉네임 (한글, 영문 10자까지)"
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) =>
+              setUserData({ ...userData, nickName: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <Input
-            value={jobState}
+            value={userData.jobSearchStatus}
             label="현재 구직 활동 중이신가요?"
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             placeholder="선택해주세요"
             required={false}
-            onChange={(e) => setJobState(e.target.value)}
+            onChange={(e) =>
+              setUserData({
+                ...userData,
+                jobSearchStatus: e.target.value,
+              })
+            }
             onClick={handleTagPopper}
             readOnly
             style={{ background: theme.colors.neutral100 }}
@@ -120,34 +213,47 @@ const ProfileEditPage = () => {
           </Popper>
 
           <Input
-            value={jobs}
+            value={userData.desiredJob}
             label="희망하고 있는 직무를 입력해주세요."
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
             placeholder="직무 (50자까지)"
-            onChange={(e) => setJobs(e.target.value)}
+            onChange={(e) =>
+              setUserData({ ...userData, desiredJob: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
           <Textarea
-            value={abilities}
+            value={userData.goal}
             label="어떤 역량을 더 발전시키고 싶은가요?"
             helperText="자신의 강점, 약점을 적고 어떤 역량을 더 발전시키고 싶은지 작성해보세요."
             rows={10}
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
-            onChange={(e) => setAbilities(e.target.value)}
+            onChange={(e) => setUserData({ ...userData, goal: e.target.value })}
             style={{ background: theme.colors.neutral100 }}
           />
           <Textarea
-            value={dreams}
+            value={userData.dream}
             label="어떤 꿈을 가지고 있으신가요?"
             helperText="평소에 가지고 있던 ‘꿈'에 대한 생각을 자유롭게 작성해주셔도 좋아요."
             rows={10}
             labelStyle={`${theme.fonts.subtitle4}; color: ${theme.colors.neutral700}`}
             required={false}
-            onChange={(e) => setDreams(e.target.value)}
+            onChange={(e) =>
+              setUserData({ ...userData, dream: e.target.value })
+            }
             style={{ background: theme.colors.neutral100 }}
           />
+          <MainButton
+            disabled={!(userData.profileImgUrl && userData.nickName)}
+            style={{
+              borderRadius: "8px",
+            }}
+            onClick={handleEditProfile}
+          >
+            프로필 저장
+          </MainButton>
         </FormContainer>
       </Container>
     </>
@@ -169,7 +275,7 @@ const Title = styled.div`
 
 const FormContainer = styled.div`
   width: 100%;
-  max-width: 476px;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 40px;
