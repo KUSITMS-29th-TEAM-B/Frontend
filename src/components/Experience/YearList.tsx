@@ -8,9 +8,9 @@ import {
   primeTagState,
   yearState,
 } from "../../store/selectedStore";
-import { getExperienceYears } from "../../services/Experience/experienceApi";
 import { getCookie } from "../../services/cookie";
 import { TagType, YearData } from "../../types/experience";
+import { useExperienceYearsQuery } from "../hooks/useExperienceYearsQuery";
 
 interface YearListProps {
   width: number;
@@ -25,9 +25,21 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   const setSelectedPrimeTag = useSetRecoilState<TagType | null>(primeTagState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
   const [years, setYears] = React.useState<number[]>([]);
-  const [allYearsData, setAllYearsData] = React.useState<YearData[]>([]);
-
+  const [allTagsData, setAllTagsData] = React.useState<YearData[]>([]);
   const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+  const { data: allYearsData, isSuccess: isAllYearsDataSucces } =
+    useExperienceYearsQuery(user?.token);
+
+  // 상위태그 목록이 없을 경우 year 원 닫히는 로직
+  if (allYearsData) {
+    const { yearTagInfos } = allYearsData;
+    const selectedYearPrimeTags = yearTagInfos?.filter(
+      (item) => item.year === selectedYear
+    )?.[0]?.tags;
+    if (selectedYearPrimeTags?.length === 0) {
+      setSelectedYear(null);
+    }
+  }
 
   // 클릭한 year 객체로 스크롤 이동하기 위한 객체 참조 값
   const yearRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -95,15 +107,13 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   };
 
   // 전체 연도 및 연도별 태그 목록 정보
-  useEffect(() => {
-    if (user?.token) {
-      getExperienceYears(user?.token).then((res) => {
-        const { years, yearTagInfos } = res.data;
-        setYears(years);
-        setAllYearsData(yearTagInfos);
-      });
+  React.useEffect(() => {
+    if (isAllYearsDataSucces && allYearsData) {
+      const { years, yearTagInfos } = allYearsData;
+      setYears(years);
+      setAllTagsData(yearTagInfos);
     }
-  }, [user?.token]);
+  }, [isAllYearsDataSucces, allYearsData]);
 
   // 클릭한 연도 원형 중심으로 스크롤 이동
   useEffect(() => {
@@ -119,7 +129,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
   //
   return (
     <Line length={lineLength}>
-      {allYearsData?.map((data, index) => (
+      {allTagsData?.map((data, index) => (
         <YearMotionDiv
           ref={(el) => (yearRefs.current[data.year] = el)}
           key={data.year}
