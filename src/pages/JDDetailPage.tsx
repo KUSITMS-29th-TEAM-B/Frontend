@@ -18,7 +18,6 @@ import { jobdelete, jobdescriptionget } from "../services/JD/jdApi";
 import { getCookie } from "../services/cookie";
 import PlaneLoading from "../components/common/Loading";
 import JDDeleteModal from "../components/JD/JDDeleteModal";
-import { pointer } from "d3";
 
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);

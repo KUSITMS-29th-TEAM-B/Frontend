@@ -14,7 +14,11 @@ import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import { myKeywords } from "../../services/Experience/myKeywords";
 import Checkbox from "../common/Checkbox";
-import { getAllExperienceList } from "../../services/JD/ExperienceApi";
+import {
+  getAllExperienceList,
+  searchTagExperienceList,
+  searchTextExperienceList,
+} from "../../services/JD/ExperienceApi";
 import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
@@ -24,6 +28,29 @@ type TabType = "basic" | "my";
 interface ExperienceListProps {
   showBookmarksOnly: boolean;
 }
+
+type StrongPointAPI = {
+  id: string;
+  name: string;
+};
+
+type ExpTagAPI = {
+  id: string;
+  name: string;
+};
+
+type Experience = {
+  id: string;
+  title: string;
+  parentTag: Tag;
+  childTag: Tag;
+  strongPoints: StrongPointAPI[];
+  startedAt: string;
+  endedAt: string;
+  bookmarked: "ON" | "OFF";
+};
+
+type Experiences = Experience[];
 
 const ExperienceList: React.FC<ExperienceListProps> = ({
   showBookmarksOnly,
@@ -41,7 +68,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [experienceData, setExperienceData] = useState({});
+  const [experienceData, setExperienceData] = useState<Experiences>([]);
   const jdId = useParams().jdId;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -70,7 +97,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 
   useEffect(() => {
     if (jdId) {
-      getExperienceList(jdId, user.token);
+      //   getExperienceList(jdId, user.token);
     }
   }, []);
 
@@ -78,6 +105,40 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const getExperienceList = async (jdId: string, token: string) => {
     try {
       const response = await getAllExperienceList(jdId, token);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  const getSearchedExperienceList = async (
+    jdId: string,
+    searchText: string,
+    token: string
+  ) => {
+    try {
+      const response = await searchTextExperienceList(jdId, searchText, token);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  const getFilteredExperienceList = async (
+    jdId: string,
+    parenttag: string,
+    childtag: string | null,
+    token: string
+  ) => {
+    try {
+      const response = await searchTagExperienceList(
+        jdId,
+        parenttag,
+        childtag,
+        token
+      );
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -130,12 +191,18 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   useEffect(() => {
     if (mainTag) {
       console.log("maintag: " + mainTag);
+      if (jdId) {
+        getFilteredExperienceList(jdId, mainTag, null, user.token);
+      }
     }
   }, [mainTag]);
 
   useEffect(() => {
     if (subTag) {
       console.log("subtag: " + subTag);
+      if (jdId) {
+        getFilteredExperienceList(jdId, mainTag, subTag, user.token);
+      }
     }
   }, [subTag]);
 
@@ -200,7 +267,14 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   setSubTag("");
                 }}
               />
-              <img src={SearchIcon} alt="filter" /> {/* 클릭시 검색 api 호출 */}
+              <img
+                src={SearchIcon}
+                alt="filter"
+                onClick={() => {
+                  getSearchedExperienceList(jdId!, searchText, user.token);
+                }}
+              />{" "}
+              {/* 클릭시 검색 api 호출 */}
             </IconContainer>
             {showTagPopup && <TagPopup onSelect={handleTagSelection} />}
             <div style={{ display: "flex", flexDirection: "row" }}>
