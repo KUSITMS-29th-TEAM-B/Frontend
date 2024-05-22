@@ -8,20 +8,24 @@ import { BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+const queryClient = new QueryClient();
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <BrowserRouter>
-    <ThemeProvider theme={theme}>
-      <RecoilRoot>
-        <GoogleOAuthProvider clientId={`${GOOGLE_CLIENT_ID}`}>
-          <App />
-        </GoogleOAuthProvider>
-      </RecoilRoot>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <RecoilRoot>
+          <GoogleOAuthProvider clientId={`${GOOGLE_CLIENT_ID}`}>
+            <App />
+          </GoogleOAuthProvider>
+        </RecoilRoot>
+      </ThemeProvider>
+    </QueryClientProvider>
   </BrowserRouter>
 );
 

@@ -1,4 +1,4 @@
-import { RegisterDataType } from "../types/user";
+import { RegisterDataType, UserDataType } from "../types/user";
 import client from "./client";
 
 // 로그인
@@ -44,4 +44,35 @@ export const getUserInfo = async (token: string) => {
       withCredentials: true,
     },
   });
+};
+
+// 사용자 정보 수정
+export const patchUserInfo = async (
+  {
+    profileImgUrl,
+    nickName,
+    jobSearchStatus,
+    desiredJob,
+    goal,
+    dream,
+  }: Omit<UserDataType, "provider" | "email">,
+  token: string
+) => {
+  return await client.patch(
+    `/api/user/user-info-update`,
+    {
+      profileImgUrl: profileImgUrl,
+      nickName: nickName,
+      jobSearchStatus: jobSearchStatus,
+      desiredJob: desiredJob,
+      goal: goal,
+      dream: dream,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        withCredentials: true,
+      },
+    }
+  );
 };
