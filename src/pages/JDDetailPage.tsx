@@ -23,7 +23,7 @@ import { pointer } from "d3";
 const JDDetailPage: React.FC = () => {
   const [active, setActive] = useState(false);
   const [activebutton, setActivebutton] = useState("");
-  const jdId = useParams().id;
+  const jdId = useParams().jdId;
   const nav = useNavigate();
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore);
   const [jdData, setJdData] = useState<JobDescriptionAPI>({

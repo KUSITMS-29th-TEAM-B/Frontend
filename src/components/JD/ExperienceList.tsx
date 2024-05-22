@@ -17,6 +17,7 @@ import Checkbox from "../common/Checkbox";
 import { getAllExperienceList } from "../../services/JD/ExperienceApi";
 import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
+import { useParams } from "react-router-dom";
 
 type TabType = "basic" | "my";
 
@@ -41,6 +42,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     React.useState<TabType>("basic");
   const user = getCookie("user");
   const [experienceData, setExperienceData] = useState({});
+  const jdId = useParams().jdId;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -67,13 +69,15 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   );
 
   useEffect(() => {
-    // getExperienceList(user.token);
+    if (jdId) {
+      getExperienceList(jdId, user.token);
+    }
   }, []);
 
   //모든 경험리스트 불러오기
-  const getExperienceList = async (token: string) => {
+  const getExperienceList = async (jdId: string, token: string) => {
     try {
-      const response = await getAllExperienceList(token);
+      const response = await getAllExperienceList(jdId, token);
       console.log(response);
     } catch (error) {
       console.error(error);
