@@ -723,12 +723,12 @@ const ExperienceEditPage = () => {
         image={<img src={airplaneImg} alt="airplane" />}
         title={
           <>
-            새로운 경험 작성이
+            경험 수정이
             <br />
             완료되었어요!
           </>
         }
-        buttons={["작성된 경험 확인하기"]}
+        buttons={["경험 확인하기"]}
         onConfirm={() => navigate(`/experience/detail/${expId}`)}
         isOpen={isModalOpen}
         onClose={closeModal}
