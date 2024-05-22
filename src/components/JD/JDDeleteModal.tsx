@@ -1,14 +1,14 @@
 import React, { FC } from "react";
 import styled from "styled-components";
 import warning from "../../assets/icons/icon_delete_warning.svg";
-import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onCancel: () => void;
 }
 
-const JDDeleteModal: FC<ModalProps> = ({ isOpen, onClose }) => {
+const JDDeleteModal: FC<ModalProps> = ({ isOpen, onClose, onCancel }) => {
   if (!isOpen) {
     return null;
   }
@@ -25,7 +25,7 @@ const JDDeleteModal: FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
         </MainWrapper>
         <ButtonWrapper>
-          <CloseButton onClick={onClose}>
+          <CloseButton onClick={onCancel}>
             <div>취소</div>
           </CloseButton>
           <ConfirmButton

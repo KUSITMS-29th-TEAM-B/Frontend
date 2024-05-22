@@ -69,6 +69,16 @@ const ExperienceEditPage = () => {
     id: "",
     name: "",
   });
+
+  const isSaveButtonDisabled =
+    !expData.title ||
+    !primeTagItem.id ||
+    !subTagItem.id ||
+    !expData.startedAt ||
+    !expData.endedAt ||
+    !expData.contents[0].answer ||
+    !expData.contents[1].answer;
+
   // 저장 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -410,7 +420,9 @@ const ExperienceEditPage = () => {
         <BasicFormContainer>
           <div className="top">
             <div className="form-item">
-              <div className="label">경험 기간</div>
+              <div className="label">
+                경험 기간<div className="required">*</div>
+              </div>
               <div className="input">
                 <OneDatePick
                   date={new Date(expData.startedAt)}
@@ -430,7 +442,9 @@ const ExperienceEditPage = () => {
               </div>
             </div>
             <div className="form-item">
-              <div className="label">경험 분류</div>
+              <div className="label">
+                경험 분류<div className="required">*</div>
+              </div>
               <div className="input">
                 <Input
                   readOnly
@@ -677,6 +691,7 @@ const ExperienceEditPage = () => {
                 <Chip text={item.type} />
               </div>
               <Textarea
+                required={index === 0 || index === 1}
                 value={expData.contents[index].answer}
                 label={`${index + 1}. ${item.question}`}
                 rows={8}
@@ -684,6 +699,7 @@ const ExperienceEditPage = () => {
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                 }
                 style={{
+                  fontSize: "16px",
                   borderRadius: "12px",
                   border: `1px solid ${theme.colors.neutral400}`,
                   background: `${theme.colors.neutral0}`,
@@ -718,12 +734,17 @@ const ExperienceEditPage = () => {
             </button>
             경험 수정
           </div>
-          <CustomButton onClick={handleSaveExperience}>저장</CustomButton>
+          <CustomButton
+            onClick={handleSaveExperience}
+            disabled={isSaveButtonDisabled}
+          >
+            저장
+          </CustomButton>
         </TopContainer>
         <ContentContainer>
           <TitleInput
             value={expData.title}
-            placeholder="경험의 제목을 입력해주세요"
+            placeholder="경험의 제목을 입력해주세요 *"
             onChange={(e) => setExpData({ ...expData, title: e.target.value })}
           ></TitleInput>
           {renderExperienceBasicInfo()}
@@ -832,8 +853,16 @@ const BasicFormContainer = styled.div`
     gap: 12px;
   }
   .label {
+    display: flex;
+    flex-direction: row;
     ${(props) => props.theme.fonts.subtitle2};
     color: ${(props) => props.theme.colors.neutral700};
+    gap: 0.2rem;
+    align-items: center;
+  }
+  .required {
+    ${(props) => props.theme.fonts.cap1};
+    color: var(--sub-tertiary-800, #ffa63e);
   }
   .input {
     display: flex;
@@ -957,9 +986,10 @@ const customInputCss = {
   padding: "9px 22px",
   background: "none",
   borderRadius: "5px",
+  maxWidth: "200px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
-  maxWidth: "131px",
   color: `var(--main-500, #7D82FF)`,
+  fontSize: "16px",
 };
 
 const TagPopperBox = styled.div`

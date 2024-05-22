@@ -27,5 +27,5 @@ const TagContainer = styled.div`
   border-radius: 0.6875rem;
   background: ${(props) => props.theme.colors.main50};
   color: var(--main-500, #7d82ff);
-  ${(props) => props.theme.fonts.cap2};
+  ${(props) => props.theme.fonts.cap1};
 `;

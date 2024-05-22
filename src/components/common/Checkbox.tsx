@@ -41,7 +41,7 @@ const StyledLabel = styled.label`
 `;
 
 const StyledP = styled.p`
-  ${(props) => props.theme.fonts.cap2};
+  ${(props) => props.theme.fonts.cap1};
   color: ${(props) => props.theme.colors.neutral600};
   margin-left: 0.25rem;
 `;

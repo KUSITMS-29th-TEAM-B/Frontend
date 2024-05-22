@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ExpData from "../../services/JD/ExpData";
 import Experience from "./Experience";
 import styled from "styled-components";
 import FillfilterIcon from "../../assets/icons/icon_filter_fill.svg";
@@ -12,7 +11,6 @@ import { ArrowDownThin, ArrowUpThin, Options } from "../../assets";
 import { Popper } from "@mui/material";
 import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
-import { myKeywords } from "../../services/Experience/myKeywords";
 import Checkbox from "../common/Checkbox";
 import {
   getAllExperienceList,
@@ -23,6 +21,8 @@ import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
 import { formatDateRange } from "../../pages/JDListPage";
+import { KeywordType } from "../../types/experience";
+import { getKeywords } from "../../services/Experience/keywordApi";
 
 type TabType = "basic" | "my";
 
@@ -38,6 +38,11 @@ type StrongPointAPI = {
 type ExpTagAPI = {
   id: string;
   name: string;
+};
+
+type MyTagAPI = {
+  id: string;
+  name: string | null;
 };
 
 type ContentAPI = {
@@ -68,121 +73,104 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [showDetail, setshowDetail] = useState(false); //경험 상세 보여주기
   const [showTagPopup, setShowTagPopup] = useState(false); // 태그 필터링
   const [searchText, setSearchText] = useState(""); //검색 입력
-  const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
-  const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
+  const [mainTag, setMainTag] = useState<MyTagAPI>({ id: "", name: "" }); // 선택된 상위태그
+  const [subTag, setSubTag] = useState<MyTagAPI>({ id: "", name: "" }); //선택된 하위태그
   const [filterCount, setfilterCount] = useState<number>(-1); //검색된 경험의 숫자, 검색 안된 상태에서는 -1
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [experienceData, setExperienceData] = useState<Experiences>([
-    {
-      id: "fa0a5813-c879-432d-b276-24364847534c",
-      title: "경험 제목1 ",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2024-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "ON",
-    },
-    {
-      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
-      title: "경험 제목 2",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2023-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "OFF",
-    },
-    {
-      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
-      title: "경험 제목 3",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2023-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "ON",
-    },
-  ]);
+  const [experienceData, setExperienceData] = useState<Experiences>([]);
   const jdId = useParams().jdId;
+  const [searching, setSearching] = useState(false);
 
+  useEffect(() => {
+    if (jdId) {
+      getExperienceList(jdId, user.token);
+    }
+  }, []);
+
+  //모든 경험리스트 불러오기
+  const getExperienceList = async (jdId: string, token: string) => {
+    try {
+      const response = await getAllExperienceList(jdId, token);
+      console.log(response);
+      setExperienceData(response.data.experiences);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  const getSearchedExperienceList = async (
+    jdId: string,
+    searchText: string,
+    token: string
+  ) => {
+    try {
+      setSearching(true);
+      const response = await searchTextExperienceList(jdId, searchText, token);
+      console.log(response);
+      setExperienceData(response.data.experiences);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  const getFilteredExperienceList = async (
+    jdId: string,
+    parenttag: string,
+    childtag: string | null,
+    token: string
+  ) => {
+    try {
+      const response = await searchTagExperienceList(
+        jdId,
+        parenttag,
+        childtag,
+        token
+      );
+      console.log(response);
+      setExperienceData(response.data.experiences);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
+  //상위태그 하위태그 필터링
+  const handleTagSelection = (
+    selectedmainTag: MyTagAPI,
+    selectedsubTag?: MyTagAPI
+  ): void => {
+    setSearchText("");
+    setMainTag({ id: selectedmainTag.id, name: selectedmainTag.name });
+    if (selectedsubTag) {
+      setSubTag({ id: selectedsubTag.id, name: selectedsubTag.name });
+      setShowTagPopup(false);
+    } else {
+      setSubTag({ id: "", name: "" });
+    }
+  };
+
+  useEffect(() => {
+    if (mainTag.id !== "") {
+      if (jdId) {
+        getFilteredExperienceList(jdId, mainTag.id, null, user.token);
+      }
+    }
+  }, [mainTag]);
+
+  useEffect(() => {
+    if (subTag.id !== "") {
+      if (jdId) {
+        getFilteredExperienceList(jdId, mainTag.id, subTag.id, user.token);
+      }
+    }
+  }, [subTag]);
+
+  //역량키워드 관련 팝업
+  const [myKeywordList, setMyKeywordList] = React.useState<KeywordType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const id = open ? "tag-popper" : undefined;
@@ -202,77 +190,83 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
   const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
   const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
-  const currentMyKeywords = myKeywords.slice(
+  const currentMyKeywords = myKeywordList.slice(
     firstMyKeywordIndex,
     lastMyKeywordIndex
   );
 
-  useEffect(() => {
-    if (jdId) {
-      // getExperienceList(jdId, user.token);
-    }
-  }, []);
-
-  //모든 경험리스트 불러오기
-  const getExperienceList = async (jdId: string, token: string) => {
-    try {
-      const response = await getAllExperienceList(jdId, token);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
-  };
-
-  const getSearchedExperienceList = async (
-    jdId: string,
-    searchText: string,
-    token: string
-  ) => {
-    // try {
-    //   const response = await searchTextExperienceList(jdId, searchText, token);
-    //   console.log(response);
-    //   setExperienceData(response.data.experiences);
-    //   console.log(experienceData);
-    // } catch (error) {
-    //   console.error(error);
-    //   alert(JSON.stringify(error));
-    // }
-  };
-
-  const getFilteredExperienceList = async (
-    jdId: string,
-    parenttag: string,
-    childtag: string | null,
-    token: string
-  ) => {
-    try {
-      const response = await searchTagExperienceList(
-        jdId,
-        parenttag,
-        childtag,
-        token
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
-  };
-
   // 체크된 역량 키워드 리스트
-  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = useState<KeywordType[]>([]);
 
-  // 키워드 체크박스 관리 함수
-  const handleCheckedKeywords = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 키워드 체크박스 체크 여부
+  const isKeywordChecked = (item: KeywordType) => {
+    return checkedKeywords.some(
+      (keyword) => keyword.id === item.id && keyword.name === item.name
+    );
+  };
+
+  // 키워드 체크박스 핸들러
+  const handleKeywordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: TabType
+  ) => {
     if (e.target) {
-      e.target.checked
-        ? setCheckedKeywords([...checkedKeywords, e.target.value])
-        : setCheckedKeywords(
-            checkedKeywords.filter((choice) => choice !== e.target.value)
-          );
+      if (e.target.checked) {
+        const keywordId = e.target.value;
+        const selectedKeyword = (
+          type === "basic" ? basicKeywords : myKeywordList
+        ).find((item) => item.id === keywordId);
+        setCheckedKeywords([
+          ...checkedKeywords,
+          { id: keywordId, name: selectedKeyword?.name || "" },
+        ]);
+      } else {
+        setCheckedKeywords(
+          checkedKeywords.filter((item) => item.id !== e.target.value)
+        );
+      }
     }
   };
+
+  useEffect(() => {
+    if (selectedTab === "경험검색" && (searching || mainTag.id !== "")) {
+      if (checkedKeywords.length !== 0) {
+        setfilterCount(filteredExpData.length);
+      } else {
+        setfilterCount(experienceData.length);
+      }
+    } else if (selectedTab === "북마크" && (searching || mainTag.id !== "")) {
+      if (checkedKeywords.length !== 0) {
+        setfilterCount(filteredBookedData.length);
+      } else {
+        setfilterCount(bookedData.length);
+      }
+    } else if (searchText === "" && mainTag.id === "") {
+      setfilterCount(-1);
+    }
+  }, [
+    searching,
+    mainTag,
+    subTag,
+    selectedTab,
+    experienceData,
+    checkedKeywords,
+  ]);
+
+  useEffect(() => {
+    if (searchText === "") {
+      setSearching(false);
+    }
+  }, [searchText]);
+
+  // My 역량 키워드 조회
+  useEffect(() => {
+    if (user?.token) {
+      getKeywords(user?.token)
+        .then((res) => setMyKeywordList(res.data.strongPoints))
+        .catch((err) => console.log(err));
+    }
+  }, [user?.token]);
 
   // 역량 키워드 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
@@ -280,63 +274,17 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   };
 
   // 역량 키워드 필터된 경험 데이터, 북마크
-  const filteredExpData = experienceData.filter((experience) => {
-    const strongPointNames = experience.strongPoints.map((point) => point.name);
-    const matchedKeywords = strongPointNames.filter((name) =>
-      checkedKeywords.includes(name)
-    );
-    return matchedKeywords.length > 0;
-  });
+  const filteredExpData = experienceData.filter((experience) =>
+    experience.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
+  );
+
   const bookedData = experienceData.filter((experience) => {
-    // 북마크가 ON인 요소만 필터링
     return experience.bookmarked === "ON";
   });
-  const filteredBookedData = experienceData.filter((experience) => {
-    const strongPointNames = experience.strongPoints.map((point) => point.name);
-    const matchedKeywords = strongPointNames.filter((name) =>
-      checkedKeywords.includes(name)
-    );
-    return experience.bookmarked === "ON" && matchedKeywords.length > 0;
-  });
 
-  //상위태그 하위태그 필터링
-  const handleTagSelection = (
-    selectedmainTag: string,
-    selectedsubTag?: string
-  ): void => {
-    setSearchText("");
-    setMainTag(selectedmainTag);
-    if (selectedsubTag) {
-      setSubTag(selectedsubTag);
-      setShowTagPopup(false);
-    } else {
-      setSubTag("");
-    }
-  };
-
-  useEffect(() => {
-    if (mainTag) {
-      console.log("maintag: " + mainTag);
-      if (jdId) {
-        getFilteredExperienceList(jdId, mainTag, null, user.token);
-      }
-    }
-  }, [mainTag]);
-
-  useEffect(() => {
-    if (subTag) {
-      console.log("subtag: " + subTag);
-      if (jdId) {
-        getFilteredExperienceList(jdId, mainTag, subTag, user.token);
-      }
-    }
-  }, [subTag]);
-
-  useEffect(() => {
-    if (searchText) {
-      console.log("search: " + searchText);
-    }
-  }, [searchText]);
+  const filteredBookedData = bookedData.filter((experience) =>
+    experience.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
+  );
 
   return (
     <StyledContainer>
@@ -359,7 +307,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
             </Tab>
           </TabContainer>
           <SearchContainer>
-            {mainTag ? (
+            {mainTag.id !== "" ? (
               <SearchBar value="" readOnly />
             ) : (
               <SearchBar
@@ -368,29 +316,29 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
               />
             )}
             <FilterContainer>
-              {mainTag}
-              {subTag && <img src={ArrowIcon_main} alt="Arrow" />}
-              {subTag && subTag}
-              {mainTag && (
+              {mainTag.name}
+              {subTag.name && <img src={ArrowIcon_main} alt="Arrow" />}
+              {subTag.name && subTag.name}
+              {mainTag.id && (
                 <img
                   src={FilterRemoveIcon}
                   alt="remove"
                   className="deletebtn"
                   onClick={() => {
-                    setMainTag("");
-                    setSubTag("");
+                    setMainTag({ id: "", name: "" });
+                    setSubTag({ id: "", name: "" });
                   }}
                 />
               )}
             </FilterContainer>
             <IconContainer>
               <img
-                src={mainTag ? FillfilterIcon : BlankfilterIcon}
+                src={mainTag.id !== "" ? FillfilterIcon : BlankfilterIcon}
                 alt="filter"
                 onClick={() => {
                   setShowTagPopup(!showTagPopup);
-                  setMainTag("");
-                  setSubTag("");
+                  setMainTag({ id: "", name: "" });
+                  setSubTag({ id: "", name: "" });
                 }}
               />
               <img
@@ -452,7 +400,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                         />
                       ) : (
                         <PopperPagination
-                          postsNum={myKeywords.length}
+                          postsNum={myKeywordList.length}
                           postsPerPage={keywordsPerPage}
                           setCurrentPage={setCurrentMyKeywordPage}
                           currentPage={currentMyKeywordPage}
@@ -472,16 +420,16 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                             <Checkbox
                               value={item.id}
                               label={item.name}
-                              checked={checkedKeywords.includes(item.name)}
-                              onChange={handleCheckedKeywords}
+                              checked={isKeywordChecked(item)}
+                              onChange={(e) => handleKeywordChange(e, "basic")}
                             />
                           ))
                         : currentMyKeywords.map((item) => (
                             <Checkbox
-                              value={item}
-                              label={item}
-                              checked={checkedKeywords.includes(item)}
-                              onChange={handleCheckedKeywords}
+                              value={item.id}
+                              label={item.name}
+                              checked={isKeywordChecked(item)}
+                              onChange={(e) => handleKeywordChange(e, "my")}
                             />
                           ))}
                     </div>
@@ -489,7 +437,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                       총&nbsp;
                       <div className="accent">
                         {checkedKeywords.length === 0
-                          ? ExpData.length
+                          ? experienceData?.length
                           : filteredExpData.length}
                         개
                       </div>
@@ -516,8 +464,11 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                     tags={post.strongPoints.map((point) => point.name)}
                     period={formatDateRange(post.startedAt, post.endedAt)}
                     bookmark={post.bookmarked === "ON" ? true : false}
-                    checkedKeywords={checkedKeywords}
+                    checkedKeywords={checkedKeywords.map(
+                      (item: KeywordType) => item.name
+                    )}
                     onClick={() => setshowDetail(true)}
+                    handleApi={getExperienceList}
                   />
                 ))}
               </ScrollDiv>
@@ -537,7 +488,9 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   tags={post.strongPoints.map((point) => point.name)}
                   period={formatDateRange(post.startedAt, post.endedAt)}
                   bookmark={post.bookmarked === "ON" ? true : false}
-                  checkedKeywords={checkedKeywords}
+                  checkedKeywords={checkedKeywords.map(
+                    (item: KeywordType) => item.name
+                  )}
                   onClick={() => setshowDetail(true)}
                 />
               ))}
@@ -554,7 +507,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 export default ExperienceList;
 
 interface TagPopupProps {
-  onSelect: (mainTag: string, subTag?: string) => void;
+  onSelect: (mainTag: MyTagAPI, subTag?: MyTagAPI) => void;
 }
 
 interface ChildTag {
@@ -605,20 +558,25 @@ const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
     <PopupContainer>
       {tagList.map((tag) => (
         <div key={tag.id}>
-          <Tag
+          <TagWrapper
             onClick={() => {
               toggleSubTags(tag.id);
-              onSelect(tag.name);
+              onSelect({ id: tag.id, name: tag.name });
             }}
           >
             <img src={ArrowIcon_net} alt="arrow" />
             {tag.name}
-          </Tag>
+          </TagWrapper>
           {visibleSubTag === tag.id &&
             tag.childTags.map((child) => (
               <SubTag
                 key={child.id}
-                onClick={() => onSelect(tag.name, child.name)}
+                onClick={() =>
+                  onSelect(
+                    { id: tag.id, name: tag.name },
+                    { id: child.id, name: child.name }
+                  )
+                }
               >
                 <img src={ArrowIcon_net} alt="arrow" />
                 {child.name}
@@ -645,7 +603,7 @@ const PopupContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.neutral200};
 `;
 
-const Tag = styled.div`
+const TagWrapper = styled.div`
   cursor: pointer;
   display: flex;
   padding: 0.75rem 0.5rem;
@@ -656,7 +614,7 @@ const Tag = styled.div`
   }
 `;
 
-const SubTag = styled(Tag)`
+const SubTag = styled(TagWrapper)`
   padding-left: 20px;
 `;
 

@@ -139,6 +139,7 @@ const JDEditPage: React.FC = () => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
+      setSelectedTime(response.data.endedAt);
       console.log(jdData);
     } catch (error) {
       console.error(error);
@@ -311,6 +312,9 @@ const CancelButton = styled.button`
   padding: 0.625rem 4rem;
   justify-content: center;
   align-items: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border-radius: 0.5rem;
   border: none;
   color:var(--white);
@@ -323,6 +327,9 @@ const SaveButton = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border: none;
   margin-left: 1rem;
   color:var(--white);

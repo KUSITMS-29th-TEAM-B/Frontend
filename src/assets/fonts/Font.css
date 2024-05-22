@@ -24,3 +24,21 @@
     url("./woff2/Pretendard-Regular.woff2") format("woff2"),
     url("./woff/Pretendard-Regular.woff") format("woff");
 }
+
+@font-face {
+  font-family: "Pretendard-ExtraBold";
+  font-weight: 400;
+  font-display: swap;
+  src: local("Pretendard ExtraBold"),
+    url("./woff2/Pretendard-ExtraBold.woff2") format("woff2"),
+    url("./woff/Pretendard-ExtraBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-Bold";
+  font-weight: 400;
+  font-display: swap;
+  src: local("Pretendard Bold"),
+    url("./woff2/Pretendard-Bold.woff2") format("woff2"),
+    url("./woff/Pretendard-Bold.woff") format("woff");
+}

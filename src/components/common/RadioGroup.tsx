@@ -52,7 +52,7 @@ const RadioGroup = ({ name, value, options, onChange }: RadioGroupProp) => {
           label={item.name}
           sx={{
             ".MuiFormControlLabel-label": {
-              fontSize: "12px",
+              fontSize: "14px",
               color: theme.colors.neutral600,
             },
           }}
