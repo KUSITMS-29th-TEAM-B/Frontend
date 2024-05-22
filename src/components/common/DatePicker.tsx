@@ -22,7 +22,7 @@ const StyledDatePicker = styled(DatePicker)<{
 `;
 
 interface DatePickerProps {
-  date: Date;
+  date: Date | null;
   setDate: (date: Date) => void;
   style?: string;
 }

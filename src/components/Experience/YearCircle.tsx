@@ -31,7 +31,8 @@ const YearCircle: React.FC<YearCircleProps> = ({
   const [selectedPrimeTag, setSelectedPrimeTag] =
     useRecoilState<TagType | null>(primeTagState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
-  const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
+  const [selectedDeleteTag, setSelectedDeleteTag] =
+    useRecoilState(deleteTagState);
 
   const isSelectedYear = selectedYear === year;
   const isHoveredYear = hoveredYear === year;
@@ -148,6 +149,7 @@ const YearCircleContainer = styled(motion.div)<{ isActive: boolean }>`
       : (props) => props.theme.colors.neutral200};
   background-size: cover;
   top: -40px;
+  cursor: pointer;
 `;
 
 const YearText = styled(motion.div)<{ isActive: boolean }>`

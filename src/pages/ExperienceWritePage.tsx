@@ -21,7 +21,6 @@ import Modal from "../components/common/Modal";
 import airplaneImg from "../assets/images/airplane.png";
 import Tag from "../components/common/Tag";
 import RadioGroup from "../components/common/RadioGroup";
-import { myKeywords } from "../services/Experience/myKeywords";
 import { postExperience } from "../services/Experience/experienceApi";
 import { ExperienceType, KeywordType, TagType } from "../types/experience";
 import { getKeywords, postKeyword } from "../services/Experience/keywordApi";
@@ -50,8 +49,8 @@ const ExperienceWritePage = () => {
       question: item.question,
       answer: "",
     })),
-    startedAt: new Date().toISOString(),
-    endedAt: new Date().toISOString(),
+    startedAt: "",
+    endedAt: "",
   });
   const [primeTagItem, setPrimeTagItem] = React.useState<TagType>({
     id: "",
@@ -117,6 +116,8 @@ const ExperienceWritePage = () => {
     firstMyKeywordIndex,
     lastMyKeywordIndex
   );
+
+  const isSaveButtonDisabled = !expData.title || !primeTagItem.id || !subTagItem.id || !expData.startedAt || !expData.endedAt;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -384,7 +385,7 @@ const ExperienceWritePage = () => {
               <div className="label">경험 기간</div>
               <div className="input">
                 <OneDatePick
-                  date={new Date(expData.startedAt)}
+                  date={expData.startedAt ? new Date(expData.startedAt) : null}
                   setDate={(date: Date) =>
                     setExpData({ ...expData, startedAt: date.toISOString() })
                   }
@@ -392,7 +393,7 @@ const ExperienceWritePage = () => {
                 />
                 &nbsp;-&nbsp;
                 <OneDatePick
-                  date={new Date(expData.endedAt)}
+                  date={expData.endedAt ? new Date(expData.endedAt) : null}
                   setDate={(date: Date) =>
                     setExpData({ ...expData, endedAt: date.toISOString() })
                   }
@@ -684,7 +685,12 @@ const ExperienceWritePage = () => {
             </button>
             경험 작성
           </div>
-          <CustomButton onClick={handleSaveExperience}>저장</CustomButton>
+          <CustomButton
+            onClick={handleSaveExperience}
+            disabled={isSaveButtonDisabled}
+          >
+            저장
+          </CustomButton>
         </TopContainer>
         <ContentContainer>
           <TitleInput
