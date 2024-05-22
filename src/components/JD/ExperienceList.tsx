@@ -145,6 +145,41 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       endedAt: "2024-05-23T07:45:23.720832019",
       bookmarked: "OFF",
     },
+    {
+      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
+      title: "경험 제목 3",
+      parentTag: {
+        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
+        name: "상위 태그 이름",
+      },
+      childTag: {
+        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
+        name: "하위 태그 이름",
+      },
+      strongPoints: [
+        {
+          id: "fdbf03bf-c1a3-4442-997e-467605868052",
+          name: "역량 키워드 이름 1",
+        },
+        {
+          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
+          name: "역량 키워드 이름 2",
+        },
+      ],
+      contents: [
+        {
+          question: "질문1",
+          answer: "답변1",
+        },
+        {
+          question: "질문2",
+          answer: "답변2",
+        },
+      ],
+      startedAt: "2023-05-22T07:45:23.720822702",
+      endedAt: "2024-05-23T07:45:23.720832019",
+      bookmarked: "ON",
+    },
   ]);
   const jdId = useParams().jdId;
 
