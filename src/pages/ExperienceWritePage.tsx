@@ -117,7 +117,12 @@ const ExperienceWritePage = () => {
     lastMyKeywordIndex
   );
 
-  const isSaveButtonDisabled = !expData.title || !primeTagItem.id || !subTagItem.id || !expData.startedAt || !expData.endedAt;
+  const isSaveButtonDisabled =
+    !expData.title ||
+    !primeTagItem.id ||
+    !subTagItem.id ||
+    !expData.startedAt ||
+    !expData.endedAt;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -426,6 +431,7 @@ const ExperienceWritePage = () => {
                     open={open}
                     anchorEl={anchorEl}
                     sx={{ paddingTop: "8px" }}
+                    placement="bottom-end"
                   >
                     <TagPopperBox>
                       <TagSearchBox>
