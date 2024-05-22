@@ -229,15 +229,15 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     searchText: string,
     token: string
   ) => {
-    try {
-      const response = await searchTextExperienceList(jdId, searchText, token);
-      console.log(response);
-      setExperienceData(response.data.experiences);
-      console.log(experienceData);
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
+    // try {
+    //   const response = await searchTextExperienceList(jdId, searchText, token);
+    //   console.log(response);
+    //   setExperienceData(response.data.experiences);
+    //   console.log(experienceData);
+    // } catch (error) {
+    //   console.error(error);
+    //   alert(JSON.stringify(error));
+    // }
   };
 
   const getFilteredExperienceList = async (
