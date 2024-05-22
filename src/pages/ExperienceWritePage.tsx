@@ -445,7 +445,7 @@ const ExperienceWritePage = () => {
                         <input
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
-                          onKeyDown={handleTagSearch}
+                          onKeyUp={handleTagSearch}
                         />
                         <Search />
                       </TagSearchBox>
@@ -610,7 +610,7 @@ const ExperienceWritePage = () => {
                           value={newKeyword}
                           placeholder="직접 역량 태그를 생성할 수 있어요"
                           onChange={(e) => setNewKeyword(e.target.value)}
-                          onKeyDown={(e) => handleMyKeywords(e)}
+                          onKeyUp={(e) => handleMyKeywords(e)}
                         />
                       </MyKeywordInput>
                       <div className="checkbox-list">
