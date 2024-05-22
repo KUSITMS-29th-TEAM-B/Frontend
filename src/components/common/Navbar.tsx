@@ -18,7 +18,13 @@ const Navbar = () => {
   return (
     <NavContainer>
       <ItemContainer>
-        <img src={logo} alt="flight-logo" width={"117px"} height={"40px"} />
+        <img
+          src={logo}
+          alt="flight-logo"
+          width={"117px"}
+          height={"40px"}
+          onClick={() => navigate(`/experience`)}
+        />
         <MenuList>
           <MenuItem
             className={
