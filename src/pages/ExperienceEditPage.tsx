@@ -141,7 +141,7 @@ const ExperienceEditPage = () => {
       const subTagId = subTagRes.data.id;
 
       experienceData = {
-        ...expData,
+        ...experienceData,
         parentTagId: primeTagId,
         childTagId: subTagId,
       };
@@ -155,19 +155,20 @@ const ExperienceEditPage = () => {
       );
       const subTagId = subTagRes.data.id;
       experienceData = {
-        ...expData,
+        ...experienceData,
         childTagId: subTagId,
       };
     }
-    // 새로운 역량 키워드 있을 경우
+
+    const originStrongPointIds = checkedKeywords
+      .filter((item) => item.id !== item.name)
+      .map((item) => item.id);
     const newKeywordsNames = checkedKeywords
       .filter((item) => item.id === item.name)
       .map((item) => ({ name: item.name }));
-    if (newKeywordsNames.length !== 0) {
-      const originStrongPointIds = checkedKeywords
-        .filter((item) => item.id !== item.name)
-        .map((item) => item.id);
 
+    // 새로운 역량 키워드 있을 경우
+    if (newKeywordsNames.length !== 0) {
       const newStrongPointsRes = await postKeyword(
         newKeywordsNames,
         user?.token
@@ -180,14 +181,19 @@ const ExperienceEditPage = () => {
         ...newStrongPointIds,
       ];
       experienceData = {
-        ...expData,
+        ...experienceData,
         strongPointIds: totalStrongPointIds,
+      };
+    } else {
+      experienceData = {
+        ...experienceData,
+        strongPointIds: originStrongPointIds,
       };
     }
     // 질문 수정
     if (expId) {
       patchExperience(expId, experienceData, user?.token)
-        .then((res) => {
+        .then(() => {
           openModal();
         })
         .catch((err) => console.log(err));
