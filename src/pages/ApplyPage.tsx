@@ -27,7 +27,7 @@ const ApplyPage: React.FC = () => {
     { question: "", answer: "" },
   ]); //문항 데이터
   const [editing, setEditing] = useState(true); //수정중 여부
-  const [completed, setCompleted] = useState(false); //작성 완료
+  const [completed, setCompleted] = useState(""); //작성 완료
   const [isAllFilled, setIsAllFilled] = useState(false); // 문항이 빈칸이 없는지 검사
 
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore); //경험의 고유 id(0이 아니여야함)
@@ -223,13 +223,7 @@ const ApplyPage: React.FC = () => {
           </TopTitleBar>
           <EditContainer>
             <TopWrapper>
-              <ToggleWrapper>
-                작성완료
-                <Toggle
-                  isActive={completed}
-                  onClick={() => (!editing ? setCompleted(!completed) : null)}
-                />
-              </ToggleWrapper>
+              <ToggleWrapper></ToggleWrapper>
               {editing ? (
                 <SaveButton
                   isNotNull={isAllFilled}
@@ -241,8 +235,12 @@ const ApplyPage: React.FC = () => {
                 >
                   저장
                 </SaveButton>
+              ) : completed === "작성완료" ? (
+                <EditButton iscanEdit={true} onClick={handleEditButton}>
+                  수정
+                </EditButton>
               ) : (
-                <EditButton iscanEdit={completed} onClick={handleEditButton}>
+                <EditButton iscanEdit={false} onClick={handleEditButton}>
                   수정
                 </EditButton>
               )}
@@ -332,7 +330,13 @@ const ApplyPage: React.FC = () => {
               </>
             ) : (
               <JobContainer>
-                {jdId ? <JDContainer jdId={jdId} token={user.token} /> : null}
+                {jdId ? (
+                  <JDContainer
+                    jdId={jdId}
+                    token={user.token}
+                    status={completed}
+                  />
+                ) : null}
               </JobContainer>
             )}
           </ActiveContainer>
@@ -420,6 +424,7 @@ const TextCountWrapper = styled.div`
 const SaveButton = styled.button<{ isNotNull: boolean }>`
   display: inline-flex;
   padding: 0.625rem 4rem;
+  cursor: pointer;
   justify-content: center;
   align-items: center;
   color: #fff;
@@ -552,6 +557,7 @@ const JDButton = styled.button<ButtonProps>`
   top: 1rem;
   width: 2rem;
   height: 7rem;
+  cursor: pointer;
   flex-shrink: 0;
   border: none;
   border-radius: 0.66019rem 0rem 0rem 0.66019rem;
@@ -564,6 +570,7 @@ const ExperienceButton = styled.button<ButtonProps>`
   left: -2rem;
   top: 8.5rem;
   width: 2rem;
+  cursor: pointer;
   height: 7rem;
   flex-shrink: 0;
   border: none;
@@ -580,6 +587,7 @@ const QuestionsWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
   }
   //overflow-y: scroll;
 `;

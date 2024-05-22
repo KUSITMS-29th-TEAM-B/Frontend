@@ -11,10 +11,12 @@ import { formatDate } from "../../pages/JDDetailPage";
 interface JobContainerProps {
   jdId: string;
   token: string;
+  status: string;
 }
 
-const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
+const JDContainer: React.FC<JobContainerProps> = ({ jdId, token, status }) => {
   //   const jdData = jobDetails[1];
+  const [jdState, setjdState] = useState<string>("");
   const [jdData, setJdData] = useState<JobDescriptionAPI>({
     enterpriseName: "",
     title: "",
@@ -43,6 +45,7 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
+      setjdState(jdData.writeStatus);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -53,10 +56,21 @@ const JDContainer: React.FC<JobContainerProps> = ({ jdId, token }) => {
     getJobData(jdId, token);
   }, []);
 
+  useEffect(() => {
+    if (status === "작성완료") {
+      setjdState("WRITTEN");
+    } else if (status === "작성중") {
+      setjdState("WRITING");
+    }
+  }, [status]);
+
   return (
     <JobContainer>
       <JobStatusBar>
-        <StateBox className="job_status" status={jdData.writeStatus} />
+        <StateBox
+          className="job_status"
+          status={jdState === "" ? jdData.writeStatus : jdState}
+        />
         <div className="job_date">{jdData.createdAt}</div>
       </JobStatusBar>
       <JobTopBox>

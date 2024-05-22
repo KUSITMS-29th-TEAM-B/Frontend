@@ -34,7 +34,7 @@ const App: React.FC = () => {
         </Route>
         {/* 공고 상세  / JDDetailPage */}
         <Route element={<PrivateRoute />} path="/">
-          <Route path="/jd/:id" element={<JDDetailPage />} />
+          <Route path="/jd/:jdId" element={<JDDetailPage />} />
         </Route>
         {/* 공고 수정  / JDEditPage*/}
         <Route element={<PrivateRoute />} path="/">
