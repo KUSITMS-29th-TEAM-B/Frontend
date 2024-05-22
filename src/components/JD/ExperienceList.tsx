@@ -244,7 +244,14 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     } else if (searchText === "" && mainTag.id === "") {
       setfilterCount(-1);
     }
-  }, [searching, mainTag, subTag, selectedTab, experienceData]);
+  }, [
+    searching,
+    mainTag,
+    subTag,
+    selectedTab,
+    experienceData,
+    checkedKeywords,
+  ]);
 
   useEffect(() => {
     if (searchText === "") {
