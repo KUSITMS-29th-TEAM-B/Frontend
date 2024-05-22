@@ -3,11 +3,13 @@ import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCookie } from "../../services/cookie";
+import { useGetUserInfo } from "../hooks/useGetUserInfo";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getCookie("user");
+  const { data: userData } = useGetUserInfo(user?.token);
 
   const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/profile1.png`;
@@ -39,6 +41,7 @@ const Navbar = () => {
           <>
             <img
               src={
+                userData?.profileImgUrl ||
                 user?.profileImgUrl ||
                 `${process.env.PUBLIC_URL}/assets/profile1.png`
               }

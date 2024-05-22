@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserInfo, patchUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
 import { getCookie } from "../services/cookie";
+import { useGetUserInfo } from "../components/hooks/useGetUserInfo";
 
 const profileImgUrl = [
   "/assets/profile1.png",
@@ -38,6 +39,7 @@ const ProfileEditPage = () => {
     goal: "",
     dream: "",
   });
+  const { refetch } = useGetUserInfo(user?.token);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null); // 팝업 위치 관리
   const [popperWidth, setPopperWidth] = React.useState(0);
@@ -55,7 +57,10 @@ const ProfileEditPage = () => {
   };
 
   const handleEditProfile = () => {
-    patchUserInfo(userData, user?.token).then(() => navigate(`/profile`));
+    patchUserInfo(userData, user?.token).then(() => {
+      refetch();
+      navigate(`/profile`);
+    });
   };
 
   React.useEffect(() => {
