@@ -72,6 +72,10 @@ const InputBox = styled.input`
     outline: none;
     border: 2px solid ${(props) => props.theme.colors.main500};
   }
+  &:disabled {
+    border: 1px solid ${(props) => props.theme.colors.neutral400} !important;
+    background: ${(props) => props.theme.colors.neutral100} !important;
+  }
 `;
 
 export default Input;

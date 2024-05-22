@@ -205,9 +205,9 @@ const ExperienceWritePage = () => {
 
   // 상위 태그 라디오 버튼 클릭 함수
   const handlePrimeRadioChange = (item: TagType) => {
+    setPrimeTagItem(item);
     // 기존 상위 태그 선택한 경우
     if (item.id !== item.name) {
-      setPrimeTagItem(item);
       setExpData({ ...expData, parentTagId: item.id });
       getSubTags(item.id, user?.token).then((res) => {
         setSubTagList(res.data.tags);
@@ -215,9 +215,12 @@ const ExperienceWritePage = () => {
     }
     // 새로 생성한 상위 태그 선택한 경우
     else {
-      setPrimeTagItem(item);
       setExpData({ ...expData, parentTagId: "" });
       setSubTagList([]);
+    }
+    // 이전의 선택한 상위태그 다른 태그 선택한 경우
+    if (primeTagItem.id !== item.id) {
+      setSubTagItem({ id: "", name: "" });
     }
     setPopperInfo(null);
   };
@@ -425,6 +428,7 @@ const ExperienceWritePage = () => {
                   style={customInputCss}
                   onClick={handleTagPopper}
                   placeholder="하위 경험 분류"
+                  disabled={primeTagItem.id === ""}
                 />
                 {popperInfo && (
                   <Popper
