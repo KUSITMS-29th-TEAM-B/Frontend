@@ -54,6 +54,10 @@ const JDDetailPage: React.FC = () => {
     document.body.style.overflow = "auto";
   };
 
+  const cancelModal = () => {
+    setIsModalOpen(false);
+  };
+
   const ExptoggleContainer = () => {
     if (!active) {
       setActive(!active);
@@ -129,6 +133,7 @@ const JDDetailPage: React.FC = () => {
         <JDDeleteModal
           isOpen={isModalOpen}
           onClose={closeModal}
+          onCancel={cancelModal}
         ></JDDeleteModal>
       }
       {!isLoading ? (
