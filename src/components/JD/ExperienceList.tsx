@@ -23,6 +23,7 @@ import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
 import { formatDateRange } from "../../pages/JDListPage";
+import { ExperienceDetailType, KeywordType } from "../../types/experience";
 
 type TabType = "basic" | "my";
 
@@ -183,30 +184,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   ]);
   const jdId = useParams().jdId;
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const id = open ? "tag-popper" : undefined;
-
-  // 기본 역량 키워드 페이지네이션
-  const keywordsPerPage = 9;
-  const [currentBasicKeywordPage, setCurrentBasicKeywordPage] =
-    React.useState(1);
-  const firstBasicKeywordIndex =
-    (currentBasicKeywordPage - 1) * keywordsPerPage;
-  const lastBasicKeywordIndex = firstBasicKeywordIndex + keywordsPerPage;
-  const currentBasicKeywords = basicKeywords.slice(
-    firstBasicKeywordIndex,
-    lastBasicKeywordIndex
-  );
-  // My 역량 키워드 페이지네이션
-  const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
-  const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
-  const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
-  const currentMyKeywords = myKeywords.slice(
-    firstMyKeywordIndex,
-    lastMyKeywordIndex
-  );
-
   useEffect(() => {
     if (jdId) {
       // getExperienceList(jdId, user.token);
@@ -229,15 +206,15 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     searchText: string,
     token: string
   ) => {
-    // try {
-    //   const response = await searchTextExperienceList(jdId, searchText, token);
-    //   console.log(response);
-    //   setExperienceData(response.data.experiences);
-    //   console.log(experienceData);
-    // } catch (error) {
-    //   console.error(error);
-    //   alert(JSON.stringify(error));
-    // }
+    try {
+      const response = await searchTextExperienceList(jdId, searchText, token);
+      console.log(response);
+      setExperienceData(response.data.experiences);
+      console.log(experienceData);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
   };
 
   const getFilteredExperienceList = async (
@@ -259,45 +236,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       alert(JSON.stringify(error));
     }
   };
-
-  // 체크된 역량 키워드 리스트
-  const [checkedKeywords, setCheckedKeywords] = React.useState<string[]>([]);
-
-  // 키워드 체크박스 관리 함수
-  const handleCheckedKeywords = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target) {
-      e.target.checked
-        ? setCheckedKeywords([...checkedKeywords, e.target.value])
-        : setCheckedKeywords(
-            checkedKeywords.filter((choice) => choice !== e.target.value)
-          );
-    }
-  };
-
-  // 역량 키워드 클릭 함수
-  const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  // 역량 키워드 필터된 경험 데이터, 북마크
-  const filteredExpData = experienceData.filter((experience) => {
-    const strongPointNames = experience.strongPoints.map((point) => point.name);
-    const matchedKeywords = strongPointNames.filter((name) =>
-      checkedKeywords.includes(name)
-    );
-    return matchedKeywords.length > 0;
-  });
-  const bookedData = experienceData.filter((experience) => {
-    // 북마크가 ON인 요소만 필터링
-    return experience.bookmarked === "ON";
-  });
-  const filteredBookedData = experienceData.filter((experience) => {
-    const strongPointNames = experience.strongPoints.map((point) => point.name);
-    const matchedKeywords = strongPointNames.filter((name) =>
-      checkedKeywords.includes(name)
-    );
-    return experience.bookmarked === "ON" && matchedKeywords.length > 0;
-  });
 
   //상위태그 하위태그 필터링
   const handleTagSelection = (
@@ -337,6 +275,86 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       console.log("search: " + searchText);
     }
   }, [searchText]);
+
+  //역량키워드 관련 팝업
+  const [myKeywordList, setMyKeywordList] = React.useState<KeywordType[]>([]);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "tag-popper" : undefined;
+
+  // 기본 역량 키워드 페이지네이션
+  const keywordsPerPage = 9;
+  const [currentBasicKeywordPage, setCurrentBasicKeywordPage] =
+    React.useState(1);
+  const firstBasicKeywordIndex =
+    (currentBasicKeywordPage - 1) * keywordsPerPage;
+  const lastBasicKeywordIndex = firstBasicKeywordIndex + keywordsPerPage;
+  const currentBasicKeywords = basicKeywords.slice(
+    firstBasicKeywordIndex,
+    lastBasicKeywordIndex
+  );
+
+  // My 역량 키워드 페이지네이션
+  const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
+  const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
+  const lastMyKeywordIndex = firstMyKeywordIndex + keywordsPerPage;
+  const currentMyKeywords = myKeywordList.slice(
+    firstMyKeywordIndex,
+    lastMyKeywordIndex
+  );
+
+  // 체크된 역량 키워드 리스트
+  const [checkedKeywords, setCheckedKeywords] = React.useState<KeywordType[]>(
+    []
+  );
+
+  // 키워드 체크박스 체크 여부
+  const isKeywordChecked = (item: KeywordType) => {
+    return checkedKeywords.some(
+      (keyword) => keyword.id === item.id && keyword.name === item.name
+    );
+  };
+
+  // 키워드 체크박스 핸들러
+  const handleKeywordChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: TabType
+  ) => {
+    if (e.target) {
+      if (e.target.checked) {
+        const keywordId = e.target.value;
+        const selectedKeyword = (
+          type === "basic" ? basicKeywords : myKeywordList
+        ).find((item) => item.id === keywordId);
+        setCheckedKeywords([
+          ...checkedKeywords,
+          { id: keywordId, name: selectedKeyword?.name || "" },
+        ]);
+      } else {
+        setCheckedKeywords(
+          checkedKeywords.filter((item) => item.id !== e.target.value)
+        );
+      }
+    }
+  };
+
+  // 역량 키워드 클릭 함수
+  const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  // 역량 키워드 필터된 경험 데이터, 북마크
+  const filteredExpData = experienceData.filter((experience) =>
+    experience.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
+  );
+
+  const bookedData = experienceData.filter((experience) => {
+    // 북마크가 ON인 요소만 필터링
+    return experience.bookmarked === "ON";
+  });
+  const filteredBookedData = bookedData.filter((experience) =>
+    experience.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
+  );
 
   return (
     <StyledContainer>
@@ -452,7 +470,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                         />
                       ) : (
                         <PopperPagination
-                          postsNum={myKeywords.length}
+                          postsNum={myKeywordList.length}
                           postsPerPage={keywordsPerPage}
                           setCurrentPage={setCurrentMyKeywordPage}
                           currentPage={currentMyKeywordPage}
@@ -472,16 +490,16 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                             <Checkbox
                               value={item.id}
                               label={item.name}
-                              checked={checkedKeywords.includes(item.name)}
-                              onChange={handleCheckedKeywords}
+                              checked={isKeywordChecked(item)}
+                              onChange={(e) => handleKeywordChange(e, "basic")}
                             />
                           ))
                         : currentMyKeywords.map((item) => (
                             <Checkbox
-                              value={item}
-                              label={item}
-                              checked={checkedKeywords.includes(item)}
-                              onChange={handleCheckedKeywords}
+                              value={item.id}
+                              label={item.name}
+                              checked={isKeywordChecked(item)}
+                              onChange={(e) => handleKeywordChange(e, "my")}
                             />
                           ))}
                     </div>
@@ -489,7 +507,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                       총&nbsp;
                       <div className="accent">
                         {checkedKeywords.length === 0
-                          ? ExpData.length
+                          ? experienceData?.length
                           : filteredExpData.length}
                         개
                       </div>
@@ -516,7 +534,9 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                     tags={post.strongPoints.map((point) => point.name)}
                     period={formatDateRange(post.startedAt, post.endedAt)}
                     bookmark={post.bookmarked === "ON" ? true : false}
-                    checkedKeywords={checkedKeywords}
+                    checkedKeywords={checkedKeywords.map(
+                      (item: KeywordType) => item.name
+                    )}
                     onClick={() => setshowDetail(true)}
                   />
                 ))}
@@ -537,7 +557,9 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                   tags={post.strongPoints.map((point) => point.name)}
                   period={formatDateRange(post.startedAt, post.endedAt)}
                   bookmark={post.bookmarked === "ON" ? true : false}
-                  checkedKeywords={checkedKeywords}
+                  checkedKeywords={checkedKeywords.map(
+                    (item: KeywordType) => item.name
+                  )}
                   onClick={() => setshowDetail(true)}
                 />
               ))}
