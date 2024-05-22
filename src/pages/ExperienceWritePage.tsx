@@ -288,7 +288,6 @@ const ExperienceWritePage = () => {
   ) => {
     if (e.target) {
       // 체크박스 선택
-      console.log(e.target.checked, e.target.value);
       if (e.target.checked && checkedKeywords.length < 5) {
         const keywordId = e.target.value;
         const selectedKeyword = (
