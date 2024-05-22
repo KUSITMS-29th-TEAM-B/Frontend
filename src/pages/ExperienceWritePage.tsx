@@ -122,7 +122,9 @@ const ExperienceWritePage = () => {
     !primeTagItem.id ||
     !subTagItem.id ||
     !expData.startedAt ||
-    !expData.endedAt;
+    !expData.endedAt ||
+    !expData.contents[0].answer ||
+    !expData.contents[1].answer;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -393,7 +395,9 @@ const ExperienceWritePage = () => {
         <BasicFormContainer>
           <div className="top">
             <div className="form-item">
-              <div className="label">경험 기간</div>
+              <div className="label">
+                경험 기간<div className="required">*</div>
+              </div>
               <div className="input">
                 <OneDatePick
                   date={expData.startedAt ? new Date(expData.startedAt) : null}
@@ -413,7 +417,10 @@ const ExperienceWritePage = () => {
               </div>
             </div>
             <div className="form-item">
-              <div className="label">경험 분류</div>
+              <div className="label">
+                경험 분류
+                <div className="required">*</div>
+              </div>
               <div className="input">
                 <Input
                   readOnly
@@ -445,7 +452,7 @@ const ExperienceWritePage = () => {
                         <input
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
-                          onKeyDown={handleTagSearch}
+                          onKeyUp={handleTagSearch}
                         />
                         <Search />
                       </TagSearchBox>
@@ -610,7 +617,7 @@ const ExperienceWritePage = () => {
                           value={newKeyword}
                           placeholder="직접 역량 태그를 생성할 수 있어요"
                           onChange={(e) => setNewKeyword(e.target.value)}
-                          onKeyDown={(e) => handleMyKeywords(e)}
+                          onKeyUp={(e) => handleMyKeywords(e)}
                         />
                       </MyKeywordInput>
                       <div className="checkbox-list">
@@ -662,6 +669,7 @@ const ExperienceWritePage = () => {
                 <Chip text={item.type} />
               </div>
               <Textarea
+                required={index === 0 || index === 1}
                 value={expData.contents[index].answer}
                 label={`${index + 1}. ${item.question}`}
                 rows={8}
@@ -713,7 +721,7 @@ const ExperienceWritePage = () => {
         <ContentContainer>
           <TitleInput
             value={expData.title}
-            placeholder="경험의 제목을 입력해주세요"
+            placeholder="경험의 제목을 입력해주세요 *"
             onChange={(e) => setExpData({ ...expData, title: e.target.value })}
           ></TitleInput>
           {renderExperienceBasicInfo()}
@@ -822,8 +830,16 @@ const BasicFormContainer = styled.div`
     gap: 12px;
   }
   .label {
+    display: flex;
+    flex-direction: row;
     ${(props) => props.theme.fonts.subtitle2};
     color: ${(props) => props.theme.colors.neutral700};
+    gap: 0.2rem;
+    align-items: center;
+  }
+  .required {
+    ${(props) => props.theme.fonts.cap1};
+    color: var(--sub-tertiary-800, #ffa63e);
   }
   .input {
     display: flex;
