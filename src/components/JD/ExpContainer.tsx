@@ -4,29 +4,38 @@ import ExpData from "../../services/JD/ExpData";
 import { useRecoilState } from "recoil";
 import { detailStore } from "../../store/jdStore";
 import { questions } from "../../assets/data/questions";
-import JDChip from "./JDChip";
 import ArrowIcon from "../../assets/icons/icon_arrow_right_main500.svg";
 import { getCookie } from "../../services/cookie";
 import { getExperience } from "../../services/Experience/experienceApi";
+import Chip from "../common/Chip";
 
 interface JobContainerProps {
   expId: number | string;
 }
 
+interface ApiData {
+  id: string;
+  title: string;
+  parentTag: string;
+  childTag: string;
+  strongPoints: { id: string; name: string }[];
+  contents: { question: string; answer: string }[];
+}
+
 const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
   const expData = ExpData[0];
   const user = getCookie("user");
-  const [apiData, setapiData] = useState({
+  const [apiData, setapiData] = useState<ApiData>({
     id: "",
     title: "",
     parentTag: "",
     childTag: "",
-    strongPoints: "",
+    strongPoints: [],
     contents: [],
   });
 
   useEffect(() => {
-    // getExperienceData(expId.toString(), user.token);
+    getExperienceData(expId.toString(), user.token);
   }, []);
 
   const [detailId, setDetailId] = useRecoilState<number | string>(detailStore);
@@ -34,7 +43,14 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
   const getExperienceData = async (expId: string, token: string) => {
     try {
       const response = await getExperience(expId, token);
-      console.log(response);
+      setapiData({
+        id: response.data.id,
+        title: response.data.title,
+        parentTag: response.data.parentTag.name,
+        childTag: response.data.childTag.name,
+        strongPoints: response.data.strongPoints,
+        contents: response.data.contents,
+      });
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -46,8 +62,8 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
       <TopContainer>
         <Topbar>
           <TagContainer>
-            {expData.tags.map((tag, index) => (
-              <Tag key={index}>{tag}</Tag>
+            {apiData.strongPoints.map((point, index) => (
+              <Tag key={index}>{point.name}</Tag>
             ))}
           </TagContainer>
           <ButtonContainer onClick={() => setDetailId(0)}>
@@ -55,32 +71,26 @@ const ExperienceBox: React.FC<JobContainerProps> = ({ expId }) => {
             <img src={ArrowIcon} alt="arrow" />
           </ButtonContainer>
         </Topbar>
-        <Title>{expData.title}</Title>
+        <Title>{apiData.title}</Title>
         <SubContainer>
-          <div>{expData.mainTag + ">" + expData.subTag}</div>
+          <div>{apiData.parentTag + ">" + apiData.childTag}</div>
           <div>|</div>
           <div>{expData.period}</div>
         </SubContainer>
       </TopContainer>
       <ScrollDiv>
         <ExpBottomBox>
-          {questions.map((item, index) => (
+          {apiData.contents.map((item, index) => (
             <QuestionsWrapper>
               <ChipWrapper>
-                <JDChip text={item.type} />
+                <Chip text={questions[index].type} />
               </ChipWrapper>
               <div className="question-title">
                 {`${index + 1}. ` + item.question}
               </div>
               <AnswerWrapper>
-                <AnswerText
-                  isEmpty={
-                    !expData.detail?.find((detail) => detail.num === index)
-                      ?.content
-                  }
-                >
-                  {expData.detail?.find((detail) => detail.num === index)
-                    ?.content || "작성한 답변이 없습니다."}
+                <AnswerText isEmpty={item.answer === ""}>
+                  {item.answer ? item.answer : "작성한 답변이 없습니다."}
                 </AnswerText>
               </AnswerWrapper>
             </QuestionsWrapper>
@@ -197,6 +207,7 @@ const ChipWrapper = styled.div`
   display: flex;
   align-items: center;
   text-align: center;
+  margin-bottom: 8px;
 `;
 
 const QuestionsWrapper = styled.div`
