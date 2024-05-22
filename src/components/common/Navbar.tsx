@@ -87,6 +87,7 @@ const ItemContainer = styled.div`
   gap: 2.5rem;
   &.profile {
     gap: 0.5rem;
+    cursor: pointer;
   }
 `;
 

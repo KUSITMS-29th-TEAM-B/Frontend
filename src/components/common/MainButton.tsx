@@ -20,6 +20,7 @@ const Button = styled.button`
   justify-content: center;
   ${(props) => props.theme.fonts.title4};
   gap: 5px;
+  cursor: pointer;
   &:disabled {
     background: ${(props) => props.theme.colors.neutral500};
   }
