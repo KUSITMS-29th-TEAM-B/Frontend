@@ -9,10 +9,6 @@ import { getUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
-import profile2 from "../assets/images/profile2.png";
-import profile3 from "../assets/images/profile3.png";
-import profile4 from "../assets/images/profile4.png";
-import profile5 from "../assets/images/profile5.png";
 
 interface UserDetail {
   question: string;
@@ -54,7 +50,9 @@ const ProfilePage = () => {
       getUserInfo(user?.token).then((res) => {
         console.log(res);
         setUserData(res.data);
-        setprofileImage(`${process.env.PUBLIC_URL}${res.data.profileImgUrl}`);
+        setprofileImage(
+          `${process.env.PUBLIC_URL}${res.data.profileImgUrl}` || profile1
+        );
       });
     }
   }, []);
