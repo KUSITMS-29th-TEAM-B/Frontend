@@ -705,7 +705,7 @@ const ExperienceEditPage = () => {
             >
               <ArrowLeft />
             </button>
-            경험 작성
+            경험 수정
           </div>
           <CustomButton onClick={handleSaveExperience}>저장</CustomButton>
         </TopContainer>
