@@ -7,48 +7,6 @@ const Footer = () => {
     <StyledContainer>
       <TopConatiner>
         <img src={logo} alt="logo" className="logo" />
-        <div className="footer_btn">
-          <a
-            href="https://www.youtube.com/watch?v=S-yABpcMaQs"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            공지사항
-          </a>
-          <a
-            href="https://www.youtube.com/watch?v=S-yABpcMaQs"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            이용약관
-          </a>
-          <a
-            href="https://www.youtube.com/watch?v=S-yABpcMaQs"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            개인정보처리방침
-          </a>
-          <a
-            href="https://www.youtube.com/watch?v=S-yABpcMaQs"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            메일 문의
-          </a>
-          <a
-            href="https://www.youtube.com/watch?v=S-yABpcMaQs"
-            target="_blank"
-            rel="noreferrer"
-            className="link"
-          >
-            인스타그램
-          </a>
-        </div>
       </TopConatiner>
       <BottomConatiner>
         <div>
@@ -96,42 +54,42 @@ const StyledContainer = styled.div`
 `;
 
 const TopConatiner = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  .logo {
+    width: 8rem;
+  }
+  .footer_btn {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-    .logo{
-        width: 8rem;
-    }
-    .footer_btn{
-        display: flex;
-        flex-direction: row;
-        gap: 2rem;
-        color: var(--neutral-600, #63698D);
-        border: none;
-        text-decoration: none;
-    }
-    .link{
-        color: var(--neutral-600, #63698D);
-        text-decoration: none;
-    }
+    flex-direction: row;
+    gap: 2rem;
+    color: var(--neutral-600, #63698d);
+    border: none;
+    text-decoration: none;
+  }
+  .link {
+    color: var(--neutral-600, #63698d);
+    text-decoration: none;
+  }
 `;
 
 const BottomConatiner = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 4rem;
+  ${(props) => props.theme.fonts.body4};
+  color: ${(props) => props.theme.colors.neutral500};
+  .service_info {
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    gap: 4rem;
-    ${(props) => props.theme.fonts.body4};
-    color: ${(props) => props.theme.colors.neutral500};
-    .service_info{
-        display: flex;
-        flex-direction: row;
-        width: 19rem;
-    }
-    .sub-title{
-        flex:1;
-    }
-    .sub-content{
-        flex:4;
-    }
+    width: 19rem;
+  }
+  .sub-title {
+    flex: 1;
+  }
+  .sub-content {
+    flex: 4;
+  }
 `;

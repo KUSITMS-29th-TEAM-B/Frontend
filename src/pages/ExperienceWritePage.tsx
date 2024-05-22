@@ -7,7 +7,7 @@ import {
   AccordionSummary,
   Popper,
 } from "@mui/material";
-import { ArrowDown, ArrowLeft, Plus2, Search } from "../assets";
+import { ArrowDown, ArrowLeft, Plus, Plus2, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -449,10 +449,12 @@ const ExperienceWritePage = () => {
                   >
                     <TagPopperBox>
                       <TagSearchBox>
+                        <Plus2 />
                         <input
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
                           onKeyUp={handleTagSearch}
+                          placeholder="경험을 분류할 태그를 직접 생성할 수 있어요."
                         />
                         <Search />
                       </TagSearchBox>
@@ -677,6 +679,7 @@ const ExperienceWritePage = () => {
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                 }
                 style={{
+                  fontSize: "16px",
                   borderRadius: "12px",
                   border: `1px solid ${theme.colors.neutral400}`,
                   background: `${theme.colors.neutral0}`,
@@ -845,6 +848,7 @@ const BasicFormContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
   }
 `;
 
@@ -964,9 +968,10 @@ const customInputCss = {
   padding: "9px 22px",
   background: "none",
   borderRadius: "5px",
+  maxWidth: "200px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
-  maxWidth: "131px",
   color: `var(--main-500, #7D82FF)`,
+  fontSize: "16px",
 };
 
 const TagPopperBox = styled.div`
