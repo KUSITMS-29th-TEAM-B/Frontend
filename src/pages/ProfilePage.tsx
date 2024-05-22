@@ -5,7 +5,7 @@ import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../services/cookie";
-import { getUserInfo } from "../services/user";
+import { getUserInfo, logout } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
@@ -42,6 +42,9 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handlelogout = () => {
+    if (user?.token && user?.refreshToken) {
+      logout(user?.token, user?.refreshToken);
+    }
     removeCookie("user").then(() => nav(`/sign-in`));
   };
 
@@ -98,7 +101,16 @@ const ProfilePage = () => {
             {userDetailList.map(({ question, answer }) => (
               <React.Fragment key={question}>
                 <SubTitle>{question}</SubTitle>
-                <SubContent>{answer}</SubContent>
+                <SubContent>
+                  {answer ? (
+                    answer
+                  ) : (
+                    <p>
+                      아직 작성한 내용이 없어요.
+                      <br /> ‘프로필 수정’ 페이지에서 작성을 완료해주세요!
+                    </p>
+                  )}
+                </SubContent>
               </React.Fragment>
             ))}
           </ContentWrapper>
@@ -152,6 +164,10 @@ const SubContent = styled.div`
   padding: 1rem 0;
   border-top: 1px solid ${(props) => props.theme.colors.main200};
   margin-bottom: 1rem;
+  p {
+    ${(props) => props.theme.fonts.body3};
+    color: ${(props) => props.theme.colors.neutral500};
+  }
 `;
 
 const TicketWrapper = styled.div`

@@ -43,12 +43,11 @@ const Navbar = () => {
         </MenuList>
       </ItemContainer>
       <ItemContainer className="profile">
-        {user?.token ? (
+        {userData ? (
           <>
             <img
               src={
                 userData?.profileImgUrl ||
-                user?.profileImgUrl ||
                 `${process.env.PUBLIC_URL}/assets/profile1.png`
               }
               alt="profile"
@@ -60,7 +59,7 @@ const Navbar = () => {
               onError={handleImgError}
             />
             <UserInfo onClick={() => navigate(`/profile`)}>
-              {user?.nickName}님
+              {userData?.nickName}님
             </UserInfo>
           </>
         ) : (
