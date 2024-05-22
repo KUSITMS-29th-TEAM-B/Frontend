@@ -287,7 +287,9 @@ const ExperienceWritePage = () => {
     type: TabType
   ) => {
     if (e.target) {
-      if (e.target.checked) {
+      // 체크박스 선택
+      console.log(e.target.checked, e.target.value);
+      if (e.target.checked && checkedKeywords.length < 5) {
         const keywordId = e.target.value;
         const selectedKeyword = (
           type === "basic" ? basicKeywords : myKeywordList
@@ -296,7 +298,9 @@ const ExperienceWritePage = () => {
           ...checkedKeywords,
           { id: keywordId, name: selectedKeyword?.name || "" },
         ]);
-      } else {
+      }
+      // 체크박스 해제
+      else {
         setCheckedKeywords(
           checkedKeywords.filter((item) => item.id !== e.target.value)
         );
@@ -630,6 +634,11 @@ const ExperienceWritePage = () => {
                         onDelete={() => handleDeleteTag(item.id)}
                       />
                     ))}
+                    {checkedKeywords.length >= 5 ? (
+                      <div className="warning-text">
+                        최대 5개까지만 키워드를 선택할 수 있어요.
+                      </div>
+                    ) : null}
                   </div>
                 </KeywordSelect>
               </AccordionDetails>
@@ -878,6 +887,13 @@ const KeywordSelect = styled.div`
     display: flex;
     flex-direction: row;
     gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .warning-text {
+    margin-left: 1rem;
+    ${(props) => props.theme.fonts.cap2};
+    color: red;
   }
 `;
 
