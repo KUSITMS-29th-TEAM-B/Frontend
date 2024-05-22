@@ -677,6 +677,7 @@ const ExperienceWritePage = () => {
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                 }
                 style={{
+                  fontSize: '16px',
                   borderRadius: "12px",
                   border: `1px solid ${theme.colors.neutral400}`,
                   background: `${theme.colors.neutral0}`,
@@ -845,6 +846,7 @@ const BasicFormContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
   }
 `;
 
@@ -964,9 +966,10 @@ const customInputCss = {
   padding: "9px 22px",
   background: "none",
   borderRadius: "5px",
+  maxWidth: "200px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
-  maxWidth: "131px",
   color: `var(--main-500, #7D82FF)`,
+  fontSize: "16px",
 };
 
 const TagPopperBox = styled.div`

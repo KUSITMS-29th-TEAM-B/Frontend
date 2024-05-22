@@ -125,8 +125,7 @@ const InfoPage = () => {
                 </div>
                 <div className="jdbox-description-subtitle">
                   지원하고자 하는 공고만 따로 스크랩해
-                  <br /> 일정, 지원 자격 등의 상세정보를
-                  <br /> 편하게 볼 수 있어요
+                  <br /> 일정, 지원 자격 등의 상세정보를 편하게 볼 수 있어요
                 </div>
               </div>
             </JDBox>
@@ -200,28 +199,28 @@ const StyledContainer = styled.div<{ isLoading: boolean }>`
   padding: 3.5625rem 8.75rem;
   padding-top: 0;
   padding-bottom: 0;
-  .main_1{
+  .main_1 {
     margin-bottom: 7rem;
   }
-  .overview{
+  .overview {
     width: 100vw;
     height: auto;
   }
-  .sub_banner{
+  .sub_banner {
     width: 100vw;
     height: auto;
   }
-  .main_4{
+  .main_4 {
     margin-bottom: 8rem;
     position: relative;
   }
-  .main_6{
+  .main_6 {
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
   }
-  .main_7_screenshot{
+  .main_7_screenshot {
     position: absolute;
     width: 40%;
     top: 5rem;
@@ -237,7 +236,7 @@ const LoadingContainer = styled.div`
   width: 100%;
   height: 100%;
   margin-top: 15%;
-  .loading{
+  .loading {
     font-size: 1.5rem;
     opacity: 0.4;
     color: ${(props) => props.theme.colors.neutral700};
@@ -245,175 +244,173 @@ const LoadingContainer = styled.div`
 `;
 
 const MainContainer = styled.div`
-    text-align: center;
-    position: relative;
-    .steptext{
-        opacity: 0.6;
-        color: ${(props) => props.theme.colors.main500};
-        ${(props) => props.theme.fonts.headline3};
-        margin-top: 11rem;
-        margin-bottom: 1.25rem;
-    }
-    .subtext{
-        font-size: 2rem;
-        font-style: normal;
-        font-weight: 400;
-        opacity: 0.4;
-        color: ${(props) => props.theme.colors.neutral700};
-        margin-bottom: 0.75rem;
-    }
-    .maintext{
-        font-size: 3.75rem;
-        font-style: normal;
-        font-weight: 800;
-        background: linear-gradient(89deg, #6167FF -10.58%, #7D82FF 47.56%);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .maintext_2{
-        font-size: 3.75rem;
-        font-style: normal;
-        font-weight: 800;
-        height: 11rem;
-        line-height: 150%; 
-        letter-spacing: -0.1125rem;
-        background: linear-gradient(89deg, #6167FF -10.58%, #7D82FF 47.56%);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    .image{
-        width: 80rem;
-        margin-top: 7rem;
-    }
-    .start_btn{
-        position: absolute;
-        width: 22rem;
-        height: 5rem;
-        bottom: 15%;
-        right: 37%;
-        border-radius: 5rem;
-        color: var(--white);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        ${(props) => props.theme.fonts.headline2};
-        background: linear-gradient(134deg, #7D82FF 21.06%, #444CFF 162.77%);
-    }
-    .sub_screenshot{
-        position: absolute;
-        width: 50%;
-        right: 5rem;
-        bottom: 5px;
-    }
-    .keyword {
-        width: 14rem;
-    }
+  text-align: center;
+  position: relative;
+  .steptext {
+    opacity: 0.6;
+    color: ${(props) => props.theme.colors.main500};
+    ${(props) => props.theme.fonts.headline3};
+    margin-top: 11rem;
+    margin-bottom: 1.25rem;
+  }
+  .subtext {
+    ${(props) => props.theme.fonts.headline3};
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 400;
+    opacity: 0.4;
+    color: ${(props) => props.theme.colors.neutral700};
+    margin-bottom: 0.75rem;
+  }
+  .maintext {
+    font-family: Pretendard-ExtraBold;
+    font-size: 3.75rem;
+    font-style: normal;
+    background: linear-gradient(89deg, #6167ff -10.58%, #7d82ff 47.56%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .maintext_2 {
+    font-family: Pretendard-ExtraBold;
+    font-size: 3.75rem;
+    font-style: normal;
+    height: 11rem;
+    line-height: 150%;
+    letter-spacing: -0.1125rem;
+    background: linear-gradient(89deg, #6167ff -10.58%, #7d82ff 47.56%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .image {
+    width: 80rem;
+    margin-top: 7rem;
+  }
+  .start_btn {
+    position: absolute;
+    width: 22rem;
+    height: 5rem;
+    bottom: 15%;
+    right: 37%;
+    border-radius: 5rem;
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${(props) => props.theme.fonts.headline2};
+    background: linear-gradient(134deg, #7d82ff 21.06%, #444cff 162.77%);
+  }
+  .sub_screenshot {
+    position: absolute;
+    width: 50%;
+    right: 5rem;
+    bottom: 5px;
+  }
+  .keyword {
+    width: 14rem;
+  }
 `;
 
 const ImageWrapper = styled.div`
-    width: 80vw;
-    border-radius: 1rem;
-    position: relative;
-    .image_right{
-        position: absolute;
-        top: 20%;
-        right: 3rem;
-        width: 45%;
-        height: 70%;
-    }
-    .image_left{
-        position: absolute;
-        top: 20%;
-        left: 3rem;
-        width: 45%;
-    }
-    .image_bg{
-        width: 100%;
-    }
-    margin-bottom: 5rem;
+  width: 80vw;
+  border-radius: 1rem;
+  position: relative;
+  .image_right {
+    position: absolute;
+    top: 20%;
+    right: 3rem;
+    width: 45%;
+    height: 70%;
+  }
+  .image_left {
+    position: absolute;
+    top: 20%;
+    left: 3rem;
+    width: 45%;
+  }
+  .image_bg {
+    width: 100%;
+  }
+  margin-bottom: 5rem;
 `;
 
 const KeyWordWrapper = styled.div`
-    margin-top: 5rem;
-    border-radius: 1.25rem;
-    background: ${(props) => props.theme.colors.main50};
-    color: ${(props) => props.theme.colors.main400};
-    ${(props) => props.theme.fonts.title2};
-    display: inline-flex;
-    padding: 0.4375rem 1.4375rem;
-    justify-content: center;
-    align-items: center;
-    gap: 0.625rem;
-    
+  margin-top: 5rem;
+  border-radius: 1.25rem;
+  background: ${(props) => props.theme.colors.main50};
+  color: ${(props) => props.theme.colors.main400};
+  ${(props) => props.theme.fonts.title2};
+  display: inline-flex;
+  padding: 0.4375rem 1.4375rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
 `;
 
 const ContentWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  .main_content {
+    font-family: Pretendard-Bold;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 2.5rem;
+    font-style: normal;
+    line-height: 140%;
+    letter-spacing: -0.1rem;
+  }
+  .sub_content {
+    font-family: Pretendard-Regular;
+    opacity: 0.6;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    letter-spacing: -0.06rem;
+    margin-top: 1.25rem;
+    margin-bottom: 3.5rem;
+  }
+  .screenshot {
+    width: 100%;
     margin-top: 2rem;
-    .main_content{
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 2.5rem;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 140%;
-        letter-spacing: -0.1rem;
-    }
-    .sub_content{
-        opacity: 0.6;
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 1.5rem;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 140%; 
-        letter-spacing: -0.06rem;
-        margin-top: 1.25rem;
-        margin-bottom: 3.5rem;
-    }
-    .screenshot{
-        width: 100%;
-        margin-top: 2rem;
-        margin-bottom: 7rem;
-    }
-
-    
+    margin-bottom: 7rem;
+  }
 `;
 
 const ExperienceBox = styled.div`
-    position: absolute;
-    top: 10rem;
-    left: 5rem;
-    display: flex;
-    flex-direction: column;
-    .ewbox-keyword{
-        width: 9rem;
-    }
-    .ewbox-maintext{
-        width: 20rem;
-        text-align: start;
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 2.5rem;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 140%; 
-        letter-spacing: -0.1rem;
-        margin-top: 2rem;
-
-    }
-    .ewbox-subtext{
-        width: 18rem;
-        text-align: start;
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 1.5rem;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 140%; 
-        letter-spacing: -0.06rem;
-        opacity: 0.6;
-        margin-top: 1.25rem;
-    }
+  position: absolute;
+  top: 10rem;
+  left: 5rem;
+  display: flex;
+  flex-direction: column;
+  .ewbox-keyword {
+    width: 9rem;
+  }
+  .ewbox-maintext {
+    font-family: Pretendard-Bold;
+    width: 20rem;
+    text-align: start;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 2.5rem;
+    font-style: normal;
+    line-height: 140%;
+    letter-spacing: -0.1rem;
+    margin-top: 2rem;
+  }
+  .ewbox-subtext {
+    font-family: Pretendard-Regular;
+    width: 18rem;
+    text-align: start;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 1.5rem;
+    font-style: normal;
+    line-height: 140%;
+    letter-spacing: -0.06rem;
+    opacity: 0.6;
+    margin-top: 1.25rem;
+  }
 `;
 
 const JDBox = styled.div`
@@ -421,10 +418,10 @@ const JDBox = styled.div`
   flex-direction: row;
   margin-top: 6rem;
   margin-bottom: 10rem;
-  .jd_screenshot{
+  .jd_screenshot {
     width: 50%;
   }
-  .jdbox-description-container{
+  .jdbox-description-container {
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -432,26 +429,31 @@ const JDBox = styled.div`
     margin-top: 0;
     margin-left: 5rem;
   }
-  .jdbox-description-keyword{
+  .jdbox-description-keyword {
     width: 9rem;
     display: inline-flex;
     padding: 0.4375rem 1.4375rem;
     justify-content: center;
     margin-top: 0;
   }
-  .jdbox-description-title{
+  .jdbox-description-title {
+    font-family: Pretendard-Bold;
     text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
     width: 28rem;
     font-size: 2.5rem;
     font-style: normal;
-    font-weight: 700;
-    line-height: 140%; 
+    line-height: 140%;
     letter-spacing: -0.1rem;
     margin-top: 2rem;
   }
-  .jdbox-description-subtitle{
-    text-align: start;  
+  .jdbox-description-subtitle {
+    font-family: Pretendard-Regular;
+    font-size: 20px;
+    font-style: normal;
+    line-height: 140%; /* 28px */
+    letter-spacing: -0.8px;
+    text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
     opacity: 0.6;
     margin-top: 1.25rem;
@@ -459,38 +461,38 @@ const JDBox = styled.div`
 `;
 
 const MessageContainer = styled.div`
-    width: 32em;
-    height: 20rem;
-    position: absolute;
-    margin-top: 17rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: 8rem;
-    border-radius: 1.25rem;
-    padding: 3rem 4rem;
-    background: var(--white);
-    .ms-title{
-        text-align: start;
-        width: 26rem;
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 2.5rem;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 140%; 
-        letter-spacing: -0.1rem;
-    }
-    .ms-subtitle{
-        text-align: start;
-        color: ${(props) => props.theme.colors.neutral700};
-        font-size: 1.5rem;
-        width: 26rem;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 140%; /* 2.1rem */
-        letter-spacing: -0.06rem;
-        opacity: 0.6;
-        margin-top: 1.25rem;
-    }
+  width: 32em;
+  height: 20rem;
+  position: absolute;
+  margin-top: 17rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 8rem;
+  border-radius: 1.25rem;
+  padding: 3rem 4rem;
+  background: var(--white);
+  .ms-title {
+    font-family: Pretendard-Bold;
+    text-align: start;
+    width: 26rem;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 2.5rem;
+    font-style: normal;
+    line-height: 140%;
+    letter-spacing: -0.1rem;
+  }
+  .ms-subtitle {
+    font-family: Pretendard-Regular;
+    text-align: start;
+    color: ${(props) => props.theme.colors.neutral700};
+    font-size: 1.5rem;
+    width: 26rem;
+    font-style: normal;
+    line-height: 140%; /* 2.1rem */
+    letter-spacing: -0.06rem;
+    opacity: 0.6;
+    margin-top: 1.25rem;
+  }
 `;

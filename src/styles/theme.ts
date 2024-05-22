@@ -53,43 +53,43 @@ const colors = {
 
 const fonts = {
   headline1: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 36,
     lineHeight: 48,
   }),
   headline2: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 32,
     lineHeight: 36,
   }),
   headline3: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 32,
     lineHeight: 36,
   }),
   title1: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 28,
     lineHeight: 32,
   }),
   title2: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 24,
     lineHeight: 28,
   }),
   title3: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 22,
     lineHeight: 26,
   }),
   title4: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 20,
     lineHeight: 24,
@@ -101,13 +101,13 @@ const fonts = {
     lineHeight: 20,
   }),
   subtitle2: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 18,
     lineHeight: 20,
   }),
   subtitle3: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 600,
     size: 16,
     lineHeight: 20,
@@ -119,7 +119,7 @@ const fonts = {
     lineHeight: 20,
   }),
   subtitle5: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 500,
     size: 14,
     lineHeight: 24,
@@ -173,13 +173,13 @@ const fonts = {
     lineHeight: 14,
   }),
   button1: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 400,
     size: 18,
     lineHeight: 20,
   }),
   button2: FONT({
-    family: "Pretendard-Semibold",
+    family: "Pretendard-SemiBold",
     weight: 400,
     size: 16,
     lineHeight: 20,
