@@ -39,7 +39,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ time, setTime }) => {
       onChange={handleDateChange}
       showTimeSelect
       showTimeSelectOnly
-      timeIntervals={15}
+      timeIntervals={30}
       timeCaption="Time"
       dateFormat="h:mm aa"
     />

@@ -284,6 +284,9 @@ const CancelButton = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border: none;
   color:var(--white);
   background: var(--main-500, #D9D9D9);
@@ -295,6 +298,9 @@ const SaveButton = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border: none;
   margin-left: 1rem;
   color:var(--white);

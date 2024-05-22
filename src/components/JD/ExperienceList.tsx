@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ExpData from "../../services/JD/ExpData";
 import Experience from "./Experience";
 import styled from "styled-components";
 import FillfilterIcon from "../../assets/icons/icon_filter_fill.svg";
@@ -12,7 +11,6 @@ import { ArrowDownThin, ArrowUpThin, Options } from "../../assets";
 import { Popper } from "@mui/material";
 import PopperPagination from "../Experience/PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
-import { myKeywords } from "../../services/Experience/myKeywords";
 import Checkbox from "../common/Checkbox";
 import {
   getAllExperienceList,
@@ -23,7 +21,7 @@ import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
 import { formatDateRange } from "../../pages/JDListPage";
-import { ExperienceDetailType, KeywordType } from "../../types/experience";
+import { KeywordType } from "../../types/experience";
 
 type TabType = "basic" | "my";
 
@@ -39,6 +37,11 @@ type StrongPointAPI = {
 type ExpTagAPI = {
   id: string;
   name: string;
+};
+
+type MyTagAPI = {
+  id: string;
+  name: string | null;
 };
 
 type ContentAPI = {
@@ -69,8 +72,8 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [showDetail, setshowDetail] = useState(false); //경험 상세 보여주기
   const [showTagPopup, setShowTagPopup] = useState(false); // 태그 필터링
   const [searchText, setSearchText] = useState(""); //검색 입력
-  const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
-  const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
+  const [mainTag, setMainTag] = useState<MyTagAPI>({ id: "", name: "" }); // 선택된 상위태그
+  const [subTag, setSubTag] = useState<MyTagAPI>({ id: "", name: "" }); //선택된 하위태그
   const [filterCount, setfilterCount] = useState<number>(-1); //검색된 경험의 숫자, 검색 안된 상태에서는 -1
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
@@ -146,47 +149,12 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       endedAt: "2024-05-23T07:45:23.720832019",
       bookmarked: "OFF",
     },
-    {
-      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
-      title: "경험 제목 3",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2023-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "ON",
-    },
   ]);
   const jdId = useParams().jdId;
 
   useEffect(() => {
     if (jdId) {
-      // getExperienceList(jdId, user.token);
+      //getExperienceList(jdId, user.token);
     }
   }, []);
 
@@ -239,42 +207,38 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 
   //상위태그 하위태그 필터링
   const handleTagSelection = (
-    selectedmainTag: string,
-    selectedsubTag?: string
+    selectedmainTag: MyTagAPI,
+    selectedsubTag?: MyTagAPI
   ): void => {
     setSearchText("");
-    setMainTag(selectedmainTag);
+    setMainTag({ id: selectedmainTag.id, name: selectedmainTag.name });
     if (selectedsubTag) {
-      setSubTag(selectedsubTag);
+      setSubTag({ id: selectedsubTag.id, name: selectedsubTag.name });
       setShowTagPopup(false);
     } else {
-      setSubTag("");
+      setSubTag({ id: "", name: "" });
     }
   };
 
   useEffect(() => {
-    if (mainTag) {
-      console.log("maintag: " + mainTag);
+    if (mainTag.id !== "") {
+      console.log("maintag 아이디: " + mainTag.id);
+      console.log("maintag 이름: " + mainTag.name);
       if (jdId) {
-        getFilteredExperienceList(jdId, mainTag, null, user.token);
+        getFilteredExperienceList(jdId, mainTag.id, null, user.token);
       }
     }
   }, [mainTag]);
 
   useEffect(() => {
-    if (subTag) {
-      console.log("subtag: " + subTag);
+    if (subTag.id !== "") {
+      console.log("subtag 아이디: " + subTag.id);
+      console.log("subtag 이름: " + subTag.name);
       if (jdId) {
-        getFilteredExperienceList(jdId, mainTag, subTag, user.token);
+        getFilteredExperienceList(jdId, mainTag.id, subTag.id, user.token);
       }
     }
   }, [subTag]);
-
-  useEffect(() => {
-    if (searchText) {
-      console.log("search: " + searchText);
-    }
-  }, [searchText]);
 
   //역량키워드 관련 팝업
   const [myKeywordList, setMyKeywordList] = React.useState<KeywordType[]>([]);
@@ -349,9 +313,9 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   );
 
   const bookedData = experienceData.filter((experience) => {
-    // 북마크가 ON인 요소만 필터링
     return experience.bookmarked === "ON";
   });
+
   const filteredBookedData = bookedData.filter((experience) =>
     experience.strongPoints.some((item: KeywordType) => isKeywordChecked(item))
   );
@@ -377,7 +341,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
             </Tab>
           </TabContainer>
           <SearchContainer>
-            {mainTag ? (
+            {mainTag.id !== "" ? (
               <SearchBar value="" readOnly />
             ) : (
               <SearchBar
@@ -386,29 +350,29 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
               />
             )}
             <FilterContainer>
-              {mainTag}
-              {subTag && <img src={ArrowIcon_main} alt="Arrow" />}
-              {subTag && subTag}
-              {mainTag && (
+              {mainTag.name}
+              {subTag.name && <img src={ArrowIcon_main} alt="Arrow" />}
+              {subTag.name && subTag.name}
+              {mainTag.id && (
                 <img
                   src={FilterRemoveIcon}
                   alt="remove"
                   className="deletebtn"
                   onClick={() => {
-                    setMainTag("");
-                    setSubTag("");
+                    setMainTag({ id: "", name: "" });
+                    setSubTag({ id: "", name: "" });
                   }}
                 />
               )}
             </FilterContainer>
             <IconContainer>
               <img
-                src={mainTag ? FillfilterIcon : BlankfilterIcon}
+                src={mainTag.id !== "" ? FillfilterIcon : BlankfilterIcon}
                 alt="filter"
                 onClick={() => {
                   setShowTagPopup(!showTagPopup);
-                  setMainTag("");
-                  setSubTag("");
+                  setMainTag({ id: "", name: "" });
+                  setSubTag({ id: "", name: "" });
                 }}
               />
               <img
@@ -576,7 +540,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 export default ExperienceList;
 
 interface TagPopupProps {
-  onSelect: (mainTag: string, subTag?: string) => void;
+  onSelect: (mainTag: MyTagAPI, subTag?: MyTagAPI) => void;
 }
 
 interface ChildTag {
@@ -630,7 +594,7 @@ const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
           <Tag
             onClick={() => {
               toggleSubTags(tag.id);
-              onSelect(tag.name);
+              onSelect({ id: tag.id, name: tag.name });
             }}
           >
             <img src={ArrowIcon_net} alt="arrow" />
@@ -640,7 +604,12 @@ const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
             tag.childTags.map((child) => (
               <SubTag
                 key={child.id}
-                onClick={() => onSelect(tag.name, child.name)}
+                onClick={() =>
+                  onSelect(
+                    { id: tag.id, name: tag.name },
+                    { id: child.id, name: child.name }
+                  )
+                }
               >
                 <img src={ArrowIcon_net} alt="arrow" />
                 {child.name}
