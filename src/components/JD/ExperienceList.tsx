@@ -22,6 +22,7 @@ import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
 import { formatDateRange } from "../../pages/JDListPage";
 import { KeywordType } from "../../types/experience";
+import { getKeywords } from "../../services/Experience/keywordApi";
 
 type TabType = "basic" | "my";
 
@@ -80,6 +81,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const user = getCookie("user");
   const [experienceData, setExperienceData] = useState<Experiences>([]);
   const jdId = useParams().jdId;
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     if (jdId) {
@@ -105,10 +107,10 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     token: string
   ) => {
     try {
+      setSearching(true);
       const response = await searchTextExperienceList(jdId, searchText, token);
       console.log(response);
       setExperienceData(response.data.experiences);
-      console.log(experienceData);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -129,6 +131,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
         token
       );
       console.log(response);
+      setExperienceData(response.data.experiences);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -152,8 +155,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 
   useEffect(() => {
     if (mainTag.id !== "") {
-      console.log("maintag 아이디: " + mainTag.id);
-      console.log("maintag 이름: " + mainTag.name);
       if (jdId) {
         getFilteredExperienceList(jdId, mainTag.id, null, user.token);
       }
@@ -162,8 +163,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 
   useEffect(() => {
     if (subTag.id !== "") {
-      console.log("subtag 아이디: " + subTag.id);
-      console.log("subtag 이름: " + subTag.name);
       if (jdId) {
         getFilteredExperienceList(jdId, mainTag.id, subTag.id, user.token);
       }
@@ -187,7 +186,6 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     firstBasicKeywordIndex,
     lastBasicKeywordIndex
   );
-
   // My 역량 키워드 페이지네이션
   const [currentMyKeywordPage, setCurrentMyKeywordPage] = React.useState(1);
   const firstMyKeywordIndex = (currentMyKeywordPage - 1) * keywordsPerPage;
@@ -198,9 +196,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   );
 
   // 체크된 역량 키워드 리스트
-  const [checkedKeywords, setCheckedKeywords] = React.useState<KeywordType[]>(
-    []
-  );
+  const [checkedKeywords, setCheckedKeywords] = useState<KeywordType[]>([]);
 
   // 키워드 체크박스 체크 여부
   const isKeywordChecked = (item: KeywordType) => {
@@ -231,6 +227,39 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (selectedTab === "경험검색" && (searching || mainTag.id !== "")) {
+      if (checkedKeywords.length !== 0) {
+        setfilterCount(filteredExpData.length);
+      } else {
+        setfilterCount(experienceData.length);
+      }
+    } else if (selectedTab === "북마크" && (searching || mainTag.id !== "")) {
+      if (checkedKeywords.length !== 0) {
+        setfilterCount(filteredBookedData.length);
+      } else {
+        setfilterCount(bookedData.length);
+      }
+    } else if (searchText === "" && mainTag.id === "") {
+      setfilterCount(-1);
+    }
+  }, [searching, mainTag, subTag, selectedTab, experienceData]);
+
+  useEffect(() => {
+    if (searchText === "") {
+      setSearching(false);
+    }
+  }, [searchText]);
+
+  // My 역량 키워드 조회
+  useEffect(() => {
+    if (user?.token) {
+      getKeywords(user?.token)
+        .then((res) => setMyKeywordList(res.data.strongPoints))
+        .catch((err) => console.log(err));
+    }
+  }, [user?.token]);
 
   // 역량 키워드 클릭 함수
   const handleTagPopper = (event: React.MouseEvent<HTMLElement>) => {
