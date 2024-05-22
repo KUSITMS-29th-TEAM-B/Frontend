@@ -5,7 +5,7 @@ import TicketContent from "../assets/images/ticketContent.svg";
 import { GoogleIcon, KakaoIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { getCookie, removeCookie } from "../services/cookie";
-import { getUserInfo } from "../services/user";
+import { getUserInfo, logout } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
@@ -42,6 +42,9 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handlelogout = () => {
+    if (user?.token && user?.refreshToken) {
+      logout(user?.token, user?.refreshToken);
+    }
     removeCookie("user").then(() => nav(`/sign-in`));
   };
 

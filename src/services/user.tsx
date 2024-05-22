@@ -9,8 +9,14 @@ export const login = async (loginType: string, accessToken: string) => {
 };
 
 // 로그아웃
-export const logout = async (refreshToken: string) => {
-  return await client.delete(`/api/auth/logout`);
+export const logout = async (token: string, refreshToken: string) => {
+  return await client.delete(`/api/auth/logout`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      RefreshToken: `Bearer ${refreshToken}`,
+      withCredentials: true,
+    },
+  });
 };
 
 // 회원가입
