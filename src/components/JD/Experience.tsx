@@ -6,7 +6,7 @@ import { Question } from "../../types/type";
 import bookmarkFillIcon from "../../assets/icons/icon_bookmark_fill.svg";
 import bookmarkBlankIcon from "../../assets/icons/icon_bookmark_blank.svg";
 import dayjs from "dayjs";
-import { KeywordType, QuestionType } from "../../types/experience";
+import { QuestionType } from "../../types/experience";
 import { bookmarkpatch } from "../../services/JD/bookmarkApi";
 import { getCookie } from "../../services/cookie";
 import { useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ interface ExpProps {
   detail?: QuestionType[];
   checkedKeywords?: string[];
   onClick?: () => void;
+  handleApi?: (jdid: string, token: string) => void;
 }
 
 const Experience: React.FC<ExpProps> = ({
@@ -42,6 +43,7 @@ const Experience: React.FC<ExpProps> = ({
   detail,
   checkedKeywords,
   onClick,
+  handleApi,
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
   const [localbookmark, setLocalbookmark] = useState(bookmark);
@@ -68,6 +70,9 @@ const Experience: React.FC<ExpProps> = ({
     try {
       const response = await bookmarkpatch(token, jobId, expId);
       console.log(response);
+      if (jdId && user.token) {
+        handleApi!(jdId, user.token);
+      }
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));

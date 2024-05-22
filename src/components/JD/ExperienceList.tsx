@@ -468,6 +468,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                       (item: KeywordType) => item.name
                     )}
                     onClick={() => setshowDetail(true)}
+                    handleApi={getExperienceList}
                   />
                 ))}
               </ScrollDiv>
