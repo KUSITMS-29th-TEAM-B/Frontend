@@ -288,7 +288,7 @@ const ExperienceEditPage = () => {
     type: TabType
   ) => {
     if (e.target) {
-      if (e.target.checked) {
+      if (e.target.checked && checkedKeywords.length < 5) {
         const keywordId = e.target.value;
         const selectedKeyword = (
           type === "basic" ? basicKeywords : myKeywordList
@@ -648,6 +648,11 @@ const ExperienceEditPage = () => {
                         onDelete={() => handleDeleteTag(item.id)}
                       />
                     ))}
+                    {checkedKeywords.length >= 5 ? (
+                      <div className="warning-text">
+                        최대 5개까지만 키워드를 선택할 수 있어요.
+                      </div>
+                    ) : null}
                   </div>
                 </KeywordSelect>
               </AccordionDetails>
@@ -891,6 +896,12 @@ const KeywordSelect = styled.div`
     display: flex;
     flex-direction: row;
     gap: 8px;
+    flex-wrap: wrap;
+  }
+  .warning-text {
+    margin-left: 1rem;
+    ${(props) => props.theme.fonts.cap2};
+    color: red;
   }
 `;
 
