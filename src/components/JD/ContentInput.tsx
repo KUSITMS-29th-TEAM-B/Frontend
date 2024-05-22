@@ -49,7 +49,7 @@ const Content = styled.textarea`
     outline: none;
     resize: none;
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 14px;
     font-size: 0.8125rem;
     font-style: normal;
     font-weight: 400;

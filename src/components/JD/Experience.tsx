@@ -7,6 +7,9 @@ import bookmarkFillIcon from "../../assets/icons/icon_bookmark_fill.svg";
 import bookmarkBlankIcon from "../../assets/icons/icon_bookmark_blank.svg";
 import dayjs from "dayjs";
 import { KeywordType, QuestionType } from "../../types/experience";
+import { bookmarkpatch } from "../../services/JD/bookmarkApi";
+import { getCookie } from "../../services/cookie";
+import { useParams } from "react-router-dom";
 
 interface ExpProps {
   type?: "card" | "section";
@@ -42,7 +45,8 @@ const Experience: React.FC<ExpProps> = ({
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
   const [localbookmark, setLocalbookmark] = useState(bookmark);
-
+  const user = getCookie("user");
+  const jdId = useParams().jdId;
   // 카드 타입, 섹션 타입 구분
   const isSection = type === "section";
 
@@ -56,10 +60,26 @@ const Experience: React.FC<ExpProps> = ({
     }
   };
 
+  const handleBookmarkPost = async (
+    token: string,
+    jobId: string,
+    expId: string
+  ) => {
+    try {
+      const response = await bookmarkpatch(token, jobId, expId);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   const handleBookmarkClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
+    if (id && jdId) {
+      handleBookmarkPost(user.token, jdId, id.toString());
+    }
     setLocalbookmark(!localbookmark);
-    //북마크 요청 api
   };
   return (
     <StyledContainer

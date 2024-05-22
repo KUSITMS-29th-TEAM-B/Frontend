@@ -18,12 +18,12 @@ const StyledTimePicker = styled(DatePicker)`
 `;
 
 type TimePickerProps = {
-  time: string;
+  time: string | null;
   setTime: (time: string) => void;
 };
 
 const TimePicker: React.FC<TimePickerProps> = ({ time, setTime }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -39,7 +39,7 @@ const TimePicker: React.FC<TimePickerProps> = ({ time, setTime }) => {
       onChange={handleDateChange}
       showTimeSelect
       showTimeSelectOnly
-      timeIntervals={15}
+      timeIntervals={30}
       timeCaption="Time"
       dateFormat="h:mm aa"
     />

@@ -12,7 +12,7 @@ import { JobAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
 
 const JDPlusPage: React.FC = () => {
-  const [selectedTime, setSelectedTime] = useState<string>("10:00");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
   const user = getCookie("user");
@@ -48,14 +48,15 @@ const JDPlusPage: React.FC = () => {
   // endTime 계산
   const getEndTime = () => {
     if (!jobData.endedAt) return null; // endDate가 null이면 null 반환
+    if (selectedTime) {
+      const hours = parseInt(selectedTime.split(":")[0]);
+      const minutes = parseInt(selectedTime.split(":")[1]);
 
-    const hours = parseInt(selectedTime.split(":")[0]);
-    const minutes = parseInt(selectedTime.split(":")[1]);
-
-    const endTime = new Date(jobData.endedAt); // endDate를 기반으로 새 Date 객체 생성
-    endTime.setHours(hours, minutes, 0); // 시간과 분 설정
-    console.log("최종시간은", endTime);
-    return endTime;
+      const endTime = new Date(jobData.endedAt); // endDate를 기반으로 새 Date 객체 생성
+      endTime.setHours(hours, minutes, 0); // 시간과 분 설정
+      console.log("최종시간은", endTime);
+      return endTime;
+    }
   };
   const endTime = getEndTime();
 
@@ -79,7 +80,6 @@ const JDPlusPage: React.FC = () => {
     } else if (jobData.endedAt && date < jobData.endedAt) {
       setJobData({ ...jobData, startAt: date });
     } else {
-      alert("시작 날짜는 끝나는 날짜보다 앞이여야합니다.");
       setJobData({ ...jobData, startAt: jobData.endedAt });
     }
   };
@@ -90,8 +90,6 @@ const JDPlusPage: React.FC = () => {
     } else if (jobData.startAt && jobData.startAt) {
       setJobData({ ...jobData, endedAt: date });
     } else {
-      alert("끝나는 날짜는 시작 날짜보다 뒤여야합니다.");
-
       setJobData({ ...jobData, endedAt: jobData.startAt });
     }
   };
@@ -192,10 +190,7 @@ const JDPlusPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="datepicker">
-                    <OneDatePick
-                      date={new Date()}
-                      setDate={handleSDateChange}
-                    />
+                    <OneDatePick date={null} setDate={handleSDateChange} />
                   </div>
                 )}
                 <div style={{ marginLeft: 20 }}>~</div>
@@ -208,13 +203,11 @@ const JDPlusPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="datepicker">
-                    <OneDatePick
-                      date={new Date()}
-                      setDate={handleEDateChange}
-                    />
+                    <OneDatePick date={null} setDate={handleEDateChange} />
                   </div>
                 )}
                 <img src={ClockIcon} alt="clock" style={{ marginLeft: 20 }} />
+
                 <div className="datepicker">
                   <TimeSelector
                     time={selectedTime}
@@ -291,6 +284,9 @@ const CancelButton = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border: none;
   color:var(--white);
   background: var(--main-500, #D9D9D9);
@@ -302,6 +298,9 @@ const SaveButton = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
   border: none;
   margin-left: 1rem;
   color:var(--white);
