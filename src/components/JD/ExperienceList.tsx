@@ -78,83 +78,12 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [experienceData, setExperienceData] = useState<Experiences>([
-    {
-      id: "fa0a5813-c879-432d-b276-24364847534c",
-      title: "경험 제목1 ",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2024-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "ON",
-    },
-    {
-      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
-      title: "경험 제목 2",
-      parentTag: {
-        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
-        name: "상위 태그 이름",
-      },
-      childTag: {
-        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
-        name: "하위 태그 이름",
-      },
-      strongPoints: [
-        {
-          id: "fdbf03bf-c1a3-4442-997e-467605868052",
-          name: "역량 키워드 이름 1",
-        },
-        {
-          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
-          name: "역량 키워드 이름 2",
-        },
-      ],
-      contents: [
-        {
-          question: "질문1",
-          answer: "답변1",
-        },
-        {
-          question: "질문2",
-          answer: "답변2",
-        },
-      ],
-      startedAt: "2023-05-22T07:45:23.720822702",
-      endedAt: "2024-05-23T07:45:23.720832019",
-      bookmarked: "OFF",
-    },
-  ]);
+  const [experienceData, setExperienceData] = useState<Experiences>([]);
   const jdId = useParams().jdId;
 
   useEffect(() => {
     if (jdId) {
-      //getExperienceList(jdId, user.token);
+      getExperienceList(jdId, user.token);
     }
   }, []);
 
@@ -163,6 +92,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     try {
       const response = await getAllExperienceList(jdId, token);
       console.log(response);
+      setExperienceData(response.data.experiences);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -591,7 +521,7 @@ const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
     <PopupContainer>
       {tagList.map((tag) => (
         <div key={tag.id}>
-          <Tag
+          <TagWrapper
             onClick={() => {
               toggleSubTags(tag.id);
               onSelect({ id: tag.id, name: tag.name });
@@ -599,7 +529,7 @@ const TagPopup: React.FC<TagPopupProps> = ({ onSelect }) => {
           >
             <img src={ArrowIcon_net} alt="arrow" />
             {tag.name}
-          </Tag>
+          </TagWrapper>
           {visibleSubTag === tag.id &&
             tag.childTags.map((child) => (
               <SubTag
@@ -636,7 +566,7 @@ const PopupContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.neutral200};
 `;
 
-const Tag = styled.div`
+const TagWrapper = styled.div`
   cursor: pointer;
   display: flex;
   padding: 0.75rem 0.5rem;
@@ -647,7 +577,7 @@ const Tag = styled.div`
   }
 `;
 
-const SubTag = styled(Tag)`
+const SubTag = styled(TagWrapper)`
   padding-left: 20px;
 `;
 
