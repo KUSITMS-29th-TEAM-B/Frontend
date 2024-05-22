@@ -22,6 +22,7 @@ import {
 import { getCookie } from "../../services/cookie";
 import { getAllTags } from "../../services/JD/tagApi";
 import { useParams } from "react-router-dom";
+import { formatDateRange } from "../../pages/JDListPage";
 
 type TabType = "basic" | "my";
 
@@ -39,18 +40,24 @@ type ExpTagAPI = {
   name: string;
 };
 
-type Experience = {
+type ContentAPI = {
+  question: string;
+  answer: string;
+};
+
+type ExperienceAPI = {
   id: string;
   title: string;
-  parentTag: Tag;
-  childTag: Tag;
+  parentTag: ExpTagAPI;
+  childTag: ExpTagAPI;
   strongPoints: StrongPointAPI[];
+  contents: ContentAPI[];
   startedAt: string;
   endedAt: string;
   bookmarked: "ON" | "OFF";
 };
 
-type Experiences = Experience[];
+type Experiences = ExperienceAPI[];
 
 const ExperienceList: React.FC<ExperienceListProps> = ({
   showBookmarksOnly,
@@ -64,11 +71,81 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const [mainTag, setMainTag] = useState<string>(""); // 선택된 상위태그
   const [subTag, setSubTag] = useState<string>(""); //선택된 하위태그
   const [filterCount, setfilterCount] = useState<number>(-1); //검색된 경험의 숫자, 검색 안된 상태에서는 -1
-  const bookmarkData = ExpData.filter((post) => post.bookmark); // 북마크된 데이터들
   const [keywordTabOption, setKeywordTabOption] =
     React.useState<TabType>("basic");
   const user = getCookie("user");
-  const [experienceData, setExperienceData] = useState<Experiences>([]);
+  const [experienceData, setExperienceData] = useState<Experiences>([
+    {
+      id: "fa0a5813-c879-432d-b276-24364847534c",
+      title: "경험 제목1 ",
+      parentTag: {
+        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
+        name: "상위 태그 이름",
+      },
+      childTag: {
+        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
+        name: "하위 태그 이름",
+      },
+      strongPoints: [
+        {
+          id: "fdbf03bf-c1a3-4442-997e-467605868052",
+          name: "역량 키워드 이름 1",
+        },
+        {
+          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
+          name: "역량 키워드 이름 2",
+        },
+      ],
+      contents: [
+        {
+          question: "질문1",
+          answer: "답변1",
+        },
+        {
+          question: "질문2",
+          answer: "답변2",
+        },
+      ],
+      startedAt: "2024-05-22T07:45:23.720822702",
+      endedAt: "2024-05-23T07:45:23.720832019",
+      bookmarked: "ON",
+    },
+    {
+      id: "7694c6e7-b7a8-4ee8-a698-67c345932663",
+      title: "경험 제목 2",
+      parentTag: {
+        id: "c191d753-0c59-42eb-8245-79ee5c9c5797",
+        name: "상위 태그 이름",
+      },
+      childTag: {
+        id: "860c446b-a021-43d5-9da6-5034a5bdaee7",
+        name: "하위 태그 이름",
+      },
+      strongPoints: [
+        {
+          id: "fdbf03bf-c1a3-4442-997e-467605868052",
+          name: "역량 키워드 이름 1",
+        },
+        {
+          id: "096c3d2e-4073-4724-9a15-c1d6617c63a1",
+          name: "역량 키워드 이름 2",
+        },
+      ],
+      contents: [
+        {
+          question: "질문1",
+          answer: "답변1",
+        },
+        {
+          question: "질문2",
+          answer: "답변2",
+        },
+      ],
+      startedAt: "2023-05-22T07:45:23.720822702",
+      endedAt: "2024-05-23T07:45:23.720832019",
+      bookmarked: "OFF",
+    },
+  ]);
   const jdId = useParams().jdId;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -97,7 +174,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
 
   useEffect(() => {
     if (jdId) {
-      //   getExperienceList(jdId, user.token);
+      // getExperienceList(jdId, user.token);
     }
   }, []);
 
@@ -120,6 +197,8 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
     try {
       const response = await searchTextExperienceList(jdId, searchText, token);
       console.log(response);
+      setExperienceData(response.data.experiences);
+      console.log(experienceData);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -166,12 +245,24 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   };
 
   // 역량 키워드 필터된 경험 데이터, 북마크
-  const filteredExpData = ExpData.filter((item) =>
-    item.tags.some((tag) => checkedKeywords.includes(tag))
-  );
-  const filteredbookedData = bookmarkData.filter((item) =>
-    item.tags.some((tag) => checkedKeywords.includes(tag))
-  );
+  const filteredExpData = experienceData.filter((experience) => {
+    const strongPointNames = experience.strongPoints.map((point) => point.name);
+    const matchedKeywords = strongPointNames.filter((name) =>
+      checkedKeywords.includes(name)
+    );
+    return matchedKeywords.length > 0;
+  });
+  const bookedData = experienceData.filter((experience) => {
+    // 북마크가 ON인 요소만 필터링
+    return experience.bookmarked === "ON";
+  });
+  const filteredBookedData = experienceData.filter((experience) => {
+    const strongPointNames = experience.strongPoints.map((point) => point.name);
+    const matchedKeywords = strongPointNames.filter((name) =>
+      checkedKeywords.includes(name)
+    );
+    return experience.bookmarked === "ON" && matchedKeywords.length > 0;
+  });
 
   //상위태그 하위태그 필터링
   const handleTagSelection = (
@@ -377,39 +468,40 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
           {selectedTab === "경험검색" ? (
             <>
               <ScrollDiv>
-                {(checkedKeywords.length === 0 ? ExpData : filteredExpData).map(
-                  (post, index: number) => (
-                    <Experience
-                      id={post.id}
-                      key={index}
-                      title={post.title}
-                      maintag={post.mainTag}
-                      subtag={post.subTag}
-                      tags={post.tags}
-                      period={post.period}
-                      bookmark={post.bookmark}
-                      checkedKeywords={checkedKeywords}
-                      onClick={() => setshowDetail(true)}
-                    />
-                  )
-                )}
+                {(checkedKeywords.length === 0
+                  ? experienceData
+                  : filteredExpData
+                ).map((post, index: number) => (
+                  <Experience
+                    id={post.id}
+                    key={index}
+                    title={post.title}
+                    maintag={post.parentTag.name}
+                    subtag={post.childTag.name}
+                    tags={post.strongPoints.map((point) => point.name)}
+                    period={formatDateRange(post.startedAt, post.endedAt)}
+                    bookmark={post.bookmarked === "ON" ? true : false}
+                    checkedKeywords={checkedKeywords}
+                    onClick={() => setshowDetail(true)}
+                  />
+                ))}
               </ScrollDiv>
             </>
           ) : (
             <ScrollDiv>
               {(checkedKeywords.length === 0
-                ? bookmarkData
-                : filteredbookedData
+                ? bookedData
+                : filteredBookedData
               ).map((post, index: number) => (
                 <Experience
                   id={post.id}
                   key={index}
                   title={post.title}
-                  maintag={post.mainTag}
-                  subtag={post.subTag}
-                  tags={post.tags}
-                  period={post.period}
-                  bookmark={post.bookmark}
+                  maintag={post.parentTag.name}
+                  subtag={post.childTag.name}
+                  tags={post.strongPoints.map((point) => point.name)}
+                  period={formatDateRange(post.startedAt, post.endedAt)}
+                  bookmark={post.bookmarked === "ON" ? true : false}
                   checkedKeywords={checkedKeywords}
                   onClick={() => setshowDetail(true)}
                 />
