@@ -541,7 +541,7 @@ const ExperienceWritePage = () => {
                       ))}
                     </div>
                   ) : (
-                    "최대 5개까지 추가 가능 (ex) 커뮤니케이션, 협업 등)"
+                    "최대 5개까지 추가 가능 (ex. 커뮤니케이션, 협업 등)"
                   )}
                 </KeywordInput>
               </AccordionSummary>
