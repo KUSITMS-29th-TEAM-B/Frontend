@@ -141,7 +141,7 @@ const ExperienceEditPage = () => {
       const subTagId = subTagRes.data.id;
 
       experienceData = {
-        ...expData,
+        ...experienceData,
         parentTagId: primeTagId,
         childTagId: subTagId,
       };
@@ -155,19 +155,20 @@ const ExperienceEditPage = () => {
       );
       const subTagId = subTagRes.data.id;
       experienceData = {
-        ...expData,
+        ...experienceData,
         childTagId: subTagId,
       };
     }
-    // 새로운 역량 키워드 있을 경우
+
+    const originStrongPointIds = checkedKeywords
+      .filter((item) => item.id !== item.name)
+      .map((item) => item.id);
     const newKeywordsNames = checkedKeywords
       .filter((item) => item.id === item.name)
       .map((item) => ({ name: item.name }));
-    if (newKeywordsNames.length !== 0) {
-      const originStrongPointIds = checkedKeywords
-        .filter((item) => item.id !== item.name)
-        .map((item) => item.id);
 
+    // 새로운 역량 키워드 있을 경우
+    if (newKeywordsNames.length !== 0) {
       const newStrongPointsRes = await postKeyword(
         newKeywordsNames,
         user?.token
@@ -180,14 +181,19 @@ const ExperienceEditPage = () => {
         ...newStrongPointIds,
       ];
       experienceData = {
-        ...expData,
+        ...experienceData,
         strongPointIds: totalStrongPointIds,
+      };
+    } else {
+      experienceData = {
+        ...experienceData,
+        strongPointIds: originStrongPointIds,
       };
     }
     // 질문 수정
     if (expId) {
       patchExperience(expId, experienceData, user?.token)
-        .then((res) => {
+        .then(() => {
           openModal();
         })
         .catch((err) => console.log(err));
@@ -705,7 +711,7 @@ const ExperienceEditPage = () => {
             >
               <ArrowLeft />
             </button>
-            경험 작성
+            경험 수정
           </div>
           <CustomButton onClick={handleSaveExperience}>저장</CustomButton>
         </TopContainer>
@@ -723,12 +729,12 @@ const ExperienceEditPage = () => {
         image={<img src={airplaneImg} alt="airplane" />}
         title={
           <>
-            새로운 경험 작성이
+            경험 수정이
             <br />
             완료되었어요!
           </>
         }
-        buttons={["작성된 경험 확인하기"]}
+        buttons={["경험 확인하기"]}
         onConfirm={() => navigate(`/experience/detail/${expId}`)}
         isOpen={isModalOpen}
         onClose={closeModal}
