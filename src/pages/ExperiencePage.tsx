@@ -20,6 +20,8 @@ import React from "react";
 import warningImg from "../assets/images/warningIcon.png";
 import { getCookie } from "../services/cookie";
 import { deleteTag } from "../services/Experience/tagApi";
+import { useSubTagsQuery } from "../components/hooks/useSubTagsQuery";
+import { useExperienceYearsQuery } from "../components/hooks/useExperienceYearsQuery";
 
 const ExperiencePage = () => {
   const user = getCookie("user");
@@ -29,6 +31,13 @@ const ExperiencePage = () => {
   const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
   const [selectedDeleteTag, setSelectedDeleteTag] =
     useRecoilState(deleteTagState);
+  const { refetch: refetchSubTags } = useSubTagsQuery(
+    selectedYear,
+    selectedPrimeTag?.id,
+    user?.token
+  );
+  const { data: allYearsData, refetch: refetchAllYears } =
+    useExperienceYearsQuery(user?.token);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -44,12 +53,32 @@ const ExperiencePage = () => {
   const handleDelete = () => {
     if (selectedDeleteTag && user?.token) {
       deleteTag(selectedDeleteTag.id, user?.token).then((res) => {
-        if (selectedDeleteTag.id === selectedPrimeTag?.id) {
-          setSelectedPrimeTag({ id: "더보기", name: "더보기" });
-        } else if (selectedDeleteTag.id === selectedSubTag?.id) {
-          setSelectedSubTag(null);
+        if (allYearsData) {
+          const { yearTagInfos } = allYearsData;
+          const selectedYearPrimeTags = yearTagInfos.filter(
+            (item) => item.year === selectedYear
+          )[0].tags;
+          console.log("ggg", selectedYearPrimeTags);
+          // 선택된 상위태그가 삭제될 경우
+          if (selectedDeleteTag.id === selectedPrimeTag?.id) {
+            // 상위태그 1개만 있는 경우
+            if (selectedYearPrimeTags.length <= 1) {
+              setSelectedYear(null);
+            }
+            setSelectedPrimeTag(null);
+            // // 상위태그가 2개 이상 있는 경우 => 다음 상위 태그 선택
+            // else {
+            //   setSelectedPrimeTag(selectedYearPrimeTags[0]);
+            // }
+          }
+          // 선택된 하위태그가 삭제될 경우
+          else if (selectedDeleteTag.id === selectedSubTag?.id) {
+            setSelectedSubTag(null);
+          }
+          refetchSubTags();
+          refetchAllYears();
+          closeDeleteModal();
         }
-        closeDeleteModal();
       });
     }
   };

@@ -34,8 +34,6 @@ import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
 import { useNavigate } from "react-router-dom";
 import {
-  deleteTag,
-  getPrimeTagSubTags,
   getPrimeTagYears,
 } from "../../services/Experience/tagApi";
 import { getCookie } from "../../services/cookie";
@@ -47,6 +45,7 @@ import {
 } from "../../types/experience";
 import { getExperienceList } from "../../services/Experience/experienceApi";
 import { getKeywords } from "../../services/Experience/keywordApi";
+import { useSubTagsQuery } from "../hooks/useSubTagsQuery";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {
@@ -59,9 +58,16 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useRecoilState(yearState);
   const [isDelete, setIsDelete] = useRecoilState(deleteState);
-  const [selectedDeleteTag, setSelectedDeleteTag] = useRecoilState(deleteTagState);
+  const [selectedDeleteTag, setSelectedDeleteTag] =
+    useRecoilState(deleteTagState);
   const [selectedPrimeTag, setSelectedPrimeTag] = useRecoilState(primeTagState);
   const [selectedSubTag, setSelectedSubTag] = useRecoilState(subTagState);
+
+  const { data: subTagsData, isSuccess: isSubTagsSuccess } = useSubTagsQuery(
+    selectedYear,
+    selectedPrimeTag?.id,
+    user?.token
+  );
   const [selectedQ, setSelectedQ] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false); // 질문 아코디언 관리
   const [keywordTabOption, setKeywordTabOption] =
@@ -188,21 +194,21 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
 
   // 상위태그 내 하위태그 목록 조회 (메뉴)
   React.useEffect(() => {
-    if (selectedYear && selectedPrimeTag && user?.token) {
-      getPrimeTagSubTags(selectedYear, selectedPrimeTag.id, user?.token).then(
-        (res) => {
-          const { totalExperienceCount, tagInfos } = res.data;
-          setTotalExpCount(totalExperienceCount);
-          setSubTagMenus(tagInfos);
-          setSelectedSubTag(null);
-        }
-      );
+    if (isSubTagsSuccess && subTagsData) {
+      const { totalExperienceCount, tagInfos } = subTagsData;
+      setTotalExpCount(totalExperienceCount);
+      setSubTagMenus(tagInfos);
+      setSelectedSubTag(null);
+      // 하위 태그 목록이 없을 경우 사이드 탭 닫히는 로직
+      if (tagInfos.length === 0) {
+        setSelectedPrimeTag(null);
+      }
     }
-  }, [selectedYear, selectedPrimeTag, user?.token]);
+  }, [isSubTagsSuccess, subTagsData]);
 
   // 상위태그 연도 리스트 조회
   React.useEffect(() => {
-    if (selectedPrimeTag && user?.token) {
+    if (selectedPrimeTag && selectedPrimeTag.id !== "더보기" && user?.token) {
       getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) =>
         setPrimeTagYears(res.data.years)
       );

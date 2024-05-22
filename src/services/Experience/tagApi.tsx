@@ -74,7 +74,7 @@ export const getPrimeTagSubTags = async (
   });
 };
 
-// 연도 내 전체 상위 태그 정보 조회
+// 연도 내 전체 상위 태그 정보 조회 (더보기 조회)
 export const getYearAllPrimeTags = async (year: number, token: string) => {
   return await client.get(`/api/tags?year=${year}`, {
     headers: {
