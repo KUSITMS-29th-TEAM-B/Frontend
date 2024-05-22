@@ -67,7 +67,7 @@ const SignInPage = () => {
           code: codeResponse.code,
           client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
           client_secret: process.env.REACT_APP_GOOGLE_CLIENT_SECRET,
-          redirect_uri: "http://localhost:3000",
+          redirect_uri: "https://gangflight.netlify.app",
           grant_type: "authorization_code",
         };
         axios

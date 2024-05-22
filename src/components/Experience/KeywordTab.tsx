@@ -33,9 +33,7 @@ import Experience from "../JD/Experience";
 import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
 import { useNavigate } from "react-router-dom";
-import {
-  getPrimeTagYears,
-} from "../../services/Experience/tagApi";
+import { getPrimeTagYears } from "../../services/Experience/tagApi";
 import { getCookie } from "../../services/cookie";
 import {
   ExperienceDetailType,
@@ -423,7 +421,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                 총&nbsp;
                 <div className="accent">
                   {checkedKeywords.length === 0
-                    ? ExpData.length
+                    ? experiences?.length
                     : filteredExpData.length}
                   개
                 </div>
