@@ -82,7 +82,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
         return index * 250 + 250;
       }
       if (index > hoveredIndex) {
-        return index * 250 + distance;
+        return index * 250 + distance + 100;
       }
     }
     if (hoveredYear) {
@@ -91,7 +91,7 @@ const YearList = ({ width, openDeleteModal }: YearListProps) => {
         return index * 250 + distance;
       }
       if (index === hoveredIndex) {
-        return index * 250 + 70;
+        return index * 250 + distance;
       }
     }
     if (selectedYear) {
