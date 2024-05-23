@@ -47,24 +47,10 @@ const Experience: React.FC<ExpProps> = ({
   handleApi,
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
-  const [localbookmark, setLocalbookmark] = useState(bookmark);
   const user = getCookie("user");
   const jdId = useParams().jdId;
   // 카드 타입, 섹션 타입 구분
   const isSection = type === "section";
-
-  const getExperienceList = async (jdId: string, token: string) => {
-    try {
-      const response = await getAllExperienceList(jdId, token);
-      //console.log(response);
-      if (handleApi) {
-        handleApi(jdId, user.token);
-      }
-    } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
-    }
-  };
 
   // 경험의 선택된 질문 답변
   const answer = detail?.[(question || 1) - 1]?.answer;
@@ -82,7 +68,7 @@ const Experience: React.FC<ExpProps> = ({
     expId: string
   ) => {
     try {
-      const response = await bookmarkpatch(token, jobId, expId);
+      await bookmarkpatch(token, jobId, expId);
       if (jdId && user.token) {
         handleApi!(jdId, user.token);
       }
@@ -97,7 +83,6 @@ const Experience: React.FC<ExpProps> = ({
     if (id && jdId) {
       handleBookmarkPost(user.token, jdId, id.toString());
     }
-    setLocalbookmark(!localbookmark);
   };
   return (
     <StyledContainer
@@ -119,7 +104,7 @@ const Experience: React.FC<ExpProps> = ({
         </TagContainer>
         {bookmark !== undefined && (
           <div onClick={handleBookmarkClick}>
-            {localbookmark ? (
+            {bookmark ? (
               <img src={bookmarkFillIcon} alt="bookmarkfill" />
             ) : (
               <img src={bookmarkBlankIcon} alt="bookmarkblank" />
