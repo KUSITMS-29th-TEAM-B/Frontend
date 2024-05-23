@@ -104,6 +104,7 @@ const ExperienceDetailPage = () => {
                     theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                   }
                   style={{
+                    fontSize: "16px",
                     border: "none",
                     borderRadius: "12px",
                     background: `${theme.colors.neutral50}`,
