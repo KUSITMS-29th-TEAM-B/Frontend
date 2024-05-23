@@ -69,7 +69,6 @@ const Experience: React.FC<ExpProps> = ({
   ) => {
     try {
       const response = await bookmarkpatch(token, jobId, expId);
-      console.log(response);
       if (jdId && user.token) {
         handleApi!(jdId, user.token);
       }

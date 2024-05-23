@@ -261,6 +261,10 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   }, [searchText]);
 
   useEffect(() => {
+    setSearchText("");
+    setMainTag({ id: "", name: "" });
+    setSubTag({ id: "", name: "" });
+    setCheckedKeywords([]);
     if (jdId) {
       getExperienceList(jdId, user.token);
     }
