@@ -108,7 +108,7 @@ const JDPlusPage: React.FC = () => {
     if (!jobData.endedAt) return null;
     if (selectedTime) {
       const endTime = new Date(jobData.endedAt);
-      const [hours, minutes] = selectedTime.split(":");
+      let [hours, minutes] = selectedTime.split(":");
       endTime.setHours(parseInt(hours, 10) + 9, parseInt(minutes, 10), 0, 0);
       setJobData({ ...jobData, endedAt: endTime });
     }
