@@ -76,7 +76,7 @@ const MainWrapper = styled.div`
     .maintext {
         color: var(--neutral-700, #343A5D);
         text-align: center;
-        font-size: 1.375rem;
+        font-size: 22px;
         font-style: normal;
         font-weight: 600;
         line-height: 1.625rem;
@@ -86,17 +86,13 @@ const MainWrapper = styled.div`
     .subtext {
         color: var(--neutral-500, #A6AAC0);
         text-align: center;
-        font-size: 1rem;
+        font-size: 16px;
         font-style: normal;
-        font-weight: 500;
-        line-height: 1.25rem;
-        letter-spacing: -0.02rem;
+        font-weight: 400;
+        line-height: 22px; 
         margin-top: 10px;
-        span{
-            color: var(--main-500, #7D82FF);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+        letter-spacing: -0.64px;
+        margin-bottom: 40px;
     }
 `;
 
