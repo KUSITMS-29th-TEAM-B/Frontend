@@ -23,6 +23,7 @@ import { useParams } from "react-router-dom";
 import { formatDateRange } from "../../pages/JDListPage";
 import { KeywordType } from "../../types/experience";
 import { getKeywords } from "../../services/Experience/keywordApi";
+import { select } from "d3";
 
 type TabType = "basic" | "my";
 
@@ -258,6 +259,12 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
       setSearching(false);
     }
   }, [searchText]);
+
+  useEffect(() => {
+    if (jdId) {
+      getExperienceList(jdId, user.token);
+    }
+  }, [selectedTab]);
 
   // My 역량 키워드 조회
   useEffect(() => {

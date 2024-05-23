@@ -74,8 +74,8 @@ const Experience: React.FC<ExpProps> = ({
         handleApi!(jdId, user.token);
       }
     } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
+      //   console.error(error);
+      //   alert(JSON.stringify(error));
     }
   };
 
