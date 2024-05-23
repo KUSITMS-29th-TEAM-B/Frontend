@@ -623,6 +623,9 @@ const ExperienceWritePage = () => {
                           placeholder="직접 역량 태그를 생성할 수 있어요"
                           onChange={(e) => setNewKeyword(e.target.value)}
                           onKeyUp={(e) => handleMyKeywords(e)}
+                          style={{
+                            fontSize: "14px",
+                          }}
                         />
                       </MyKeywordInput>
                       <div className="checkbox-list">
