@@ -99,6 +99,7 @@ const ExperienceDetailPage = () => {
                 <Textarea
                   value={item.answer}
                   label={`${index + 1}. ${item.question}`}
+                  rows={8}
                   labelStyle={
                     theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                   }

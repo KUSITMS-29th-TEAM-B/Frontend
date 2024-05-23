@@ -712,6 +712,7 @@ const ExperienceEditPage = () => {
               <Textarea
                 required={index === 0 || index === 1}
                 value={expData.contents[index].answer}
+                rows={8}
                 label={`${index + 1}. ${item.question}`}
                 labelStyle={
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
