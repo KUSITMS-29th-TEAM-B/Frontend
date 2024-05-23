@@ -89,7 +89,7 @@ const MainWrapper = styled.div`
     ${(props) => props.theme.fonts.title3};
     color: ${(props) => props.theme.colors.neutral700};
     text-align: center;
-    margin-top: 0.5rem;
+    margin-top: 1.2rem;
   }
   .subtext {
     ${(props) => props.theme.fonts.body3};

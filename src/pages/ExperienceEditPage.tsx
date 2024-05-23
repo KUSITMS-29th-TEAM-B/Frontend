@@ -704,14 +704,15 @@ const ExperienceEditPage = () => {
       <SectionContainer>
         <SectionTitle>경험 질문</SectionTitle>
         <QuestionList>
-          {questions.map((item, index) => (
+          {expData?.contents?.map((item, index) => (
             <div className="question-item">
               <div style={{ display: "flex" }}>
-                <Chip text={item.type} />
+                <Chip text={questions[index].type} />
               </div>
               <Textarea
                 required={index === 0 || index === 1}
-                value={expData.contents[index].answer}
+                value={item.answer}
+                rows={8}
                 label={`${index + 1}. ${item.question}`}
                 labelStyle={
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
