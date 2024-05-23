@@ -100,7 +100,6 @@ const JDPlusPage: React.FC = () => {
   useEffect(() => {
     if (jobData.startAt && jobData.endedAt) {
       getEndTime();
-      console.log("Dates updated:", jobData.startAt, jobData.endedAt);
     }
   }, [selectedTime]);
 
@@ -110,7 +109,7 @@ const JDPlusPage: React.FC = () => {
     if (selectedTime) {
       const endTime = new Date(jobData.endedAt);
       const [hours, minutes] = selectedTime.split(":");
-      endTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+      endTime.setHours(parseInt(hours, 10) + 9, parseInt(minutes, 10), 0, 0);
       setJobData({ ...jobData, endedAt: endTime });
     }
   };
@@ -129,12 +128,17 @@ const JDPlusPage: React.FC = () => {
         },
         token
       );
+      console.log(job.endedAt);
       nav("/jd");
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
     }
   };
+
+  useEffect(() => {
+    console.log(jobData.endedAt);
+  }, [jobData.endedAt]);
 
   return (
     <StyledDivContainer className="page">
