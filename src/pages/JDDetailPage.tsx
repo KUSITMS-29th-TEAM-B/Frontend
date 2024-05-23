@@ -40,6 +40,7 @@ const JDDetailPage: React.FC = () => {
   const user = getCookie("user");
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isnotAvailable, setisnotAvailable] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -108,6 +109,13 @@ const JDDetailPage: React.FC = () => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
+      if (
+        response.data.writeStatus === "CLOSED" &&
+        response.data.isApplyExists === false
+      ) {
+        setisnotAvailable(true);
+        console.log("isnotExists:" + isnotAvailable);
+      }
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -160,12 +168,14 @@ const JDDetailPage: React.FC = () => {
                 />
                 공고 상세
               </Title>
-              <TopButton onClick={handleNavigate}>
-                <TopButtonText>
-                  {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
-                  <img src={arrowIcon} alt="icon" />
-                </TopButtonText>
-              </TopButton>
+              {!isnotAvailable && (
+                <TopButton onClick={handleNavigate}>
+                  <TopButtonText>
+                    {firstTime ? "자기소개서 작성" : "자기소개서 확인"}
+                    <img src={arrowIcon} alt="icon" />
+                  </TopButtonText>
+                </TopButton>
+              )}
             </TopTitleBar>
             <JobContainer>
               <JobStatusBar>
