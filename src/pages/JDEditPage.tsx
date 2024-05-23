@@ -4,7 +4,7 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import BundleEditor from "../components/editor/BundleEditor";
 import TimeSelector from "../components/common/TimePicker";
 import OneDatePick from "../components/common/DatePicker";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/JD/JDEditModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
 import { jobdescriptionget, jobpatch, jobpost } from "../services/JD/jdApi";
@@ -12,9 +12,10 @@ import { JobAPI, JobDescriptionAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
 
 const JDEditPage: React.FC = () => {
-  const [selectedTime, setSelectedTime] = useState<string>("10:00");
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
+  const location = useLocation();
   const user = getCookie("user");
   const [jdData, setJdData] = useState<JobDescriptionAPI>({
     enterpriseName: "",
@@ -31,6 +32,18 @@ const JDEditPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const handleBackNavigation = () => {
+      openModal();
+    };
+
+    window.history.pushState(null, document.title, location.pathname);
+    window.addEventListener("popstate", handleBackNavigation);
+    return () => {
+      window.removeEventListener("popstate", handleBackNavigation);
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "auto",
@@ -42,17 +55,21 @@ const JDEditPage: React.FC = () => {
 
   // endTime 계산
   const getEndTime = () => {
-    if (!jdData.endedAt) return null; // endDate가 null이면 null 반환
-
-    const hours = parseInt(selectedTime.split(":")[0]);
-    const minutes = parseInt(selectedTime.split(":")[1]);
-
-    const endTime = new Date(jdData.endedAt); // endDate를 기반으로 새 Date 객체 생성
-    endTime.setHours(hours, minutes, 0); // 시간과 분 설정
-    console.log("최종시간은", endTime);
-    return endTime;
+    if (!jdData.endedAt) return null;
+    if (selectedTime) {
+      const endTime = new Date(jdData.endedAt);
+      let [hours, minutes] = selectedTime.split(":");
+      endTime.setHours(parseInt(hours, 10) + 9, parseInt(minutes, 10), 0, 0);
+      setJdData({ ...jdData, endedAt: endTime });
+    }
   };
-  const endTime = getEndTime();
+
+  useEffect(() => {
+    if (jdData.startAt && jdData.endedAt && selectedTime !== null) {
+      getEndTime();
+    }
+    console.log(selectedTime);
+  }, [selectedTime]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -131,7 +148,7 @@ const JDEditPage: React.FC = () => {
         enterpriseName: response.data.enterpriseName,
         title: response.data.title,
         remainingDate: response.data.remainingDate,
-        content: response.data.link,
+        content: response.data.content,
         writeStatus: response.data.writeStatus,
         link: response.data.link,
         createdAt: response.data.createdAt,
@@ -139,7 +156,6 @@ const JDEditPage: React.FC = () => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
-      setSelectedTime(response.data.endedAt);
       console.log(jdData);
     } catch (error) {
       console.error(error);

@@ -7,7 +7,14 @@ import {
   AccordionSummary,
   Popper,
 } from "@mui/material";
-import { ArrowDown, ArrowLeft, Plus, Plus2, Search } from "../assets";
+import {
+  ArrowDown,
+  ArrowLeft,
+  Plus,
+  Plus2,
+  ReloadIcon,
+  Search,
+} from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -124,7 +131,8 @@ const ExperienceWritePage = () => {
     !expData.startedAt ||
     !expData.endedAt ||
     !expData.contents[0].answer ||
-    !expData.contents[1].answer;
+    !expData.contents[1].answer ||
+    resultKeywords.length === 0;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -343,6 +351,11 @@ const ExperienceWritePage = () => {
     setCheckedKeywords(checkedKeywords.filter((choice) => choice.id !== item));
   };
 
+  // 키워드 초기화
+  const handleRefresh = () => {
+    setCheckedKeywords([]);
+  };
+
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
@@ -453,7 +466,7 @@ const ExperienceWritePage = () => {
                         <input
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
-                          onKeyUp={handleTagSearch}
+                          onKeyPress={handleTagSearch}
                           placeholder="경험을 분류할 태그를 직접 생성할 수 있어요."
                         />
                         <Search />
@@ -504,7 +517,9 @@ const ExperienceWritePage = () => {
             </div>
           </div>
           <div className="form-item">
-            <div className="label">역량 키워드 선택</div>
+            <div className="label">
+              역량 키워드 선택 <div className="required">*</div>
+            </div>
             <Accordion
               expanded={expanded}
               onChange={handleChange}
@@ -560,26 +575,32 @@ const ExperienceWritePage = () => {
               <AccordionDetails sx={{ padding: "0px" }}>
                 <KeywordSelect>
                   <div className="top-container">
-                    <div className="tab-list">
-                      <div
-                        className={
-                          keywordTabOption === "basic"
-                            ? "tab-item active"
-                            : "tab-item"
-                        }
-                        onClick={() => setKeywordTabOption("basic")}
-                      >
-                        기본
+                    <div className="right-container">
+                      <div className="tab-list">
+                        <div
+                          className={
+                            keywordTabOption === "basic"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("basic")}
+                        >
+                          기본
+                        </div>
+                        <div
+                          className={
+                            keywordTabOption === "my"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("my")}
+                        >
+                          MY
+                        </div>
                       </div>
-                      <div
-                        className={
-                          keywordTabOption === "my"
-                            ? "tab-item active"
-                            : "tab-item"
-                        }
-                        onClick={() => setKeywordTabOption("my")}
-                      >
-                        MY
+                      <div className="refresh" onClick={handleRefresh}>
+                        <ReloadIcon />
+                        <div className="refresh-text">초기화</div>
                       </div>
                     </div>
                     {keywordTabOption === "basic" ? (
@@ -619,7 +640,10 @@ const ExperienceWritePage = () => {
                           value={newKeyword}
                           placeholder="직접 역량 태그를 생성할 수 있어요"
                           onChange={(e) => setNewKeyword(e.target.value)}
-                          onKeyUp={(e) => handleMyKeywords(e)}
+                          onKeyPress={(e) => handleMyKeywords(e)}
+                          style={{
+                            fontSize: "14px",
+                          }}
                         />
                       </MyKeywordInput>
                       <div className="checkbox-list">
@@ -863,6 +887,13 @@ const KeywordSelect = styled.div`
     justify-content: space-between;
     align-items: center;
   }
+  .right-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+  }
   .tab-list {
     display: flex;
     flex-direction: row;
@@ -873,6 +904,17 @@ const KeywordSelect = styled.div`
     flex-shrink: 0;
     border-radius: 4px;
     background: var(--neutral-50, #f7f7fb);
+  }
+  .refresh {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .refresh-text {
+    ${(props) => props.theme.fonts.cap1};
+    color: ${(props) => props.theme.colors.neutral500};
   }
   .tab-item {
     display: flex;
@@ -961,6 +1003,7 @@ const customDatePickerCss = `
   border-radius: 5px;
   border: 1px solid var(--neutral-400, #D9DBE6);
   text-align: center;
+  max-width: 180px;
 `;
 
 const customInputCss = {
@@ -968,7 +1011,7 @@ const customInputCss = {
   padding: "9px 22px",
   background: "none",
   borderRadius: "5px",
-  maxWidth: "200px",
+  maxWidth: "180px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
   color: `var(--main-500, #7D82FF)`,
   fontSize: "16px",

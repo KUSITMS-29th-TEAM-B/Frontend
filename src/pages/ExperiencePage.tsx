@@ -9,7 +9,7 @@ import {
   subTagState,
   yearState,
 } from "../store/selectedStore";
-import backgroundImg from "../assets/images/background.jpg";
+import backgroundImg from "../assets/images/background2.jpg";
 import MainButton from "../components/common/MainButton";
 import { Plus } from "../assets";
 import KeywordTab from "../components/Experience/KeywordTab";
@@ -185,7 +185,6 @@ const MainContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  // background-color: #fbfbfd;
   position: relative;
   background: url(${backgroundImg});
   background-size: cover;

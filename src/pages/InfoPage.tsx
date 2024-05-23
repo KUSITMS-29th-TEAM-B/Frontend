@@ -80,12 +80,10 @@ const InfoPage = () => {
               </div>
               <div className="ewbox-maintext">
                 질문형 프레임워크로 <br />
-                경험을 체계적으로 <br />
-                정리해요
+                경험을 체계적으로 정리해요
               </div>
               <div className="ewbox-subtext">
-                편하게 질문에 답하다 보면 <br /> 자연스럽게 내 경험을 정리하고
-                <br />
+                편하게 질문에 답하다 보면 자연스럽게 <br />내 경험을 정리하고
                 역량을 파악할 수 있어요
               </div>
             </TextContainer>
@@ -201,6 +199,7 @@ const StyledContainer = styled.div<{ isLoading: boolean }>`
   padding-bottom: 0;
   .main_1 {
     margin-bottom: 7rem;
+    text-align: center;
   }
   .overview {
     width: 100vw;
@@ -264,7 +263,7 @@ const MainContainer = styled.div`
   }
   .maintext {
     font-family: Pretendard-ExtraBold;
-    font-size: 3.75rem;
+    font-size: 52px;
     font-style: normal;
     background: linear-gradient(89deg, #6167ff -10.58%, #7d82ff 47.56%);
     background-clip: text;
@@ -273,7 +272,7 @@ const MainContainer = styled.div`
   }
   .maintext_2 {
     font-family: Pretendard-ExtraBold;
-    font-size: 3.75rem;
+    font-size: 52px;
     font-style: normal;
     height: 11rem;
     line-height: 150%;
@@ -291,8 +290,9 @@ const MainContainer = styled.div`
     position: absolute;
     width: 22rem;
     height: 5rem;
-    bottom: 15%;
-    right: 37%;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 5rem;
     color: var(--white);
     display: flex;
@@ -355,7 +355,7 @@ const ContentWrapper = styled.div`
   .main_content {
     font-family: Pretendard-Bold;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 2.5rem;
+    font-size: 36px;
     font-style: normal;
     line-height: 140%;
     letter-spacing: -0.1rem;
@@ -364,7 +364,7 @@ const ContentWrapper = styled.div`
     font-family: Pretendard-Regular;
     opacity: 0.6;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 1.5rem;
+    font-size: 20px;
     font-style: normal;
     font-weight: 400;
     line-height: 140%;
@@ -390,10 +390,9 @@ const ExperienceBox = styled.div`
   }
   .ewbox-maintext {
     font-family: Pretendard-Bold;
-    width: 20rem;
     text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 2.5rem;
+    font-size: 36px;
     font-style: normal;
     line-height: 140%;
     letter-spacing: -0.1rem;
@@ -401,10 +400,9 @@ const ExperienceBox = styled.div`
   }
   .ewbox-subtext {
     font-family: Pretendard-Regular;
-    width: 18rem;
     text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 1.5rem;
+    font-size: 20px;
     font-style: normal;
     line-height: 140%;
     letter-spacing: -0.06rem;
@@ -441,7 +439,7 @@ const JDBox = styled.div`
     text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
     width: 28rem;
-    font-size: 2.5rem;
+    font-size: 36px;
     font-style: normal;
     line-height: 140%;
     letter-spacing: -0.1rem;
@@ -478,7 +476,7 @@ const MessageContainer = styled.div`
     text-align: start;
     width: 26rem;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 2.5rem;
+    font-size: 36px;
     font-style: normal;
     line-height: 140%;
     letter-spacing: -0.1rem;
@@ -487,7 +485,7 @@ const MessageContainer = styled.div`
     font-family: Pretendard-Regular;
     text-align: start;
     color: ${(props) => props.theme.colors.neutral700};
-    font-size: 1.5rem;
+    font-size: 20px;
     width: 26rem;
     font-style: normal;
     line-height: 140%; /* 2.1rem */

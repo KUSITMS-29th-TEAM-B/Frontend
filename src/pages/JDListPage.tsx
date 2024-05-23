@@ -127,7 +127,7 @@ const JDListPage: React.FC = () => {
       } else {
         setpageTotal(1);
       }
-      console.log(jobsData);
+
       setIsLoading(false);
     } catch (error) {
       console.error(error);
@@ -205,7 +205,7 @@ const JDListPage: React.FC = () => {
         }));
         setJobsData(mappedData);
         setpageTotal(response.data.totalPage);
-        console.log(jobsData);
+
         setIsLoading(false);
       } catch (error) {
         console.error(error);

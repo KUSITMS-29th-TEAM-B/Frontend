@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import yearCircle from "../../assets/images/yearActiveCircle.png";
+import yearCircle from "../../assets/images/yearActiveCircle2.png";
 import { useRecoilState } from "recoil";
 import {
   deleteState,
@@ -144,9 +144,7 @@ const YearCircleContainer = styled(motion.div)<{ isActive: boolean }>`
   align-items: center;
   justify-content: center;
   background: ${({ isActive: isSelected }) =>
-    isSelected
-      ? `url(${yearCircle})`
-      : (props) => props.theme.colors.neutral200};
+    isSelected ? `url(${yearCircle})` :"#E5E6FF"};
   background-size: cover;
   top: -40px;
   cursor: pointer;

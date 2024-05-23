@@ -17,3 +17,4 @@ export { ReactComponent as KakaoIcon } from "./icons/Kakao.svg";
 export { ReactComponent as AirplaneWindow } from "./images/window.svg";
 export { ReactComponent as Bubble } from "./images/bubble.svg";
 export { ReactComponent as DeleteIcon } from "./icons/icon-delete.svg";
+export { ReactComponent as ReloadIcon } from "./icons/icon_reload.svg";
