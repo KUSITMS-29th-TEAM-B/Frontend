@@ -10,6 +10,7 @@ import { QuestionType } from "../../types/experience";
 import { bookmarkpatch } from "../../services/JD/bookmarkApi";
 import { getCookie } from "../../services/cookie";
 import { useParams } from "react-router-dom";
+import { getAllExperienceList } from "../../services/JD/ExperienceApi";
 
 interface ExpProps {
   type?: "card" | "section";
@@ -26,7 +27,7 @@ interface ExpProps {
   detail?: QuestionType[];
   checkedKeywords?: string[];
   onClick?: () => void;
-  handleApi?: (jdid: string, token: string) => void;
+  handleApi?: (jdId: string, token: string) => Promise<void>;
 }
 
 const Experience: React.FC<ExpProps> = ({
@@ -52,6 +53,19 @@ const Experience: React.FC<ExpProps> = ({
   // 카드 타입, 섹션 타입 구분
   const isSection = type === "section";
 
+  const getExperienceList = async (jdId: string, token: string) => {
+    try {
+      const response = await getAllExperienceList(jdId, token);
+      //console.log(response);
+      if (handleApi) {
+        handleApi(jdId, user.token);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(JSON.stringify(error));
+    }
+  };
+
   // 경험의 선택된 질문 답변
   const answer = detail?.[(question || 1) - 1]?.answer;
 
@@ -69,13 +83,12 @@ const Experience: React.FC<ExpProps> = ({
   ) => {
     try {
       const response = await bookmarkpatch(token, jobId, expId);
-      console.log(response);
       if (jdId && user.token) {
         handleApi!(jdId, user.token);
       }
     } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
+      //   console.error(error);
+      //   alert(JSON.stringify(error));
     }
   };
 
