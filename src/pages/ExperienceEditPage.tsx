@@ -70,15 +70,6 @@ const ExperienceEditPage = () => {
     name: "",
   });
 
-  const isSaveButtonDisabled =
-    !expData.title ||
-    !primeTagItem.id ||
-    !subTagItem.id ||
-    !expData.startedAt ||
-    !expData.endedAt ||
-    !expData.contents[0].answer ||
-    !expData.contents[1].answer;
-
   // 저장 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -135,6 +126,16 @@ const ExperienceEditPage = () => {
     firstMyKeywordIndex,
     lastMyKeywordIndex
   );
+
+  const isSaveButtonDisabled =
+    !expData.title ||
+    !primeTagItem.id ||
+    !subTagItem.id ||
+    !expData.startedAt ||
+    !expData.endedAt ||
+    !expData.contents[0].answer ||
+    !expData.contents[1].answer ||
+    resultKeywords.length === 0;
 
   const handleSaveExperience = async () => {
     let experienceData = { ...expData };
@@ -524,7 +525,9 @@ const ExperienceEditPage = () => {
             </div>
           </div>
           <div className="form-item">
-            <div className="label">역량 키워드 선택</div>
+            <div className="label">
+              역량 키워드 선택<div className="required">*</div>
+            </div>
             <Accordion
               expanded={expanded}
               onChange={handleChange}
@@ -979,6 +982,7 @@ const customDatePickerCss = `
   border-radius: 5px;
   border: 1px solid var(--neutral-400, #D9DBE6);
   text-align: center;
+  max-width: 180px;
 `;
 
 const customInputCss = {
@@ -986,7 +990,7 @@ const customInputCss = {
   padding: "9px 22px",
   background: "none",
   borderRadius: "5px",
-  maxWidth: "200px",
+  maxWidth: "180px",
   border: `1px solid var(--neutral-400, #D9DBE6)`,
   color: `var(--main-500, #7D82FF)`,
   fontSize: "16px",
