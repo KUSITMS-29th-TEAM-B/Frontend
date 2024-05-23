@@ -1,4 +1,4 @@
-import { TextareaHTMLAttributes } from "react";
+import React, { TextareaHTMLAttributes, useRef } from "react";
 import styled from "styled-components";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -16,6 +16,24 @@ const Textarea = ({
   helperTextStyle,
   ...props
 }: TextareaProps) => {
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const adjustTextareaHeight = (textarea: HTMLTextAreaElement) => {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  };
+
+  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    adjustTextareaHeight(event.target);
+  };
+
+  React.useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      adjustTextareaHeight(textarea);
+    }
+  }, []);
+
   return (
     <InputContainer labelStyle={labelStyle} helperTextStyle={helperTextStyle}>
       {label && (
@@ -27,7 +45,7 @@ const Textarea = ({
         </div>
       )}
       {helperText && <div className="helperText">{helperText}</div>}
-      <InputBox {...props} />
+      <InputBox {...props} ref={textareaRef} onInput={handleInput} />
     </InputContainer>
   );
 };
@@ -73,6 +91,10 @@ const InputBox = styled.textarea`
     border: 2px solid ${(props) => props.theme.colors.main500};
     padding: 15px;
   }
+  &.scroll::-webkit-scrollbar {
+    display: none;
+  }
+  overflow-y: hidden;
 `;
 
 export default Textarea;

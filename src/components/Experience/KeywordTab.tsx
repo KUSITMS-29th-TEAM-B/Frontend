@@ -209,8 +209,7 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
     if (selectedPrimeTag && selectedPrimeTag.id !== "더보기" && user?.token) {
       getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) =>
       {
-        console.log('dddd', res);
-        setPrimeTagYears(res.data.years)
+        setPrimeTagYears(res.data.years.sort())
       }
       );
     }

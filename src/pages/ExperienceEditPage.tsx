@@ -708,7 +708,6 @@ const ExperienceEditPage = () => {
                 required={index === 0 || index === 1}
                 value={expData.contents[index].answer}
                 label={`${index + 1}. ${item.question}`}
-                rows={8}
                 labelStyle={
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                 }

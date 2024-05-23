@@ -62,7 +62,7 @@ const Navbar = () => {
               <span className="username">{userData?.nickName + " "}</span>님
             </UserInfo>
           </>
-        ) : (
+        ) : user?.token ? null : (
           <LoginButton onClick={() => navigate(`/sign-in`)}>로그인</LoginButton>
         )}
       </ItemContainer>
@@ -121,7 +121,7 @@ const UserInfo = styled.div`
   ${(props) => props.theme.fonts.cap4}
   color: ${(props) => props.theme.colors.neutral800};
   flex-shrink: 0;
-  .username{
+  .username {
     ${(props) => props.theme.fonts.subtitle5}
   }
 `;
