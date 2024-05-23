@@ -454,7 +454,7 @@ const ExperienceWritePage = () => {
                         <input
                           value={newTag}
                           onChange={(e) => setNewTag(e.target.value)}
-                          onKeyUp={handleTagSearch}
+                          onKeyPress={handleTagSearch}
                           placeholder="경험을 분류할 태그를 직접 생성할 수 있어요."
                         />
                         <Search />
@@ -622,7 +622,7 @@ const ExperienceWritePage = () => {
                           value={newKeyword}
                           placeholder="직접 역량 태그를 생성할 수 있어요"
                           onChange={(e) => setNewKeyword(e.target.value)}
-                          onKeyUp={(e) => handleMyKeywords(e)}
+                          onKeyPress={(e) => handleMyKeywords(e)}
                           style={{
                             fontSize: "14px",
                           }}
