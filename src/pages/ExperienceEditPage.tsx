@@ -21,17 +21,11 @@ import Modal from "../components/common/Modal";
 import airplaneImg from "../assets/images/airplane.png";
 import Tag from "../components/common/Tag";
 import RadioGroup from "../components/common/RadioGroup";
-import { myKeywords } from "../services/Experience/myKeywords";
 import {
   getExperience,
   patchExperience,
 } from "../services/Experience/experienceApi";
-import {
-  ExperienceDetailType,
-  ExperienceType,
-  KeywordType,
-  TagType,
-} from "../types/experience";
+import { ExperienceType, KeywordType, TagType } from "../types/experience";
 import { getKeywords, postKeyword } from "../services/Experience/keywordApi";
 import { getCookie } from "../services/cookie";
 import {
@@ -40,6 +34,7 @@ import {
   postPrimeTag,
   postSubTag,
 } from "../services/Experience/tagApi";
+import warningImg from "../assets/images/warningIcon.png";
 
 type TabType = "basic" | "my";
 type TagPopperType = "prime" | "sub" | null;
@@ -72,6 +67,8 @@ const ExperienceEditPage = () => {
 
   // 저장 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  // 뒤로가기 모달
+  const [isBackModalOpen, setIsBackModalOpen] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -361,6 +358,14 @@ const ExperienceEditPage = () => {
   };
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  // 뒤로가기 모달 관리
+  const openBackModal = () => {
+    setIsBackModalOpen(true);
+  };
+  const closeBackModal = () => {
+    setIsBackModalOpen(false);
   };
 
   const handleChange = () => {
@@ -736,7 +741,7 @@ const ExperienceEditPage = () => {
         <TopContainer>
           <div className="title">
             <button
-              onClick={() => navigate(-1)}
+              onClick={openBackModal}
               style={{
                 padding: 0,
                 background: "none",
@@ -777,6 +782,21 @@ const ExperienceEditPage = () => {
         onConfirm={() => navigate(`/experience/detail/${expId}`)}
         isOpen={isModalOpen}
         onClose={closeModal}
+      />
+      <Modal
+        image={<img src={warningImg} alt="warning" />}
+        title="이전 페이지로 돌아가시겠어요?"
+        description={
+          <>
+            지금 버튼을 눌러야
+            <br />
+            입력 내용이 복원돼요!
+          </>
+        }
+        buttons={["취소", "네, 삭제할게요"]}
+        onConfirm={() => navigate(-1)}
+        isOpen={isBackModalOpen}
+        onClose={closeBackModal}
       />
     </>
   );
