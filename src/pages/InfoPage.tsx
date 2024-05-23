@@ -199,6 +199,7 @@ const StyledContainer = styled.div<{ isLoading: boolean }>`
   padding-bottom: 0;
   .main_1 {
     margin-bottom: 7rem;
+    text-align: center;
   }
   .overview {
     width: 100vw;
@@ -289,8 +290,9 @@ const MainContainer = styled.div`
     position: absolute;
     width: 22rem;
     height: 5rem;
-    bottom: 15%;
-    right: 37%;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 5rem;
     color: var(--white);
     display: flex;
