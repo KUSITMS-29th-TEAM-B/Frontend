@@ -231,7 +231,6 @@ const AnswerWrapper = styled.div`
   align-items: center;
   gap: 0.625rem;
   border-radius: 0.75rem;
-  height: 6rem;
   background: ${(props) => props.theme.colors.neutral50};
   margin-top: 0.75rem;
 `;
