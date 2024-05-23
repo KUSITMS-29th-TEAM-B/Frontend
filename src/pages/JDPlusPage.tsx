@@ -239,12 +239,13 @@ const JDPlusPage: React.FC = () => {
                 </div>
               </PeriodBox>
             </InputContainer>
-            <InputContainer>
+            <InputContainer className="link">
               <InputTitle>
                 링크<div className="required"> *</div>
               </InputTitle>
               <InputBox
                 value={jobData.link}
+                placeholder="http://example.com"
                 onChange={(e) =>
                   setJobData({
                     ...jobData,
@@ -372,6 +373,7 @@ const RightTitleContainer = styled.div`
     display: flex;
     flex-direction: column;
     z-index: 100;
+    padding-bottom: 10px;
 `;
 
 const InputContainer = styled.div`
@@ -380,6 +382,7 @@ const InputContainer = styled.div`
     padding: 1rem;
     align-items: center;
     justify-content: space-between;
+
 `;
 
 const InputTitle = styled.div`
@@ -393,6 +396,7 @@ const InputTitle = styled.div`
     font-weight: 600;
     margin-right: 1.25rem;
     letter-spacing: -0.0225rem;
+    
 `;
 
 const InputBox = styled.input`
@@ -415,8 +419,6 @@ const PeriodBox = styled.div`
     flex-direction: row;
     align-items: center;
     flex: 8;
-    .datepicker{
-    }
 `;
 
 const ContentContainer = styled.div`
