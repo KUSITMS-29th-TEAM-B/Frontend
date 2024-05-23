@@ -14,7 +14,6 @@ const MoreTab = () => {
   const setSelectedPrimeTag = useSetRecoilState(primeTagState);
   const [primeTagList, setPrimeTagList] = React.useState<PrimeTagData[]>([]);
 
-
   const handlePrimeTagClick = (item: PrimeTagData) => {
     const selectedPrimeTag = { id: item.id, name: item.name };
     setSelectedPrimeTag(selectedPrimeTag);
