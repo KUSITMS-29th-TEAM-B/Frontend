@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ArrowRight } from "../../assets";
+import { ArrowRightIcon } from "../../assets";
 
 interface PrimeTagCardProp {
   key: string;
@@ -10,12 +10,18 @@ interface PrimeTagCardProp {
   onClick: () => void;
 }
 
-const PrimeTagCard = ({ key, title, tagNum, expNum, onClick}: PrimeTagCardProp) => {
+const PrimeTagCard = ({
+  key,
+  title,
+  tagNum,
+  expNum,
+  onClick,
+}: PrimeTagCardProp) => {
   return (
     <CardContainer key={key} onClick={onClick}>
       <CardTitle>
         <div className="title">{title}</div>
-        <ArrowRight />
+        <ArrowRightIcon />
       </CardTitle>
       <CardContent>
         <ContentItem>

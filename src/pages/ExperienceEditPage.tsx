@@ -7,7 +7,7 @@ import {
   AccordionSummary,
   Popper,
 } from "@mui/material";
-import { ArrowDown, ArrowLeft, Plus2, Search } from "../assets";
+import { ArrowDown, ArrowLeft, Plus2, ReloadIcon, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate, useParams } from "react-router-dom";
@@ -350,6 +350,11 @@ const ExperienceEditPage = () => {
     setCheckedKeywords(checkedKeywords.filter((choice) => choice.id !== item));
   };
 
+  // 키워드 초기화
+  const handleRefresh = () => {
+    setCheckedKeywords([]);
+  };
+
   // 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
@@ -583,26 +588,32 @@ const ExperienceEditPage = () => {
               <AccordionDetails sx={{ padding: "0px" }}>
                 <KeywordSelect>
                   <div className="top-container">
-                    <div className="tab-list">
-                      <div
-                        className={
-                          keywordTabOption === "basic"
-                            ? "tab-item active"
-                            : "tab-item"
-                        }
-                        onClick={() => setKeywordTabOption("basic")}
-                      >
-                        기본
+                    <div className="right-container">
+                      <div className="tab-list">
+                        <div
+                          className={
+                            keywordTabOption === "basic"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("basic")}
+                        >
+                          기본
+                        </div>
+                        <div
+                          className={
+                            keywordTabOption === "my"
+                              ? "tab-item active"
+                              : "tab-item"
+                          }
+                          onClick={() => setKeywordTabOption("my")}
+                        >
+                          MY
+                        </div>
                       </div>
-                      <div
-                        className={
-                          keywordTabOption === "my"
-                            ? "tab-item active"
-                            : "tab-item"
-                        }
-                        onClick={() => setKeywordTabOption("my")}
-                      >
-                        MY
+                      <div className="refresh" onClick={handleRefresh}>
+                        <ReloadIcon />
+                        <div className="refresh-text">초기화</div>
                       </div>
                     </div>
                     {keywordTabOption === "basic" ? (
@@ -697,7 +708,6 @@ const ExperienceEditPage = () => {
                 required={index === 0 || index === 1}
                 value={expData.contents[index].answer}
                 label={`${index + 1}. ${item.question}`}
-                rows={8}
                 labelStyle={
                   theme.fonts.title4 + `color: ${theme.colors.neutral700}`
                 }
@@ -885,6 +895,13 @@ const KeywordSelect = styled.div`
     justify-content: space-between;
     align-items: center;
   }
+  .right-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+  }
   .tab-list {
     display: flex;
     flex-direction: row;
@@ -895,6 +912,17 @@ const KeywordSelect = styled.div`
     flex-shrink: 0;
     border-radius: 4px;
     background: var(--neutral-50, #f7f7fb);
+  }
+  .refresh {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .refresh-text {
+    ${(props) => props.theme.fonts.cap1};
+    color: ${(props) => props.theme.colors.neutral500};
   }
   .tab-item {
     display: flex;
