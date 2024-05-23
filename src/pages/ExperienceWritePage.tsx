@@ -7,14 +7,7 @@ import {
   AccordionSummary,
   Popper,
 } from "@mui/material";
-import {
-  ArrowDown,
-  ArrowLeft,
-  Plus,
-  Plus2,
-  ReloadIcon,
-  Search,
-} from "../assets";
+import { ArrowDown, ArrowLeft, Plus2, ReloadIcon, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
 import { questions } from "../assets/data/questions";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +31,7 @@ import {
   postPrimeTag,
   postSubTag,
 } from "../services/Experience/tagApi";
+import warningImg from "../assets/images/warningIcon.png";
 
 type TabType = "basic" | "my";
 type TagPopperType = "prime" | "sub" | null;
@@ -69,6 +63,8 @@ const ExperienceWritePage = () => {
   });
   // 저장 모달
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  // 뒤로가기 모달
+  const [isBackModalOpen, setIsBackModalOpen] = React.useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -356,12 +352,20 @@ const ExperienceWritePage = () => {
     setCheckedKeywords([]);
   };
 
-  // 모달 관리
+  // 저장 모달 관리
   const openModal = () => {
     setIsModalOpen(true);
   };
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  // 뒤로가기 모달 관리
+  const openBackModal = () => {
+    setIsBackModalOpen(true);
+  };
+  const closeBackModal = () => {
+    setIsBackModalOpen(false);
   };
 
   const handleChange = () => {
@@ -727,7 +731,7 @@ const ExperienceWritePage = () => {
         <TopContainer>
           <div className="title">
             <button
-              onClick={() => navigate(-1)}
+              onClick={openBackModal}
               style={{
                 padding: 0,
                 background: "none",
@@ -768,6 +772,21 @@ const ExperienceWritePage = () => {
         onConfirm={() => navigate(`/experience/detail/${expId}`)}
         isOpen={isModalOpen}
         onClose={closeModal}
+      />
+      <Modal
+        image={<img src={warningImg} alt="warning" />}
+        title="이전 페이지로 돌아가시겠어요?"
+        description={
+          <>
+            지금 버튼을 눌러야
+            <br />
+            입력 내용이 복원돼요!
+          </>
+        }
+        buttons={["취소", "네, 삭제할게요"]}
+        onConfirm={() => navigate(`/experience`)}
+        isOpen={isBackModalOpen}
+        onClose={closeBackModal}
       />
     </>
   );
