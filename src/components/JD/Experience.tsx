@@ -10,6 +10,7 @@ import { QuestionType } from "../../types/experience";
 import { bookmarkpatch } from "../../services/JD/bookmarkApi";
 import { getCookie } from "../../services/cookie";
 import { useParams } from "react-router-dom";
+import { getAllExperienceList } from "../../services/JD/ExperienceApi";
 
 interface ExpProps {
   type?: "card" | "section";
@@ -26,7 +27,7 @@ interface ExpProps {
   detail?: QuestionType[];
   checkedKeywords?: string[];
   onClick?: () => void;
-  handleApi?: (jdid: string, token: string) => void;
+  handleApi?: (jdId: string, token: string) => Promise<void>;
 }
 
 const Experience: React.FC<ExpProps> = ({
@@ -46,7 +47,6 @@ const Experience: React.FC<ExpProps> = ({
   handleApi,
 }) => {
   const [detailId, setDetailId] = useRecoilState(detailStore);
-  const [localbookmark, setLocalbookmark] = useState(bookmark);
   const user = getCookie("user");
   const jdId = useParams().jdId;
   // 카드 타입, 섹션 타입 구분
@@ -68,14 +68,13 @@ const Experience: React.FC<ExpProps> = ({
     expId: string
   ) => {
     try {
-      const response = await bookmarkpatch(token, jobId, expId);
-      console.log(response);
+      await bookmarkpatch(token, jobId, expId);
       if (jdId && user.token) {
         handleApi!(jdId, user.token);
       }
     } catch (error) {
-      console.error(error);
-      alert(JSON.stringify(error));
+      //   console.error(error);
+      //   alert(JSON.stringify(error));
     }
   };
 
@@ -84,7 +83,6 @@ const Experience: React.FC<ExpProps> = ({
     if (id && jdId) {
       handleBookmarkPost(user.token, jdId, id.toString());
     }
-    setLocalbookmark(!localbookmark);
   };
   return (
     <StyledContainer
@@ -106,7 +104,7 @@ const Experience: React.FC<ExpProps> = ({
         </TagContainer>
         {bookmark !== undefined && (
           <div onClick={handleBookmarkClick}>
-            {localbookmark ? (
+            {bookmark ? (
               <img src={bookmarkFillIcon} alt="bookmarkfill" />
             ) : (
               <img src={bookmarkBlankIcon} alt="bookmarkblank" />
