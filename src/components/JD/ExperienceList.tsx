@@ -93,7 +93,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
   const getExperienceList = async (jdId: string, token: string) => {
     try {
       const response = await getAllExperienceList(jdId, token);
-      console.log(response);
+      //console.log(response);
       setExperienceData(response.data.experiences);
     } catch (error) {
       console.error(error);
@@ -418,6 +418,7 @@ const ExperienceList: React.FC<ExperienceListProps> = ({
                       {keywordTabOption === "basic"
                         ? currentBasicKeywords.map((item) => (
                             <Checkbox
+                              key={item.id}
                               value={item.id}
                               label={item.name}
                               checked={isKeywordChecked(item)}

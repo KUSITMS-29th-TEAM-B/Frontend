@@ -108,7 +108,6 @@ const JDDetailPage: React.FC = () => {
         endedAt: response.data.endedAt,
       };
       setJdData(jdApiData);
-      console.log(jdData);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
@@ -119,7 +118,6 @@ const JDDetailPage: React.FC = () => {
   const handleJDDelete = async (jobId: string, token: string) => {
     try {
       const response = await jobdelete(jobId, token);
-      console.log(response);
       nav("/jd");
     } catch (error) {
       console.error(error);

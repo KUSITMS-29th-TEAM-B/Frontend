@@ -172,6 +172,12 @@ const fonts = {
     size: 12,
     lineHeight: 14,
   }),
+  cap4: FONT({
+    family: "Pretendard-Regular",
+    weight: 400,
+    size: 14,
+    lineHeight: 14,
+  }),
   button1: FONT({
     family: "Pretendard-SemiBold",
     weight: 400,
