@@ -105,10 +105,10 @@ const ProfilePage = () => {
                   {answer ? (
                     answer
                   ) : (
-                    <p>
+                    <span>
                       아직 작성한 내용이 없어요.
                       <br /> ‘프로필 수정’ 페이지에서 작성을 완료해주세요!
-                    </p>
+                    </span>
                   )}
                 </SubContent>
               </React.Fragment>
@@ -164,7 +164,7 @@ const SubContent = styled.div`
   padding: 1rem 0;
   border-top: 1px solid ${(props) => props.theme.colors.main200};
   margin-bottom: 1rem;
-  p {
+  span {
     ${(props) => props.theme.fonts.body3};
     color: ${(props) => props.theme.colors.neutral500};
   }
