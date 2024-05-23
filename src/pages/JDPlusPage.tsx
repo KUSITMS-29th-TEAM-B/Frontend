@@ -59,21 +59,6 @@ const JDPlusPage: React.FC = () => {
     );
   };
 
-  // endTime 계산
-  const getEndTime = () => {
-    if (!jobData.endedAt) return null; // endDate가 null이면 null 반환
-    if (selectedTime) {
-      const hours = parseInt(selectedTime.split(":")[0]);
-      const minutes = parseInt(selectedTime.split(":")[1]);
-
-      const endTime = new Date(jobData.endedAt); // endDate를 기반으로 새 Date 객체 생성
-      endTime.setHours(hours, minutes, 0); // 시간과 분 설정
-      console.log("최종시간은", endTime);
-      return endTime;
-    }
-  };
-  const endTime = getEndTime();
-
   const openModal = () => {
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
@@ -101,7 +86,7 @@ const JDPlusPage: React.FC = () => {
   const handleEDateChange = (date: Date) => {
     if (!jobData.endedAt && !jobData.startAt) {
       setJobData({ ...jobData, endedAt: date });
-    } else if (jobData.startAt && jobData.startAt) {
+    } else if (jobData.startAt && date > jobData.startAt) {
       setJobData({ ...jobData, endedAt: date });
     } else {
       setJobData({ ...jobData, endedAt: jobData.startAt });
@@ -112,11 +97,23 @@ const JDPlusPage: React.FC = () => {
     setJobData({ ...jobData, content: newContent });
   };
 
-  //   useEffect(() => {
-  //     console.log("Dates updated:", startDate, endDate);
-  //     console.log("Time was updated:", selectedTime);
-  //     console.log(endTime);
-  //   }, [selectedTime, startDate, endDate]);
+  useEffect(() => {
+    if (jobData.startAt && jobData.endedAt) {
+      getEndTime();
+      console.log("Dates updated:", jobData.startAt, jobData.endedAt);
+    }
+  }, [selectedTime]);
+
+  // endTime 계산
+  const getEndTime = () => {
+    if (!jobData.endedAt) return null;
+    if (selectedTime) {
+      const endTime = new Date(jobData.endedAt);
+      const [hours, minutes] = selectedTime.split(":");
+      endTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+      setJobData({ ...jobData, endedAt: endTime });
+    }
+  };
 
   //api
   const handleJDPost = async (job: JobAPI, token: string) => {
@@ -130,9 +127,8 @@ const JDPlusPage: React.FC = () => {
           startAt: job.startAt,
           endedAt: job.endedAt,
         },
-        user.token
+        token
       );
-      console.log(response);
       nav("/jd");
     } catch (error) {
       console.error(error);
@@ -170,7 +166,9 @@ const JDPlusPage: React.FC = () => {
         <TopContainer>
           <LeftTitleContainer>
             <InputContainer>
-              <InputTitle>기업명</InputTitle>
+              <InputTitle>
+                기업명<div className="required"> *</div>
+              </InputTitle>
               <InputBox
                 value={jobData.enterpriseName}
                 onChange={(e) =>
@@ -182,7 +180,9 @@ const JDPlusPage: React.FC = () => {
               />
             </InputContainer>
             <InputContainer>
-              <InputTitle>제목</InputTitle>
+              <InputTitle>
+                제목<div className="required"> *</div>
+              </InputTitle>
               <InputBox
                 value={jobData.title}
                 onChange={(e) =>
@@ -196,7 +196,9 @@ const JDPlusPage: React.FC = () => {
           </LeftTitleContainer>
           <RightTitleContainer>
             <InputContainer>
-              <InputTitle>지원기간</InputTitle>
+              <InputTitle>
+                지원기간<div className="required"> *</div>
+              </InputTitle>
               <PeriodBox>
                 {jobData.startAt ? (
                   <div className="datepicker">
@@ -234,7 +236,9 @@ const JDPlusPage: React.FC = () => {
               </PeriodBox>
             </InputContainer>
             <InputContainer>
-              <InputTitle>링크</InputTitle>
+              <InputTitle>
+                링크<div className="required"> *</div>
+              </InputTitle>
               <InputBox
                 value={jobData.link}
                 onChange={(e) =>
@@ -268,6 +272,11 @@ const StyledDivContainer = styled.div`
   position: relative;
   background-color: #FBFBFD;
   overflow-x: hidden;
+  .required {
+    margin-left: 4px;
+    ${(props) => props.theme.fonts.cap1};
+    color: var(--sub-tertiary-800, #ffa63e);
+  }
 `;
 
 const ToggleContainer = styled.div`
@@ -370,12 +379,12 @@ const InputContainer = styled.div`
 `;
 
 const InputTitle = styled.div`
-    width: 4rem;
+    width: 70px;
     display: flex;
+    font-size: 16px;
     justify-content: center;
     color: var(--neutral-600, #63698D);
     text-align: right;
-    font-size: 1.125rem;
     font-style: normal;
     font-weight: 600;
     margin-right: 1.25rem;
