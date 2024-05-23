@@ -24,6 +24,7 @@ const Navbar = () => {
           width={"117px"}
           height={"40px"}
           onClick={() => navigate(`/experience`)}
+          style={{ cursor: "pointer" }}
         />
         <MenuList>
           <MenuItem
