@@ -128,8 +128,9 @@ const JDPlusPage: React.FC = () => {
         },
         token
       );
+      console.log(response.data.jobDescriptionId);
       console.log(job.endedAt);
-      nav("/jd");
+      nav(`/jd/${response.data.jobDescriptionId}`);
     } catch (error) {
       console.error(error);
       alert(JSON.stringify(error));
