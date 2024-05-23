@@ -4,17 +4,19 @@ import AirplaneToggle from "../components/JD/AirplaneToggle";
 import BundleEditor from "../components/editor/BundleEditor";
 import TimeSelector from "../components/common/TimePicker";
 import OneDatePick from "../components/common/DatePicker";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../components/JD/JDModal";
 import ClockIcon from "../assets/icons/icon_clock_net600.svg";
 import { jobpost } from "../services/JD/jdApi";
 import { JobAPI } from "../types/type";
 import { getCookie } from "../services/cookie";
+import arrowLeft from "../assets/icons/icon_arrow_left.svg";
 
 const JDPlusPage: React.FC = () => {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const nav = useNavigate();
+  const location = useLocation();
   const user = getCookie("user");
   const [jobData, setJobData] = useState<JobAPI>({
     title: "",
@@ -31,6 +33,18 @@ const JDPlusPage: React.FC = () => {
       behavior: "auto",
     });
   }, []);
+
+  useEffect(() => {
+    const handleBackNavigation = () => {
+      openModal();
+    };
+
+    window.history.pushState(null, document.title, location.pathname);
+    window.addEventListener("popstate", handleBackNavigation);
+    return () => {
+      window.removeEventListener("popstate", handleBackNavigation);
+    };
+  }, [location.pathname]);
 
   //유효성검사
   const isJobDataComplete = () => {
@@ -133,7 +147,10 @@ const JDPlusPage: React.FC = () => {
         <AirplaneToggle step={1} />
       </ToggleContainer>
       <TopTitleBar>
-        <Title>새로운 공고 등록</Title>
+        <Title>
+          <img src={arrowLeft} alt="arrowicon" onClick={openModal} />
+          새로운 공고 등록
+        </Title>
         <ButtonContainer>
           <CancelButton onClick={openModal}>취소</CancelButton>
           <SaveButton
@@ -269,7 +286,10 @@ const TopTitleBar = styled.div`
 `;
 
 const Title = styled.h1`
+  display: flex;
+  align-items: center;
   color:#343A5D;
+  justify-content: center;
 `;
 
 const ButtonContainer = styled.div`
