@@ -7,7 +7,7 @@ const Container = styled.div`
   flex-direction: row;
   align-items: center;
   position: relative;
-  width: 300px;  
+  width: 300px;
 `;
 
 const Line = styled.div`
@@ -15,7 +15,7 @@ const Line = styled.div`
   width: 160px;
   top: 30px;
   margin-left: 10px;
-  border-bottom: 1px solid #A6AAC0;
+  border-bottom: 1px solid #a6aac0;
   overflow: hidden;
 `;
 
@@ -23,13 +23,12 @@ const Circle = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #F2F3F9;
+  background-color: #f2f3f9;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   margin: 0 10px;
-  cursor: pointer;
   border: none;
 `;
 
@@ -42,14 +41,13 @@ const ActiveCircle = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 4px solid #FFF;
-  background: var(--1, linear-gradient(180deg, #7D82FF 0%, #D2D9FF 100%));
+  border: 4px solid #fff;
+  background: var(--1, linear-gradient(180deg, #7d82ff 0%, #d2d9ff 100%));
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   margin: 0 10px;
-  cursor: pointer;
 `;
 
 interface StepIndicatorProps {
