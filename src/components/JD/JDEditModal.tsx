@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import styled from "styled-components";
-import warning from "../../assets/icons/icon_warning.svg";
+import warning from "../../assets/icons/icon_delete_warning.svg";
 import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
@@ -21,12 +21,7 @@ const JDEditModal: FC<ModalProps> = ({ isOpen, onClose, jdId }) => {
         <MainWrapper>
           <img src={warning} alt="warning" />
           <div className="maintext">이전 페이지로 돌아가시겠어요?</div>
-          <div className="subtext">
-            저장하지 않으면
-            <div>
-              입력한 내용은 <span>복원할 수 없어요!</span>
-            </div>
-          </div>
+          <div className="subtext">작성하던 공고가 저장되지 않아요!</div>
         </MainWrapper>
         <ButtonWrapper>
           <CloseButton onClick={onClose}>
@@ -81,7 +76,7 @@ const MainWrapper = styled.div`
     .maintext {
         color: var(--neutral-700, #343A5D);
         text-align: center;
-        font-size: 1.375rem;
+        font-size: 22px;
         font-style: normal;
         font-weight: 600;
         line-height: 1.625rem;
@@ -91,17 +86,13 @@ const MainWrapper = styled.div`
     .subtext {
         color: var(--neutral-500, #A6AAC0);
         text-align: center;
-        font-size: 1rem;
+        font-size: 16px;
         font-style: normal;
-        font-weight: 500;
-        line-height: 1.25rem;
-        letter-spacing: -0.02rem;
-        margin-top: 1.25rem;
-        span{
-            color: var(--main-500, #7D82FF);
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
+        font-weight: 400;
+        line-height: 22px; 
+        margin-top: 10px;
+        letter-spacing: -0.64px;
+        margin-bottom: 40px;
     }
 `;
 
