@@ -52,14 +52,14 @@ const Navbar = () => {
               }
               alt="profile"
               style={{
-                width: "32px",
-                height: "32px",
+                width: "40px",
+                height: "40px",
                 borderRadius: "50%",
               }}
               onError={handleImgError}
             />
             <UserInfo onClick={() => navigate(`/profile`)}>
-              {userData?.nickName}님
+              <span className="username">{userData?.nickName + " "}</span>님
             </UserInfo>
           </>
         ) : (
@@ -118,9 +118,12 @@ const MenuItem = styled.div`
 `;
 
 const UserInfo = styled.div`
-  ${(props) => props.theme.fonts.cap2}
+  ${(props) => props.theme.fonts.cap4}
   color: ${(props) => props.theme.colors.neutral800};
   flex-shrink: 0;
+  .username{
+    ${(props) => props.theme.fonts.subtitle5}
+  }
 `;
 
 const LoginButton = styled.div`
