@@ -68,7 +68,7 @@ const YearCircle: React.FC<YearCircleProps> = ({
       transition: {
         delay: index * 0.05,
         type: "spring",
-        stiffness: 50,
+        stiffness: 100,
       },
     }),
     exit: { scale: 0, opacity: 0, transition: { duration: 0.3 } },

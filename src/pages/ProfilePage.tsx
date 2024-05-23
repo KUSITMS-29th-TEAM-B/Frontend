@@ -9,6 +9,7 @@ import { getUserInfo, logout } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
+import { useGetUserInfo } from "../components/hooks/useGetUserInfo";
 
 interface UserDetail {
   question: string;
@@ -20,6 +21,7 @@ const ProfilePage = () => {
   const user = getCookie("user");
   const [userData, setUserData] = React.useState<UserDataType>();
   const [profileImage, setprofileImage] = useState(profile1);
+  const { refetch } = useGetUserInfo(user?.token);
 
   const userDetailList: UserDetail[] = [
     {
@@ -44,6 +46,7 @@ const ProfilePage = () => {
   const handlelogout = () => {
     if (user?.token && user?.refreshToken) {
       logout(user?.token, user?.refreshToken);
+      refetch();
     }
     removeCookie("user").then(() => nav(`/sign-in`));
   };
