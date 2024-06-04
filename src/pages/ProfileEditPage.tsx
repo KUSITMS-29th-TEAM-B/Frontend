@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserInfo, patchUserInfo } from "../services/user";
 import { UserDataType } from "../types/user";
 import { getCookie } from "../services/cookie";
-import { useGetUserInfo } from "../components/hooks/useGetUserInfo";
+import { useGetUserInfo } from "../hooks/useGetUserInfo";
 
 const profileImgUrl = [
   "/assets/profile1.png",

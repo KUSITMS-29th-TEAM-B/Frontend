@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { TagType } from "../../types/experience";
+import { TagType } from "../types/experience";
 import { AxiosError, AxiosResponse } from "axios";
-import { getExperienceYears } from "../../services/Experience/experienceApi";
+import { getExperienceYears } from "../services/Experience/experienceApi";
 
 interface ExperienceYearsResType {
   years: number[];

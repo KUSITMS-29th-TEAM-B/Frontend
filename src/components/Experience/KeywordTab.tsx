@@ -11,7 +11,6 @@ import {
 import { questions } from "../../assets/data/questions";
 import Select from "../common/Select";
 import {
-  ArrowDown,
   ArrowDownThin,
   ArrowRight,
   ArrowUpThin,
@@ -30,7 +29,6 @@ import Checkbox from "../common/Checkbox";
 import PopperPagination from "./PopperPagination";
 import { basicKeywords } from "../../assets/data/keywords";
 import Experience from "../JD/Experience";
-import ExpData from "../../services/JD/ExpData";
 import editIcon from "../../assets/images/editIcon.png";
 import { useNavigate } from "react-router-dom";
 import { getPrimeTagYears } from "../../services/Experience/tagApi";
@@ -43,7 +41,7 @@ import {
 } from "../../types/experience";
 import { getExperienceList } from "../../services/Experience/experienceApi";
 import { getKeywords } from "../../services/Experience/keywordApi";
-import { useSubTagsQuery } from "../hooks/useSubTagsQuery";
+import { useSubTagsQuery } from "../../hooks/useSubTagsQuery";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {
@@ -207,11 +205,9 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
   // 상위태그 연도 리스트 조회
   React.useEffect(() => {
     if (selectedPrimeTag && selectedPrimeTag.id !== "더보기" && user?.token) {
-      getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) =>
-      {
-        setPrimeTagYears(res.data.years.sort())
-      }
-      );
+      getPrimeTagYears(selectedPrimeTag.id, user?.token).then((res) => {
+        setPrimeTagYears(res.data.years.sort());
+      });
     }
   }, [selectedPrimeTag, user?.token]);
 
@@ -385,12 +381,14 @@ const KeywordTab = ({ openDeleteModal }: KeywordTabProp) => {
                     currentPage={currentBasicKeywordPage}
                   />
                 ) : (
-                  <PopperPagination
-                    postsNum={myKeywordList.length}
-                    postsPerPage={keywordsPerPage}
-                    setCurrentPage={setCurrentMyKeywordPage}
-                    currentPage={currentMyKeywordPage}
-                  />
+                  myKeywordList.length !== 0 && (
+                    <PopperPagination
+                      postsNum={myKeywordList.length}
+                      postsPerPage={keywordsPerPage}
+                      setCurrentPage={setCurrentMyKeywordPage}
+                      currentPage={currentMyKeywordPage}
+                    />
+                  )
                 )}
               </div>
               <div
