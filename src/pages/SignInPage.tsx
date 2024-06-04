@@ -4,7 +4,7 @@ import styled from "styled-components";
 import backgroundImg from "../assets/images/background2.png";
 import { AirplaneWindow, Bubble, GoogleIcon, KakaoIcon } from "../assets";
 import logoImg from "../assets/images/logo.png";
-import { getUserInfo, login } from "../services/user";
+import { getUserInfo, login, refresh } from "../services/user";
 import { useNavigate } from "react-router-dom";
 import { setCookie } from "../services/cookie";
 declare global {
@@ -37,7 +37,7 @@ const SignInPage = () => {
               const token = res.data.accessToken;
               const refreshToken = res.data.refreshToken;
               getUserInfo(token)
-                .then((res) =>
+                .then((res) => {
                   setCookie("user", {
                     nickName: res.data.nickName,
                     profileImgUrl: res.data.profileImgUrl,
@@ -45,8 +45,9 @@ const SignInPage = () => {
                     email: res.data.email,
                     token: token,
                     refreshToken: refreshToken,
-                  })
-                )
+                  });
+                  setTimeout(() => refresh(refreshToken), 1000 * 60 * 60 * 23);
+                })
                 .then(() => navigate("/experience"));
             }
           })
@@ -89,7 +90,7 @@ const SignInPage = () => {
                   const token = res.data.accessToken;
                   const refreshToken = res.data.refreshToken;
                   getUserInfo(token)
-                    .then((res) =>
+                    .then((res) => {
                       setCookie("user", {
                         nickName: res.data.nickName,
                         profileImgUrl: res.data.profileImgUrl,
@@ -97,8 +98,12 @@ const SignInPage = () => {
                         email: res.data.email,
                         token: token,
                         refreshToken: refreshToken,
-                      })
-                    )
+                      });
+                      setTimeout(
+                        () => refresh(refreshToken),
+                        1000 * 60 * 60 * 23
+                      );
+                    })
                     .then(() => navigate("/experience"));
                 }
               })
