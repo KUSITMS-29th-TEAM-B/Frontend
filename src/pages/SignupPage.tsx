@@ -14,7 +14,7 @@ import { Popper } from "@mui/material";
 import Modal from "../components/common/Modal";
 import logoImg from "../assets/images/logo.png";
 import { useNavigate } from "react-router-dom";
-import { getUserInfo, register } from "../services/user";
+import { getUserInfo, refresh, register } from "../services/user";
 import { RegisterDataType } from "../types/user";
 import { getCookie, setCookie } from "../services/cookie";
 
@@ -83,6 +83,7 @@ const SignupPage = () => {
             token: token,
             refreshToken: refreshToken,
           });
+          setTimeout(() => refresh(refreshToken), 1000 * 60 * 60 * 23);
         })
         .then(() => openModal());
     });
