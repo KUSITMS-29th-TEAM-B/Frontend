@@ -11,9 +11,6 @@ const Navbar = () => {
   const user = getCookie("user");
   const { data: userData } = useGetUserInfo(user?.token);
 
-  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/profile1.png`;
-  };
 
   return (
     <NavContainer>
@@ -47,17 +44,14 @@ const Navbar = () => {
         {userData ? (
           <>
             <img
-              src={
-                userData?.profileImgUrl ||
-                `${process.env.PUBLIC_URL}/assets/profile1.png`
-              }
+              src={userData?.profileImgUrl || `/assets/profile1.png`}
               alt="profile"
               style={{
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
               }}
-              onError={handleImgError}
+              // onError={handleImgError}
             />
             <UserInfo onClick={() => navigate(`/profile`)}>
               <span className="username">{userData?.nickName + " "}</span>님
