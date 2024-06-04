@@ -798,12 +798,12 @@ const ExperienceEditPage = () => {
         title="이전 페이지로 돌아가시겠어요?"
         description={
           <>
-            지금 버튼을 눌러야
+            저장 버튼을 눌러야
             <br />
             입력 내용이 복원돼요!
           </>
         }
-        buttons={["취소", "네, 삭제할게요"]}
+        buttons={["취소", "네, 돌아갈게요"]}
         onConfirm={() => navigate(-1)}
         isOpen={isBackModalOpen}
         onClose={closeBackModal}
