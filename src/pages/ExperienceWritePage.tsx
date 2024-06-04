@@ -6,6 +6,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Popper,
+  Tooltip,
 } from "@mui/material";
 import { ArrowDown, ArrowLeft, Plus2, ReloadIcon, Search } from "../assets";
 import Textarea from "../components/common/Textarea";
@@ -742,12 +743,20 @@ const ExperienceWritePage = () => {
             </button>
             경험 작성
           </div>
-          <CustomButton
-            onClick={handleSaveExperience}
-            disabled={isSaveButtonDisabled}
+          <Tooltip
+            disableHoverListener={!isSaveButtonDisabled}
+            title="필수 항목 입력 후 저장 가능합니다."
+            arrow
           >
-            저장
-          </CustomButton>
+            <span>
+              <CustomButton
+                onClick={handleSaveExperience}
+                disabled={isSaveButtonDisabled}
+              >
+                저장
+              </CustomButton>
+            </span>
+          </Tooltip>
         </TopContainer>
         <ContentContainer>
           <TitleInput
