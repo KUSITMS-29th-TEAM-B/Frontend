@@ -1,5 +1,8 @@
 import { RegisterDataType, UserDataType } from "../types/user";
 import client from "./client";
+import { setCookie } from "./cookie";
+
+let refreshTimer: NodeJS.Timeout;
 
 // 로그인
 export const login = async (loginType: string, accessToken: string) => {
@@ -10,6 +13,7 @@ export const login = async (loginType: string, accessToken: string) => {
 
 // 로그아웃
 export const logout = async (token: string, refreshToken: string) => {
+  clearTimeout(refreshTimer);
   return await client.delete(`/api/auth/logout`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -17,6 +21,21 @@ export const logout = async (token: string, refreshToken: string) => {
       withCredentials: true,
     },
   });
+};
+
+// 토큰 재발급
+export const refresh = async (refreshToken: string) => {
+  return await client
+    .patch(`/api/auth/reissue`, {
+      refreshToken: refreshToken,
+    })
+    .then((res) => {
+      setCookie("user", {
+        token: res.data.accessToken,
+        refreshToken: res.data.refreshToken,
+      });
+      refreshTimer = setTimeout(() => refresh(res.data.refreshToken), 1000 * 60 * 60 * 23);
+    });
 };
 
 // 회원가입
