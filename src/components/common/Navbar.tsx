@@ -3,14 +3,13 @@ import styled from "styled-components";
 import logo from "../../assets/images/logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCookie } from "../../services/cookie";
-import { useGetUserInfo } from "../hooks/useGetUserInfo";
+import { useGetUserInfo } from "../../hooks/useGetUserInfo";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getCookie("user");
   const { data: userData } = useGetUserInfo(user?.token);
-
 
   return (
     <NavContainer>

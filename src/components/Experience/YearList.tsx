@@ -10,7 +10,7 @@ import {
 } from "../../store/selectedStore";
 import { getCookie } from "../../services/cookie";
 import { TagType, YearData } from "../../types/experience";
-import { useExperienceYearsQuery } from "../hooks/useExperienceYearsQuery";
+import { useExperienceYearsQuery } from "../../hooks/useExperienceYearsQuery";
 
 interface YearListProps {
   width: number;

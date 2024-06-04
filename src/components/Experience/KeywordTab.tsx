@@ -41,7 +41,7 @@ import {
 } from "../../types/experience";
 import { getExperienceList } from "../../services/Experience/experienceApi";
 import { getKeywords } from "../../services/Experience/keywordApi";
-import { useSubTagsQuery } from "../hooks/useSubTagsQuery";
+import { useSubTagsQuery } from "../../hooks/useSubTagsQuery";
 
 type TabType = "basic" | "my";
 interface KeywordTabProp {

@@ -9,7 +9,7 @@ import { getUserInfo, logout } from "../services/user";
 import { UserDataType } from "../types/user";
 import PlaneLoading from "../components/common/Loading";
 import profile1 from "../assets/images/profile1.png";
-import { useGetUserInfo } from "../components/hooks/useGetUserInfo";
+import { useGetUserInfo } from "../hooks/useGetUserInfo";
 
 interface UserDetail {
   question: string;

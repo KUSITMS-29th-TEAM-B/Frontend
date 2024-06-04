@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
-import { UserDataType } from "../../types/user";
-import { getUserInfo } from "../../services/user";
+import { UserDataType } from "../types/user";
+import { getUserInfo } from "../services/user";
 
 export const useGetUserInfo = (token: string) => {
   const queryKey = ["userInfo", token];
