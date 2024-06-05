@@ -22,6 +22,7 @@ import { getCookie } from "../services/cookie";
 import { deleteTag } from "../services/Experience/tagApi";
 import { useSubTagsQuery } from "../components/hooks/useSubTagsQuery";
 import { useExperienceYearsQuery } from "../components/hooks/useExperienceYearsQuery";
+import NoExperience from "../components/Experience/NoExperience";
 
 const ExperiencePage = () => {
   const user = getCookie("user");
@@ -136,29 +137,35 @@ const ExperiencePage = () => {
   //
   return (
     <>
-      <MainContainer>
-        {/* <NoExperience /> */}
-        {selectedPrimeTag ? null : (
-          <Description>
-            <span className="user">{user?.nickName || "사용자"}</span>
-            님의 여정을
-            <br />
-            시작해볼까요?
-          </Description>
-        )}
-        {renderCenterContainer()}
-        <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
-        <MainButton
-          style={{
-            position: "absolute",
-            right: selectedPrimeTag ? "62%" : 30,
-            bottom: 30,
-          }}
-          onClick={() => navigate(`/experience/write`)}
-        >
-          <Plus /> 경험 추가하기
-        </MainButton>
-      </MainContainer>
+      {allYearsData && allYearsData.years.length === 0 ? (
+        <InitialContainer className="page">
+          <NoExperience />
+        </InitialContainer>
+      ) : (
+        <MainContainer>
+          {selectedPrimeTag ? null : (
+            <Description>
+              <span className="user">{user?.nickName || "사용자"}</span>
+              님의 여정을
+              <br />
+              시작해볼까요?
+            </Description>
+          )}
+          {renderCenterContainer()}
+          <AnimatePresence>{renderActiveContainer()}</AnimatePresence>
+          <MainButton
+            style={{
+              position: "absolute",
+              right: selectedPrimeTag ? "62%" : 30,
+              bottom: 30,
+            }}
+            onClick={() => navigate(`/experience/write`)}
+          >
+            <Plus /> 경험 추가하기
+          </MainButton>
+        </MainContainer>
+      )}
+
       <Modal
         image={<img src={warningImg} alt="warning" />}
         title={"해당 태그를 삭제하시겠어요?"}
@@ -177,6 +184,15 @@ const ExperiencePage = () => {
     </>
   );
 };
+
+const InitialContainer = styled.div`
+  width: 100%;
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${(props) => props.theme.colors.neutral20};
+`;
 
 const MainContainer = styled.div`
   height: 100vh;

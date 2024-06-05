@@ -24,6 +24,7 @@ const Button = styled.button`
   &:disabled {
     background: ${(props) => props.theme.colors.neutral500};
   }
+  z-index: 1500;
 `;
 
 export default MainButton;
