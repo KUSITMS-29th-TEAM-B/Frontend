@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import YearListContainer from "../components/Experience/YearList";
 import { AnimatePresence, motion } from "framer-motion";
-import useComponentSize from "../components/hooks/useComponentSize";
+import useComponentSize from "../hooks/useComponentSize";
 import { useRecoilState } from "recoil";
 import {
   deleteTagState,
@@ -20,8 +20,8 @@ import React from "react";
 import warningImg from "../assets/images/warningIcon.png";
 import { getCookie } from "../services/cookie";
 import { deleteTag } from "../services/Experience/tagApi";
-import { useSubTagsQuery } from "../components/hooks/useSubTagsQuery";
-import { useExperienceYearsQuery } from "../components/hooks/useExperienceYearsQuery";
+import { useSubTagsQuery } from "../hooks/useSubTagsQuery";
+import { useExperienceYearsQuery } from "../hooks/useExperienceYearsQuery";
 import NoExperience from "../components/Experience/NoExperience";
 
 const ExperiencePage = () => {

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPrimeTagSubTags } from "../../services/Experience/tagApi";
-import { TagMenuType } from "../../types/experience";
+import { getPrimeTagSubTags } from "../services/Experience/tagApi";
+import { TagMenuType } from "../types/experience";
 import { AxiosError, AxiosResponse } from "axios";
 
 interface PrimeTagSubTagsResType {
