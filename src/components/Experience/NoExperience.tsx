@@ -3,14 +3,16 @@ import styled from "styled-components";
 import MainButton from "../common/MainButton";
 import noExperienceImg from "../../assets/images/noExperience.png";
 import { Plus } from "../../assets";
+import { useNavigate } from "react-router-dom";
 
 const NoExperience = () => {
+  const navigate = useNavigate();
   return (
     <Container>
       <Section>
         아직 작성된 경험이 없어요. <br />새 경험을 작성해주세요.
       </Section>
-      <MainButton>
+      <MainButton onClick={() => navigate(`/experience/write`)}>
         경험추가하기 <Plus />
       </MainButton>
       <img
@@ -23,7 +25,10 @@ const NoExperience = () => {
 };
 
 const Container = styled.div`
-  margin: 0px 258px 191px;
+  // position: absolute;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
   flex-shrink: 0;
   border-radius: 15px;
   background: #ffffff;
